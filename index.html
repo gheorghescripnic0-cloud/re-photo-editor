@@ -21,15 +21,15 @@
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.45}
 #app{display:flex;height:100vh;overflow:hidden}
 /* SIDEBAR */
-#sb{width:195px;min-width:195px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
-.logo{padding:12px 13px 7px;font-size:14px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);flex-shrink:0}
-.logo small{display:block;font-size:9px;color:var(--text3);margin-top:1px;font-weight:400}
-.ns{padding:7px 12px 2px;font-size:9px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;flex-shrink:0}
-.nb{display:flex;align-items:center;gap:7px;padding:6px 11px;margin:1px 4px;border-radius:var(--r);cursor:pointer;color:var(--text2);font-size:12px;border:none;background:transparent;width:calc(100% - 8px);text-align:left;transition:.1s;font-family:inherit;flex-shrink:0}
+#sb{width:190px;min-width:190px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+.logo{padding:12px 12px 7px;font-size:14px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border)}
+.logo small{display:block;font-size:9px;color:var(--text3);font-weight:400;margin-top:1px}
+.ns{padding:7px 11px 2px;font-size:9px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.nb{display:flex;align-items:center;gap:7px;padding:6px 10px;margin:1px 4px;border-radius:var(--r);cursor:pointer;color:var(--text2);font-size:12px;border:none;background:transparent;width:calc(100% - 8px);text-align:left;transition:.1s;font-family:inherit}
 .nb:hover{background:var(--bg3);color:var(--text)}
 .nb.on{background:var(--bg4);color:var(--text)}
-.ni{width:15px;text-align:center;font-size:13px;flex-shrink:0}
-.bdg{margin-left:auto;font-size:8px;padding:1px 4px;border-radius:3px;font-weight:700;flex-shrink:0}
+.ni{width:14px;text-align:center;font-size:13px;flex-shrink:0}
+.bdg{margin-left:auto;font-size:8px;padding:1px 4px;border-radius:3px;font-weight:700}
 .bdg.g{background:var(--green);color:#031008}
 .bdg.y{background:var(--yellow);color:#150e00}
 .bdg.p{background:var(--purple);color:#fff}
@@ -45,7 +45,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:system-
 .btn.p:hover{opacity:.85}
 .btn.g{background:var(--green);color:#031008;border-color:var(--green);font-weight:700}
 .btn.g:hover{opacity:.85}
-.btn.y{background:var(--yellow);color:#150e00;border-color:var(--yellow);font-weight:700}
 .btn:disabled{opacity:.3;cursor:default;pointer-events:none}
 #ws{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:11px}
 .panel{display:none;flex-direction:column;gap:11px}
@@ -57,45 +56,44 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:system-
 .chsub{font-size:9px;color:var(--text3);margin-left:auto;font-family:monospace}
 .cb{padding:13px}
 /* DROPZONE */
-.dz{border:1.5px dashed var(--border2);border-radius:var(--r2);padding:24px 16px;text-align:center;cursor:pointer;transition:.18s;user-select:none}
+.dz{border:1.5px dashed var(--border2);border-radius:var(--r2);padding:22px 16px;text-align:center;cursor:pointer;transition:.18s;user-select:none}
 .dz:hover,.dz.drag{border-color:var(--accent);background:rgba(61,126,255,.04)}
-.dz-ico{font-size:26px;margin-bottom:6px}
+.dz-ico{font-size:24px;margin-bottom:5px}
 .dz h4{font-size:12px;font-weight:700;margin-bottom:3px}
 .dz p{font-size:10px;color:var(--text3)}
 .ftags{display:flex;gap:3px;justify-content:center;flex-wrap:wrap;margin-top:5px}
 .ft{background:var(--bg4);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:8px;font-family:monospace;color:var(--text3)}
-/* PREVIEW — full res scrollable */
-.pvw{background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:auto;display:flex;align-items:flex-start;justify-content:center;max-height:480px}
+/* PREVIEW */
+.pvw{background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:auto;display:flex;align-items:flex-start;justify-content:center;max-height:460px}
 .pvw canvas{display:block;max-width:100%;height:auto}
-.pvph{color:var(--text3);font-size:11px;padding:44px 16px;text-align:center;width:100%}
+.pvph{color:var(--text3);font-size:11px;padding:40px 16px;text-align:center;width:100%}
 /* COMPARE */
 .cmp{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.cmpw{background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;max-height:360px;display:flex;align-items:center;justify-content:center}
+.cmpw{background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;max-height:340px;display:flex;align-items:center;justify-content:center}
 .cmpw canvas{display:block;max-width:100%;height:auto}
 .clbl{font-size:9px;color:var(--text3);text-align:center;font-family:monospace;padding:2px 0}
-/* SLIDERS */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px 10px}
-.g1{display:grid;grid-template-columns:1fr;gap:8px}
-.ctrl{display:flex;flex-direction:column;gap:3px}
-.cl{font-size:10px;color:var(--text2);display:flex;justify-content:space-between}
-.cl span{color:var(--text);font-family:monospace;font-size:10px}
-input[type=range]{-webkit-appearance:none;width:100%;height:2px;background:var(--bg4);border-radius:2px;outline:none;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--accent);border-radius:50%;cursor:pointer;border:2px solid var(--bg2)}
+/* SMALL PREVIEW for compress/palette/quality */
+.prev-sm{background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;display:flex;align-items:center;justify-content:center;max-height:180px}
+.prev-sm canvas{display:block;max-width:100%;height:auto}
+/* SLIDERS — styled with gradient track */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.g1{display:grid;grid-template-columns:1fr;gap:9px}
+.ctrl{display:flex;flex-direction:column;gap:4px}
+.cl{font-size:10px;color:var(--text2);display:flex;justify-content:space-between;align-items:center}
+.cl span{color:var(--text);font-family:monospace;font-size:10px;background:var(--bg4);padding:0 4px;border-radius:3px;min-width:28px;text-align:center}
+/* Slider with tick marks */
+.sl-wrap{display:flex;flex-direction:column;gap:1px}
+.sl-ticks{display:flex;justify-content:space-between;padding:0 1px}
+.sl-tick{font-size:8px;color:var(--text3);font-family:monospace}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;outline:none;cursor:pointer;background:linear-gradient(to right,#1a3a70 0%,#2455b8 25%,#3d7eff 50%,#2ecc8e 75%,#28a870 100%)}
+input[type=range].neg-only{background:linear-gradient(to right,#1a3a70 0%,#3d7eff 100%)}
+input[type=range].pos-only{background:linear-gradient(to right,#2455b8 0%,#28a870 100%)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:var(--text);border-radius:50%;cursor:pointer;border:2px solid var(--bg2);box-shadow:0 0 0 1px var(--accent)}
 /* PRESETS */
 .prow{display:flex;gap:4px;flex-wrap:wrap}
 .pb{padding:3px 9px;border-radius:999px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:.1s;font-family:inherit}
 .pb:hover{border-color:var(--accent);color:var(--accent)}
 .pb.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-/* HDR SLOTS */
-.hgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.hs{border:1.5px dashed var(--border2);border-radius:var(--r);min-height:80px;cursor:pointer;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:.15s}
-.hs:hover{border-color:var(--accent);background:rgba(61,126,255,.04)}
-.hs img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-.hs .ev{font-size:20px;font-weight:700;position:relative;z-index:1}
-.hs .elb{font-size:9px;color:var(--text2);font-family:monospace;position:relative;z-index:1}
-.hs .eov{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:5px;pointer-events:none}
-.hs .eov span{font-size:9px;color:#fff;font-family:monospace}
 /* STATUS */
 .st{font-size:10px;font-family:monospace;padding:6px 10px;border-radius:var(--r);line-height:1.5}
 .st.info{background:rgba(61,126,255,.08);color:#6aa3ff;border:1px solid rgba(61,126,255,.16)}
@@ -111,15 +109,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
 .wbb{flex:1;height:3px;background:var(--bg4);border-radius:2px;overflow:hidden}
 .wbf{height:100%;border-radius:2px;transition:width .3s}
 .wbv{font-size:9px;font-family:monospace;color:var(--text2);width:28px;text-align:right}
-/* HISTOGRAM */
-#hist-canvas{width:100%;height:80px;display:block;border-radius:var(--r)}
-/* WATERMARK */
-.wm-prev-wrap{position:relative;display:inline-block;max-width:100%}
-/* CURVES */
-#curves-canvas{cursor:crosshair;display:block;border-radius:var(--r);border:1px solid var(--border)}
+/* CURVES — compact */
+#curves-canvas{cursor:crosshair;display:block;border-radius:var(--r);border:1px solid var(--border);width:100%;max-height:140px}
 /* BATCH */
-.batch-list{display:flex;flex-direction:column;gap:4px;max-height:180px;overflow-y:auto}
-.batch-item{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:5px 9px;font-size:10px}
+.batch-list{display:flex;flex-direction:column;gap:3px;max-height:160px;overflow-y:auto}
+.batch-item{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:4px 8px;font-size:10px}
 .batch-item .bi-name{flex:1;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .batch-item .bi-st{font-family:monospace;font-size:9px;color:var(--text3)}
 .batch-item.done .bi-st{color:var(--green)}
@@ -127,50 +121,33 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
 /* EXIF */
 .exifwrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 .exifwrap table{width:100%;border-collapse:collapse}
-.exifwrap td{padding:4px 11px;font-size:10px;border-bottom:1px solid var(--border)}
+.exifwrap td{padding:4px 10px;font-size:10px;border-bottom:1px solid var(--border)}
 .exifwrap td:first-child{color:var(--text3);font-family:monospace;width:36%}
-.exifhead{padding:6px 11px;background:var(--bg4);border-bottom:1px solid var(--border);font-size:9px;font-family:monospace;color:var(--text2)}
+.exifhead{padding:6px 10px;background:var(--bg4);border-bottom:1px solid var(--border);font-size:9px;font-family:monospace;color:var(--text2)}
 /* BTN ROW */
 .brow{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
 /* PALETTE */
-.palette-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
-.pal-swatch{width:36px;height:36px;border-radius:5px;border:1px solid var(--border);flex-shrink:0;position:relative;cursor:pointer}
-.pal-swatch:hover::after{content:attr(data-hex);position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:8px;font-family:monospace;color:var(--text2);white-space:nowrap}
-/* QUALITY CHECKER */
-.qc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:7px}
-.qc-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px}
-.qc-label{font-size:9px;color:var(--text3);font-family:monospace;margin-bottom:3px}
-.qc-val{font-size:13px;font-weight:700;font-family:monospace}
-.qc-val.ok{color:var(--green)}
-.qc-val.warn{color:var(--yellow)}
-.qc-val.bad{color:var(--red)}
+.palette-row{display:flex;gap:5px;flex-wrap:wrap}
+.pal-swatch{width:34px;height:34px;border-radius:5px;border:1px solid var(--border);cursor:pointer;position:relative;flex-shrink:0;transition:.15s}
+.pal-swatch:hover{transform:scale(1.15);z-index:1}
+/* QUALITY */
+.qc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}
+.qc-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:7px 9px}
+.qc-label{font-size:9px;color:var(--text3);font-family:monospace;margin-bottom:2px}
+.qc-val{font-size:12px;font-weight:700;font-family:monospace}
+.qc-val.ok{color:var(--green)}.qc-val.warn{color:var(--yellow)}.qc-val.bad{color:var(--red)}
 /* RESIZE TARGETS */
-.resize-targets{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.rt-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:6px 9px;display:flex;justify-content:space-between;align-items:center}
-.rt-label{font-size:10px;color:var(--text2)}
+.resize-targets{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.rt-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:6px 9px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.rt-item:hover{border-color:var(--accent)}
+.rt-item input{flex-shrink:0}
+.rt-label{font-size:10px;color:var(--text2);flex:1}
 .rt-dim{font-size:9px;font-family:monospace;color:var(--text3)}
-/* LIBS */
-.lib-nb{display:block;width:calc(100% - 8px);margin:1px 4px;padding:6px 9px;border-radius:var(--r);border:none;background:transparent;color:var(--text2);font-size:11px;text-align:left;cursor:pointer;transition:.1s;font-family:inherit}
-.lib-nb:hover{background:var(--bg3);color:var(--text)}
-.lib-nb.on{background:var(--bg4);color:var(--text);font-weight:600}
-.lib-page{display:none;flex-direction:column;gap:9px}
-.lib-page.on{display:flex}
-.lib-badge-row{display:flex;align-items:flex-start;gap:10px}
-.lbig{font-size:22px;flex-shrink:0;margin-top:2px}
-.lib-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
-.lib-status{font-size:10px;color:var(--green);font-family:monospace}
-.lib-desc{font-size:11px;color:var(--text2);line-height:1.6}
-.lib-step-title{font-size:10px;font-weight:700;color:var(--text);padding-bottom:3px;border-bottom:1px solid var(--border);margin-top:4px}
-.lib-step{display:flex;align-items:flex-start;gap:8px;font-size:11px;color:var(--text2);line-height:1.5}
-.step-num{width:18px;height:18px;min-width:18px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;margin-top:1px}
-.cb2{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:9px 11px;font-family:monospace;font-size:10px;color:#9ecbff;line-height:1.7;overflow-x:auto;white-space:pre;margin:1px 0}
-.lib-tip{background:rgba(61,126,255,.06);border:1px solid rgba(61,126,255,.14);border-radius:var(--r);padding:7px 10px;font-size:10px;color:var(--text2);line-height:1.5}
-.lib-link{font-size:10px;color:var(--accent);text-decoration:none;font-family:monospace}
-.lib-link:hover{text-decoration:underline}
-.ic{background:var(--bg4);border:1px solid var(--border);border-radius:3px;padding:0 4px;font-family:monospace;font-size:9px;color:var(--text)}
-.lib-row{display:flex;align-items:flex-start;gap:9px;font-size:11px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border)}
-.lib-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:3px}
-.lib-dot.g{background:var(--green)}
+/* HISTOGRAM with overlay */
+.hist-container{position:relative}
+#hist-canvas{width:100%;height:100px;display:block;border-radius:var(--r);border:1px solid var(--border)}
+.hist-overlay{position:absolute;top:4px;right:6px;display:flex;gap:6px}
+.hist-badge{font-size:9px;font-family:monospace;padding:2px 6px;border-radius:3px}
 </style>
 </head>
 <body>
@@ -178,18 +155,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
 
 <!-- SIDEBAR -->
 <nav id="sb">
-  <div class="logo">RE Photo Editor Pro<small>v4.0 · Real Estate</small></div>
+  <div class="logo">RE Photo Editor Pro<small>v4.1 · Real Estate</small></div>
   <div class="ns">Editare</div>
   <button class="nb on" onclick="goP('enhance',this)"><span class="ni">✦</span>Enhance</button>
-  <button class="nb" onclick="goP('hdr',this)"><span class="ni">◈</span>HDR Merge</button>
-  <button class="nb" onclick="goP('window',this)"><span class="ni">⬜</span>Window Fix</button>
   <button class="nb" onclick="goP('curves',this)"><span class="ni">↗</span>Curves RGB</button>
   <button class="nb" onclick="goP('hsl',this)"><span class="ni">◉</span>HSL Color</button>
   <button class="nb" onclick="goP('denoise',this)"><span class="ni">◌</span>Denoise</button>
+  <button class="nb" onclick="goP('window',this)"><span class="ni">⬜</span>Window Fix</button>
   <div class="ns">Utilitar</div>
   <button class="nb" onclick="goP('wb',this)"><span class="ni">◐</span>White Balance<span class="bdg y">AI</span></button>
   <button class="nb" onclick="goP('upscale',this)"><span class="ni">⤡</span>Upscaler 4x</button>
-  <button class="nb" onclick="goP('crop',this)"><span class="ni">✂</span>Crop/Rotate</button>
+  <button class="nb" onclick="goP('crop',this)"><span class="ni">✂</span>Crop/Rotate/Flip</button>
   <button class="nb" onclick="goP('perspective',this)"><span class="ni">⊿</span>Perspectivă</button>
   <button class="nb" onclick="goP('straighten',this)"><span class="ni">⊟</span>Îndreaptă</button>
   <button class="nb" onclick="goP('histogram',this)"><span class="ni">▦</span>Histogram</button>
@@ -199,10 +175,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
   <button class="nb" onclick="goP('palette',this)"><span class="ni">🎨</span>Paletă culori</button>
   <button class="nb" onclick="goP('quality',this)"><span class="ni">✓</span>Quality Check</button>
   <button class="nb" onclick="goP('batch',this)"><span class="ni">⚡</span>Batch Process<span class="bdg p">PRO</span></button>
-  <button class="nb" onclick="goP('flipmirror',this)"><span class="ni">↔</span>Flip/Mirror</button>
   <div class="ns">Info</div>
   <button class="nb" onclick="goP('raw',this)"><span class="ni">📷</span>RAW &amp; EXIF</button>
-  <button class="nb" onclick="goP('libs',this)"><span class="ni">📚</span>Librării JS</button>
 </nav>
 
 <!-- MAIN -->
@@ -216,7 +190,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
   </div>
   <div id="ws">
 
-<!-- ═══ ENHANCE ═══ -->
+<!-- ═══════ ENHANCE ═══════ -->
 <div class="panel on" id="panel-enhance">
   <div class="card">
     <div class="ch"><h3>Încarcă imagine</h3><span class="chsub" id="enh-info">nicio imagine</span></div>
@@ -247,108 +221,40 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
   </div>
   <div class="card">
     <div class="ch"><h3>Ajustări</h3><span class="chsub">calitate originală</span></div>
-    <div class="cb" style="display:flex;flex-direction:column;gap:11px">
+    <div class="cb" style="display:flex;flex-direction:column;gap:12px">
       <div class="pvw" id="pvw-enh"><div class="pvph" id="ph-enh">Încarcă o imagine</div><canvas id="cv-enh" style="display:none"></canvas></div>
-      <div class="g2">
-        <div class="ctrl"><div class="cl">Expunere<span id="vl-exp">0</span></div><input type="range" id="sl-exp" min="-100" max="100" value="0" oninput="sv('exp');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Contrast<span id="vl-con">0</span></div><input type="range" id="sl-con" min="-100" max="100" value="0" oninput="sv('con');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Highlights<span id="vl-hl">0</span></div><input type="range" id="sl-hl" min="-100" max="100" value="0" oninput="sv('hl');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Shadows<span id="vl-sh">0</span></div><input type="range" id="sl-sh" min="-100" max="100" value="0" oninput="sv('sh');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Alb<span id="vl-wb2">0</span></div><input type="range" id="sl-wb2" min="-100" max="100" value="0" oninput="sv('wb2');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Negru<span id="vl-bk">0</span></div><input type="range" id="sl-bk" min="-100" max="100" value="0" oninput="sv('bk');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Claritate<span id="vl-cl">0</span></div><input type="range" id="sl-cl" min="-100" max="100" value="0" oninput="sv('cl');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Saturație<span id="vl-sat">0</span></div><input type="range" id="sl-sat" min="-100" max="100" value="0" oninput="sv('sat');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Vivacitate<span id="vl-vib">0</span></div><input type="range" id="sl-vib" min="-100" max="100" value="0" oninput="sv('vib');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Temperatură<span id="vl-tmp">0</span></div><input type="range" id="sl-tmp" min="-100" max="100" value="0" oninput="sv('tmp');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Tint<span id="vl-tnt">0</span></div><input type="range" id="sl-tnt" min="-100" max="100" value="0" oninput="sv('tnt');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Dehaze<span id="vl-dhz">0</span></div><input type="range" id="sl-dhz" min="0" max="100" value="0" oninput="sv('dhz');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Sharpen<span id="vl-shp">0</span></div><input type="range" id="sl-shp" min="0" max="100" value="0" oninput="sv('shp');renderEnh()"></div>
-        <div class="ctrl"><div class="cl">Vignetă<span id="vl-vig">0</span></div><input type="range" id="sl-vig" min="-80" max="0" value="0" oninput="sv('vig');renderEnh()"></div>
-      </div>
+      <div class="g2" id="enh-sliders"></div>
       <div class="brow"><button class="btn g" onclick="exportCv('cv-enh','enhance')">⬇ Descarcă — calitate originală</button></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ HDR ═══ -->
-<div class="panel" id="panel-hdr">
-  <div class="card">
-    <div class="ch"><h3>HDR Merge — Exposure Fusion</h3><span class="chsub">Mertens</span></div>
-    <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Apasă pe fiecare casetă și selectează poza. Minim 2 poze. Merge la rezoluție originală.</div>
-      <div class="hgrid">
-        <div class="hs" id="hs0" onclick="document.getElementById('hf0').click()"><div class="ev" style="color:#e84848">-2</div><div class="elb">EV · Întunecat</div></div>
-        <div class="hs" id="hs1" onclick="document.getElementById('hf1').click()"><div class="ev" style="color:#3d7eff">0</div><div class="elb">EV · Normal</div></div>
-        <div class="hs" id="hs2" onclick="document.getElementById('hf2').click()"><div class="ev" style="color:#28c87e">+2</div><div class="elb">EV · Deschis</div></div>
-      </div>
-      <input type="file" id="hf0" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="hdrLoad(this,0)">
-      <input type="file" id="hf1" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="hdrLoad(this,1)">
-      <input type="file" id="hf2" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="hdrLoad(this,2)">
-      <div class="g1"><div class="ctrl"><div class="cl">Intensitate Tone Mapping<span id="vl-tm">60</span></div><input type="range" id="sl-tm" min="10" max="100" value="60" oninput="sv2('sl-tm','vl-tm')"></div></div>
-      <div id="hdr-pg" style="display:none;flex-direction:column;gap:5px"><div class="pgw"><div class="pgb" id="hdr-pb" style="width:0%"></div></div><div class="st info" id="hdr-st"></div></div>
-      <div class="pvw" id="pvw-hdr" style="min-height:140px"><div class="pvph">Preview HDR după generare</div><canvas id="cv-hdr" style="display:none"></canvas></div>
-      <div class="brow">
-        <button class="btn p" onclick="doHDR()">▶ Generează HDR</button>
-        <button class="btn g" onclick="exportCv('cv-hdr','hdr')">⬇ Export HDR original</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ WINDOW FIX ═══ -->
-<div class="panel" id="panel-window">
-  <div class="card">
-    <div class="ch"><h3>Window Fix</h3><span class="chsub">recuperare ferestre arse</span></div>
-    <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Recuperează ferestrele arse (blown highlights). Ajustează pragul, luminozitate exterior/interior separat.</div>
-      <div class="dz" id="dz-win" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'win')" onclick="document.getElementById('fi-win').click()">
-        <div class="dz-ico">🪟</div><h4>Click sau trage — interior</h4><p>JPG · PNG · TIFF · RAW</p>
-      </div>
-      <input type="file" id="fi-win" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="loadF(this,'win')">
-      <div id="win-cmp" style="display:none">
-        <div class="cmp">
-          <div><div class="cmpw"><canvas id="cv-winb" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Original</div></div>
-          <div><div class="cmpw"><canvas id="cv-win" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Window Fix</div></div>
-        </div>
-      </div>
-      <div class="g2">
-        <div class="ctrl"><div class="cl">Recuperare Highlights<span id="vl-whl">55</span></div><input type="range" id="sl-whl" min="0" max="100" value="55" oninput="sv2('sl-whl','vl-whl');renderWin()"></div>
-        <div class="ctrl"><div class="cl">Prag fereastră<span id="vl-wthr">185</span></div><input type="range" id="sl-wthr" min="80" max="255" value="185" oninput="sv2('sl-wthr','vl-wthr');renderWin()"></div>
-        <div class="ctrl"><div class="cl">Luminozitate exterior<span id="vl-wext">0</span></div><input type="range" id="sl-wext" min="-80" max="80" value="0" oninput="sv2('sl-wext','vl-wext');renderWin()"></div>
-        <div class="ctrl"><div class="cl">Luminozitate interior<span id="vl-wint">0</span></div><input type="range" id="sl-wint" min="-50" max="50" value="0" oninput="sv2('sl-wint','vl-wint');renderWin()"></div>
-        <div class="ctrl"><div class="cl">Contrast fereastră<span id="vl-wcon">0</span></div><input type="range" id="sl-wcon" min="-50" max="50" value="0" oninput="sv2('sl-wcon','vl-wcon');renderWin()"></div>
-        <div class="ctrl"><div class="cl">Saturație fereastră<span id="vl-wsat">0</span></div><input type="range" id="sl-wsat" min="-50" max="50" value="0" oninput="sv2('sl-wsat','vl-wsat');renderWin()"></div>
-      </div>
-      <div class="brow"><button class="btn g" onclick="exportCv('cv-win','window-fix')">⬇ Descarcă original</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ CURVES ═══ -->
+<!-- ═══════ CURVES ═══════ -->
 <div class="panel" id="panel-curves">
   <div class="card">
     <div class="ch"><h3>Curves RGB</h3><span class="chsub">control precis tonuri</span></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Trage punctele de pe curbă pentru control precis al tonurilor. Click pe curbă adaugă punct nou. Canalele R/G/B separat sau Master.</div>
+      <div class="st info">Trage punctele de pe curbă. Click pe linie = punct nou. Dublu-click pe punct = șterge. Canale separate R/G/B sau Master.</div>
       <div class="dz" id="dz-curves" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'curves')" onclick="document.getElementById('fi-curves').click()">
         <div class="dz-ico">↗</div><h4>Click sau trage imaginea</h4>
       </div>
       <input type="file" id="fi-curves" style="display:none" accept="image/*" onchange="loadF(this,'curves')">
-      <div id="curves-ui" style="display:none;flex-direction:column;gap:10px">
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="pb on" id="cur-master" onclick="setCurveChannel('master',this)">Master</button>
-          <button class="pb" id="cur-r" onclick="setCurveChannel('R',this)" style="color:#e84848;border-color:#e84848">R</button>
-          <button class="pb" id="cur-g" onclick="setCurveChannel('G',this)" style="color:#28c87e;border-color:#28c87e">G</button>
-          <button class="pb" id="cur-b" onclick="setCurveChannel('B',this)" style="color:#3d7eff;border-color:#3d7eff">B</button>
+      <div id="curves-ui" style="display:none;flex-direction:column;gap:8px">
+        <div style="display:flex;gap:5px">
+          <button class="pb on" onclick="setCurveChannel('master',this)">Master</button>
+          <button class="pb" onclick="setCurveChannel('R',this)" style="color:#e84848">R</button>
+          <button class="pb" onclick="setCurveChannel('G',this)" style="color:#28c87e">G</button>
+          <button class="pb" onclick="setCurveChannel('B',this)" style="color:#3d7eff">B</button>
+          <button class="pb" onclick="resetCurves()" style="margin-left:auto">↺</button>
         </div>
-        <canvas id="curves-canvas" width="256" height="160"></canvas>
+        <!-- Compact curves canvas — fixed height -->
+        <canvas id="curves-canvas" width="256" height="140" style="width:100%;height:140px;display:block;border-radius:var(--r);border:1px solid var(--border);cursor:crosshair;background:#080a0d"></canvas>
         <div class="cmp">
           <div><div class="cmpw"><canvas id="cv-curvb" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Original</div></div>
           <div><div class="cmpw"><canvas id="cv-curves" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Curves Applied</div></div>
         </div>
         <div class="brow">
-          <button class="btn p" onclick="applyCurves()">▶ Aplică Curves</button>
-          <button class="btn" onclick="resetCurves()">↺ Reset curves</button>
+          <button class="btn p" onclick="applyCurves()">▶ Aplică</button>
           <button class="btn g" onclick="exportCv('cv-curves','curves')">⬇ Descarcă original</button>
         </div>
       </div>
@@ -356,18 +262,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
   </div>
 </div>
 
-<!-- ═══ HSL ═══ -->
+<!-- ═══════ HSL ═══════ -->
 <div class="panel" id="panel-hsl">
   <div class="card">
     <div class="ch"><h3>HSL — Color Grading</h3><span class="chsub">Hue · Saturation · Luminance</span></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Ajustează Hue/Saturație/Luminanță per culoare — fă cerul mai albastru fără a afecta pereții, intensifică verdele gazonului, etc.</div>
+      <div class="st info">Ajustează fiecare culoare separat. Apasă ▶ Aplică după modificări.</div>
       <div class="dz" id="dz-hsl" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'hsl')" onclick="document.getElementById('fi-hsl').click()">
         <div class="dz-ico">◉</div><h4>Click sau trage imaginea</h4>
       </div>
       <input type="file" id="fi-hsl" style="display:none" accept="image/*" onchange="loadF(this,'hsl')">
       <div id="hsl-ui" style="display:none;flex-direction:column;gap:10px">
-        <div style="display:flex;gap:5px;flex-wrap:wrap">
+        <div style="display:flex;gap:5px">
           <button class="pb on" id="hsl-tab-h" onclick="setHSLTab('h',this)">Hue</button>
           <button class="pb" id="hsl-tab-s" onclick="setHSLTab('s',this)">Saturație</button>
           <button class="pb" id="hsl-tab-l" onclick="setHSLTab('l',this)">Luminanță</button>
@@ -379,6 +285,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
         </div>
         <div class="brow">
           <button class="btn p" onclick="renderHSL()">▶ Aplică HSL</button>
+          <button class="btn" onclick="resetHSL()">↺ Reset</button>
           <button class="btn g" onclick="exportCv('cv-hsl','hsl')">⬇ Descarcă original</button>
         </div>
       </div>
@@ -386,12 +293,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
   </div>
 </div>
 
-<!-- ═══ DENOISE ═══ -->
+<!-- ═══════ DENOISE ═══════ -->
 <div class="panel" id="panel-denoise">
   <div class="card">
     <div class="ch"><h3>Denoise + Sharpen</h3><span class="chsub">reducere zgomot</span></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Reduce zgomotul la poze cu ISO mare sau în lumină slabă. Algoritmul blur selectiv protejează detaliile.</div>
       <div class="dz" id="dz-dn" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'dn')" onclick="document.getElementById('fi-dn').click()">
         <div class="dz-ico">◌</div><h4>Click sau trage poza zgomotoasă</h4>
       </div>
@@ -400,18 +306,32 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
         <div><div class="cmpw"><canvas id="cv-dnb" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Original</div></div>
         <div><div class="cmpw"><canvas id="cv-dn" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Denoised</div></div>
       </div>
-      <div class="g2">
-        <div class="ctrl"><div class="cl">Reducere zgomot<span id="vl-dnamt">30</span></div><input type="range" id="sl-dnamt" min="0" max="100" value="30" oninput="sv2('sl-dnamt','vl-dnamt');renderDN()"></div>
-        <div class="ctrl"><div class="cl">Raza blur<span id="vl-dnr">1</span></div><input type="range" id="sl-dnr" min="1" max="4" value="1" step="1" oninput="sv2('sl-dnr','vl-dnr');renderDN()"></div>
-        <div class="ctrl"><div class="cl">Protejare detalii<span id="vl-dnprot">60</span></div><input type="range" id="sl-dnprot" min="0" max="100" value="60" oninput="sv2('sl-dnprot','vl-dnprot');renderDN()"></div>
-        <div class="ctrl"><div class="cl">Sharpen final<span id="vl-dnshp">20</span></div><input type="range" id="sl-dnshp" min="0" max="100" value="20" oninput="sv2('sl-dnshp','vl-dnshp');renderDN()"></div>
-      </div>
+      <div id="dn-sliders" class="g2"></div>
       <div class="brow"><button class="btn g" onclick="exportCv('cv-dn','denoised')">⬇ Descarcă original</button></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ WHITE BALANCE AI ═══ -->
+<!-- ═══════ WINDOW FIX ═══════ -->
+<div class="panel" id="panel-window">
+  <div class="card">
+    <div class="ch"><h3>Window Fix</h3><span class="chsub">ferestre arse</span></div>
+    <div class="cb" style="display:flex;flex-direction:column;gap:10px">
+      <div class="dz" id="dz-win" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'win')" onclick="document.getElementById('fi-win').click()">
+        <div class="dz-ico">🪟</div><h4>Click sau trage — interior</h4>
+      </div>
+      <input type="file" id="fi-win" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="loadF(this,'win')">
+      <div id="win-cmp" class="cmp" style="display:none">
+        <div><div class="cmpw"><canvas id="cv-winb" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Original</div></div>
+        <div><div class="cmpw"><canvas id="cv-win" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Window Fix</div></div>
+      </div>
+      <div id="win-sliders" class="g2"></div>
+      <div class="brow"><button class="btn g" onclick="exportCv('cv-win','window-fix')">⬇ Descarcă original</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ WHITE BALANCE ═══════ -->
 <div class="panel" id="panel-wb">
   <div class="card">
     <div class="ch"><h3>White Balance AI</h3><span class="chsub">Gray World · Kelvin</span></div>
@@ -430,10 +350,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
           <div class="wbr"><div class="wbl">G channel</div><div class="wbb"><div class="wbf" id="wbgf" style="background:#28c87e"></div></div><div class="wbv" id="wbgv">128</div></div>
           <div class="wbr"><div class="wbl">B channel</div><div class="wbb"><div class="wbf" id="wbbf" style="background:#3d7eff"></div></div><div class="wbv" id="wbbv">128</div></div>
         </div>
-        <div class="g1">
-          <div class="ctrl"><div class="cl">Rece ←——→ Cald<span id="vl-wbm">0</span></div><input type="range" id="sl-wbm" min="-100" max="100" value="0" oninput="sv2('sl-wbm','vl-wbm');renderWB()"></div>
-          <div class="ctrl"><div class="cl">Verde ←——→ Magenta<span id="vl-wbt">0</span></div><input type="range" id="sl-wbt" min="-50" max="50" value="0" oninput="sv2('sl-wbt','vl-wbt');renderWB()"></div>
-        </div>
+        <div id="wb-sliders" class="g1"></div>
         <div class="cmp">
           <div><div class="cmpw"><canvas id="cv-wbb" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Original</div></div>
           <div><div class="cmpw"><canvas id="cv-wb" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">WB Corectat</div></div>
@@ -444,22 +361,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
   </div>
 </div>
 
-<!-- ═══ UPSCALER ═══ -->
+<!-- ═══════ UPSCALER ═══════ -->
 <div class="panel" id="panel-upscale">
   <div class="card">
     <div class="ch"><h3>Upscaler</h3><span class="chsub">pica.js Lanczos3</span></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Preview arată imaginea scalată să încapă pe ecran. Descărcarea exportă rezoluția HD completă.</div>
       <div class="dz" id="dz-us" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'us')" onclick="document.getElementById('fi-us').click()">
         <div class="dz-ico">⤡</div><h4>Click sau trage imaginea</h4>
       </div>
       <input type="file" id="fi-us" style="display:none" accept="image/*" onchange="loadF(this,'us')">
-      <div id="us-dims" style="display:none;padding:5px 0">
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          <div><div style="font-size:9px;color:var(--text3);font-family:monospace">ORIGINAL</div><div style="font-size:12px;font-family:monospace;color:var(--text)" id="us-orig">—</div></div>
-          <div style="font-size:14px;color:var(--accent)">→</div>
-          <div><div style="font-size:9px;color:var(--text3);font-family:monospace">REZULTAT</div><div style="font-size:12px;font-family:monospace;color:var(--green)" id="us-new">—</div></div>
-        </div>
+      <div id="us-dims" style="display:none;padding:5px 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div><div style="font-size:9px;color:var(--text3);font-family:monospace">ORIGINAL</div><div style="font-size:12px;font-family:monospace" id="us-orig">—</div></div>
+        <div style="font-size:14px;color:var(--accent)">→</div>
+        <div><div style="font-size:9px;color:var(--text3);font-family:monospace">REZULTAT</div><div style="font-size:12px;font-family:monospace;color:var(--green)" id="us-new">—</div></div>
       </div>
       <div style="display:flex;gap:5px;flex-wrap:wrap">
         <button class="pb" onclick="setUF(1.5,this)">1.5x</button>
@@ -467,7 +381,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
         <button class="pb" onclick="setUF(3,this)">3x</button>
         <button class="pb" onclick="setUF(4,this)">4x</button>
       </div>
-      <div class="g1"><div class="ctrl"><div class="cl">Sharpen post-upscale<span id="vl-uss">25</span></div><input type="range" id="sl-uss" min="0" max="100" value="25" oninput="sv2('sl-uss','vl-uss')"></div></div>
+      <div id="us-sliders" class="g1"></div>
       <div id="us-pg" style="display:none;flex-direction:column;gap:5px"><div class="pgw"><div class="pgb" id="us-pb" style="width:0%"></div></div><div class="st info" id="us-st"></div></div>
       <div class="pvw" id="pvw-us" style="display:none"><canvas id="cv-us-prev" style="display:block;max-width:100%;height:auto"></canvas></div>
       <canvas id="cv-us-full" style="display:none"></canvas>
@@ -479,7 +393,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
   </div>
 </div>
 
-<!-- ═══ CROP ═══ -->
+<!-- ═══════ CROP / ROTATE / FLIP ═══════ -->
 <div class="panel" id="panel-crop">
   <div class="card">
     <div class="ch"><h3>Crop / Rotate / Flip</h3><span class="chsub">Cropper.js</span></div>
@@ -488,8 +402,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
         <div class="dz-ico">✂</div><h4>Click sau trage imaginea</h4>
       </div>
       <input type="file" id="fi-crop" style="display:none" accept="image/*" onchange="loadF(this,'crop')">
-      <div id="crop-container" style="display:none;background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;max-height:420px"><img id="crop-img" style="max-width:100%;display:block"></div>
+      <div id="crop-container" style="display:none;background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;max-height:400px"><img id="crop-img" style="max-width:100%;display:block"></div>
       <div id="crop-controls" style="display:none;flex-direction:column;gap:8px">
+        <div style="font-size:10px;color:var(--text2);font-weight:600">Aspect Ratio:</div>
         <div class="prow">
           <button class="pb on" onclick="setCropAR(NaN,this)">Liber</button>
           <button class="pb" onclick="setCropAR(1,this)">1:1</button>
@@ -498,88 +413,91 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
           <button class="pb" onclick="setCropAR(3/2,this)">3:2</button>
           <button class="pb" onclick="setCropAR(2/3,this)">2:3</button>
         </div>
-        <div class="g2">
-          <button class="btn" onclick="cropperInst&&cropperInst.rotate(-90)">↺ -90°</button>
-          <button class="btn" onclick="cropperInst&&cropperInst.rotate(90)">↻ +90°</button>
-          <button class="btn" onclick="cropperInst&&cropperInst.rotate(-1)">↺ -1°</button>
-          <button class="btn" onclick="cropperInst&&cropperInst.rotate(1)">↻ +1°</button>
-          <button class="btn" onclick="doFlipH()">↔ Flip H</button>
-          <button class="btn" onclick="doFlipV()">↕ Flip V</button>
+        <div style="font-size:10px;color:var(--text2);font-weight:600">Rotire:</div>
+        <div class="prow">
+          <button class="pb" onclick="cropperInst&&cropperInst.rotate(-90)">↺ -90°</button>
+          <button class="pb" onclick="cropperInst&&cropperInst.rotate(90)">↻ +90°</button>
+          <button class="pb" onclick="cropperInst&&cropperInst.rotate(-1)">↺ -1°</button>
+          <button class="pb" onclick="cropperInst&&cropperInst.rotate(1)">↻ +1°</button>
+          <button class="pb" onclick="cropperInst&&cropperInst.rotate(180)">180°</button>
         </div>
-        <div class="brow"><button class="btn g" onclick="exportCrop()">⬇ Descarcă crop — rezoluție originală</button></div>
+        <div style="font-size:10px;color:var(--text2);font-weight:600">Flip / Mirror:</div>
+        <div class="prow">
+          <button class="pb" onclick="doCropFlipH()">↔ Flip Orizontal</button>
+          <button class="pb" onclick="doCropFlipV()">↕ Flip Vertical</button>
+        </div>
+        <div class="brow"><button class="btn g" onclick="exportCrop()">⬇ Descarcă — rezoluție originală</button></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══ PERSPECTIVE ═══ -->
+<!-- ═══════ PERSPECTIVA ═══════ -->
 <div class="panel" id="panel-perspective">
   <div class="card">
-    <div class="ch"><h3>Corecție Perspectivă / Lens</h3><span class="chsub">keystone · barrel distortion</span></div>
+    <div class="ch"><h3>Corecție Perspectivă</h3><span class="chsub">keystone · lens distortion</span></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Corectează liniile verticale convergente (foarte frecvent cu obiective wide-angle) și distorsiunea barrel tipică obiectivelor ieftine.</div>
       <div class="dz" id="dz-persp" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'persp')" onclick="document.getElementById('fi-persp').click()">
         <div class="dz-ico">⊿</div><h4>Click sau trage imaginea</h4>
       </div>
       <input type="file" id="fi-persp" style="display:none" accept="image/*" onchange="loadF(this,'persp')">
-      <div class="cmp" id="persp-cmp" style="display:none">
+      <div id="persp-cmp" class="cmp" style="display:none">
         <div><div class="cmpw"><canvas id="cv-perspb" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Original</div></div>
         <div><div class="cmpw"><canvas id="cv-persp" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Corectat</div></div>
       </div>
-      <div class="g2">
-        <div class="ctrl"><div class="cl">Vertical (Keystone)<span id="vl-pv">0</span></div><input type="range" id="sl-pv" min="-40" max="40" value="0" oninput="sv2('sl-pv','vl-pv');renderPersp()"></div>
-        <div class="ctrl"><div class="cl">Orizontal<span id="vl-ph">0</span></div><input type="range" id="sl-ph" min="-40" max="40" value="0" oninput="sv2('sl-ph','vl-ph');renderPersp()"></div>
-        <div class="ctrl"><div class="cl">Barrel distortion<span id="vl-pb2">0</span></div><input type="range" id="sl-pb2" min="-50" max="50" value="0" oninput="sv2('sl-pb2','vl-pb2');renderPersp()"></div>
-        <div class="ctrl"><div class="cl">Rotire fină<span id="vl-pr">0</span></div><input type="range" id="sl-pr" min="-10" max="10" value="0" step="0.1" oninput="sv2('sl-pr','vl-pr');renderPersp()"></div>
-        <div class="ctrl"><div class="cl">Zoom (fill borduri)<span id="vl-pz">0</span></div><input type="range" id="sl-pz" min="0" max="20" value="0" oninput="sv2('sl-pz','vl-pz');renderPersp()"></div>
-      </div>
+      <div id="persp-sliders" class="g2"></div>
       <div class="brow"><button class="btn g" onclick="exportCv('cv-persp','perspective')">⬇ Descarcă original</button></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ STRAIGHTEN ═══ -->
+<!-- ═══════ STRAIGHTEN ═══════ -->
 <div class="panel" id="panel-straighten">
   <div class="card">
-    <div class="ch"><h3>Îndreaptă / Auto-Rotate</h3><span class="chsub">horizon detection</span></div>
+    <div class="ch"><h3>Îndreaptă / Auto-Rotate</h3></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Detectează orizontul automat și îndreaptă imaginea. Poți ajusta manual cu sliderul sau seta un unghi exact.</div>
       <div class="dz" id="dz-str" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'str')" onclick="document.getElementById('fi-str').click()">
         <div class="dz-ico">⊟</div><h4>Click sau trage imaginea</h4>
       </div>
       <input type="file" id="fi-str" style="display:none" accept="image/*" onchange="loadF(this,'str')">
-      <div class="cmp" id="str-cmp" style="display:none">
+      <div id="str-cmp" class="cmp" style="display:none">
         <div><div class="cmpw"><canvas id="cv-strb" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Original</div></div>
         <div><div class="cmpw"><canvas id="cv-str" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Îndreptat</div></div>
       </div>
-      <div class="g1">
-        <div class="ctrl"><div class="cl">Unghi rotire (grade)<span id="vl-stra">0.0</span></div><input type="range" id="sl-stra" min="-15" max="15" value="0" step="0.1" oninput="sv2('sl-stra','vl-stra');renderStr()"></div>
-      </div>
+      <div id="str-sliders" class="g1"></div>
       <div class="brow">
-        <button class="btn p" onclick="autoStraighten()">🔍 Auto-detectează orizontul</button>
+        <button class="btn p" onclick="autoStraighten()">🔍 Auto-detectează</button>
         <button class="btn g" onclick="exportCv('cv-str','straightened')">⬇ Descarcă original</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══ HISTOGRAM ═══ -->
+<!-- ═══════ HISTOGRAM ═══════ -->
 <div class="panel" id="panel-histogram">
   <div class="card">
-    <div class="ch"><h3>Histogram Live</h3><span class="chsub">RGB distribution</span></div>
+    <div class="ch"><h3>Histogram Live</h3><span class="chsub">RGB + analiză expunere</span></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Histograma arată distribuția tonurilor. Dacă e tăiată la stânga = subexpusă, tăiată la dreapta = supraexpusă.</div>
       <div class="dz" id="dz-hist" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'hist')" onclick="document.getElementById('fi-hist').click()">
         <div class="dz-ico">▦</div><h4>Click sau trage imaginea</h4>
       </div>
       <input type="file" id="fi-hist" style="display:none" accept="image/*" onchange="loadF(this,'hist')">
-      <canvas id="hist-canvas" width="512" height="120" style="display:none;width:100%;border-radius:var(--r);border:1px solid var(--border)"></canvas>
-      <div id="hist-stats" style="display:none" class="g3"></div>
+      <!-- Preview with overlay zones -->
+      <div id="hist-prev-wrap" style="display:none;position:relative">
+        <canvas id="cv-hist-prev" style="width:100%;max-height:220px;display:block;border-radius:var(--r);border:1px solid var(--border)"></canvas>
+        <canvas id="cv-hist-overlay" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:var(--r)"></canvas>
+        <div id="hist-legend" style="position:absolute;top:6px;right:6px;display:flex;gap:4px;flex-direction:column"></div>
+      </div>
+      <!-- Histogram chart — smooth -->
+      <div class="hist-container" id="hist-chart-wrap" style="display:none">
+        <canvas id="hist-canvas" width="512" height="100" style="width:100%;height:100px;display:block;border-radius:var(--r);border:1px solid var(--border)"></canvas>
+      </div>
+      <div id="hist-stats" class="qc-grid" style="display:none"></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ WATERMARK ═══ -->
+<!-- ═══════ WATERMARK ═══════ -->
 <div class="panel" id="panel-watermark">
   <div class="card">
     <div class="ch"><h3>Watermark</h3><span class="chsub">text · logo</span></div>
@@ -591,61 +509,65 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
       <div class="g2">
         <div class="ctrl" style="grid-column:1/-1">
           <div class="cl">Text watermark</div>
-          <input type="text" id="wm-text" value="© Real Estate Photo" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:5px 8px;font-size:11px;width:100%;font-family:inherit">
+          <input type="text" id="wm-text" value="© Real Estate Photo" oninput="renderWM()" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:5px 8px;font-size:11px;width:100%;font-family:inherit;margin-top:3px">
         </div>
-        <div class="ctrl"><div class="cl">Dimensiune font<span id="vl-wmfs">28</span></div><input type="range" id="sl-wmfs" min="10" max="120" value="28" oninput="sv2('sl-wmfs','vl-wmfs');renderWM()"></div>
-        <div class="ctrl"><div class="cl">Opacitate<span id="vl-wmop">60</span></div><input type="range" id="sl-wmop" min="5" max="100" value="60" oninput="sv2('sl-wmop','vl-wmop');renderWM()"></div>
+        <div class="ctrl"><div class="cl">Font size<span id="vl-wmfs">28</span></div><input type="range" id="sl-wmfs" min="10" max="120" value="28" oninput="sv('wmfs');renderWM()"></div>
+        <div class="ctrl"><div class="cl">Opacitate<span id="vl-wmop">60</span></div><input type="range" id="sl-wmop" min="5" max="100" value="60" oninput="sv('wmop');renderWM()"></div>
         <div class="ctrl">
           <div class="cl">Poziție</div>
-          <select id="wm-pos" onchange="renderWM()" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:4px 7px;font-size:11px;font-family:inherit">
-            <option value="br">Dreapta jos</option>
-            <option value="bl">Stânga jos</option>
-            <option value="tr">Dreapta sus</option>
-            <option value="tl">Stânga sus</option>
-            <option value="c">Centru</option>
+          <select id="wm-pos" onchange="renderWM()" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:4px 7px;font-size:11px;font-family:inherit;margin-top:3px;width:100%">
+            <option value="br">Dreapta jos</option><option value="bl">Stânga jos</option>
+            <option value="tr">Dreapta sus</option><option value="tl">Stânga sus</option><option value="c">Centru</option>
           </select>
         </div>
         <div class="ctrl">
-          <div class="cl">Culoare text</div>
-          <input type="color" id="wm-color" value="#ffffff" onchange="renderWM()" style="width:100%;height:28px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg4);cursor:pointer">
+          <div class="cl">Culoare</div>
+          <input type="color" id="wm-color" value="#ffffff" onchange="renderWM()" style="width:100%;height:28px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg4);cursor:pointer;margin-top:3px">
         </div>
-        <div class="ctrl"><div class="cl">Logo (opțional)</div><button class="btn" onclick="document.getElementById('fi-wmlogo').click()" style="width:100%">+ Încarcă logo</button></div>
+        <div class="ctrl" style="grid-column:1/-1">
+          <div class="cl">Logo (opțional)</div>
+          <button class="btn" onclick="document.getElementById('fi-wmlogo').click()" style="margin-top:3px">+ Încarcă logo PNG</button>
+        </div>
       </div>
       <input type="file" id="fi-wmlogo" style="display:none" accept="image/*" onchange="loadWMLogo(this)">
-      <div class="pvw" id="pvw-wm" style="min-height:120px"><div class="pvph">Încarcă imaginea</div><canvas id="cv-wm" style="display:none"></canvas></div>
-      <div class="brow"><button class="btn g" onclick="exportCv('cv-wm','watermark')">⬇ Descarcă cu watermark</button></div>
+      <!-- Preview MIC — nu toată pagina -->
+      <div style="font-size:10px;color:var(--text3);font-family:monospace">PREVIEW (scalat):</div>
+      <div class="prev-sm"><canvas id="cv-wm-prev" style="display:block;max-width:100%;height:auto"></canvas></div>
+      <!-- Canvas full res ascuns pentru export -->
+      <canvas id="cv-wm" style="display:none"></canvas>
+      <div class="brow"><button class="btn g" onclick="exportCv('cv-wm','watermark')">⬇ Descarcă cu watermark — original</button></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ RESIZE EXPORT ═══ -->
+<!-- ═══════ RESIZE ═══════ -->
 <div class="panel" id="panel-resize">
   <div class="card">
-    <div class="ch"><h3>Resize &amp; Export Multiple</h3><span class="chsub">web · print · social</span></div>
+    <div class="ch"><h3>Resize &amp; Export Multiple</h3><span class="chsub">crop inteligent per platformă</span></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Exportă aceeași poză în mai multe dimensiuni simultan pentru web, print, MLS, social media.</div>
+      <div class="st info">Fiecare format face crop inteligent din centru (nu lărgire/deformare) pentru a se potrivi exact dimensiunilor platformei.</div>
       <div class="dz" id="dz-rsz" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'rsz')" onclick="document.getElementById('fi-rsz').click()">
         <div class="dz-ico">⊠</div><h4>Click sau trage imaginea</h4>
       </div>
       <input type="file" id="fi-rsz" style="display:none" accept="image/*" onchange="loadF(this,'rsz')">
-      <div id="rsz-targets" class="resize-targets">
-        <label class="rt-item"><input type="checkbox" id="rsz-orig" checked><div><div class="rt-label">Original</div><div class="rt-dim">rezoluție completă</div></div></label>
-        <label class="rt-item"><input type="checkbox" id="rsz-web" checked><div><div class="rt-label">Web / MLS</div><div class="rt-dim">max 2048px</div></div></label>
-        <label class="rt-item"><input type="checkbox" id="rsz-thumb"><div><div class="rt-label">Thumbnail</div><div class="rt-dim">400×300px</div></div></label>
-        <label class="rt-item"><input type="checkbox" id="rsz-ig"><div><div class="rt-label">Instagram</div><div class="rt-dim">1080×1080px</div></div></label>
-        <label class="rt-item"><input type="checkbox" id="rsz-fb"><div><div class="rt-label">Facebook</div><div class="rt-dim">1200×630px</div></div></label>
-        <label class="rt-item"><input type="checkbox" id="rsz-print"><div><div class="rt-label">Print A4 300dpi</div><div class="rt-dim">3508×2480px</div></div></label>
+      <div class="resize-targets">
+        <label class="rt-item"><input type="checkbox" id="rsz-orig" checked><div><div class="rt-label">Original complet</div><div class="rt-dim">rezoluție completă</div></div></label>
+        <label class="rt-item"><input type="checkbox" id="rsz-web" checked><div><div class="rt-label">Web / MLS</div><div class="rt-dim">max 2048px lungime</div></div></label>
+        <label class="rt-item"><input type="checkbox" id="rsz-thumb"><div><div class="rt-label">Thumbnail</div><div class="rt-dim">400×300 · crop 4:3</div></div></label>
+        <label class="rt-item"><input type="checkbox" id="rsz-ig"><div><div class="rt-label">Instagram Square</div><div class="rt-dim">1080×1080 · crop 1:1</div></div></label>
+        <label class="rt-item"><input type="checkbox" id="rsz-igland"><div><div class="rt-label">Instagram Landscape</div><div class="rt-dim">1080×566 · crop 16:9</div></div></label>
+        <label class="rt-item"><input type="checkbox" id="rsz-fb"><div><div class="rt-label">Facebook Cover</div><div class="rt-dim">1200×630 · crop</div></div></label>
+        <label class="rt-item"><input type="checkbox" id="rsz-print"><div><div class="rt-label">Print A4 300dpi</div><div class="rt-dim">3508×2480 · crop</div></div></label>
+        <label class="rt-item"><input type="checkbox" id="rsz-a3"><div><div class="rt-label">Print A3 300dpi</div><div class="rt-dim">4961×3508 · crop</div></div></label>
       </div>
-      <div class="g1"><div class="ctrl"><div class="cl">Calitate JPEG (toate)<span id="vl-rszq">90</span></div><input type="range" id="sl-rszq" min="60" max="100" value="90" oninput="sv2('sl-rszq','vl-rszq')"></div></div>
-      <div id="rsz-prog" style="display:none;flex-direction:column;gap:5px"><div class="pgw"><div class="pgb" id="rsz-pb" style="width:0%"></div></div><div class="st info" id="rsz-st"></div></div>
-      <div class="brow">
-        <button class="btn p" id="btn-rsz" onclick="doResize()" disabled>▶ Generează toate</button>
-      </div>
+      <div class="ctrl"><div class="cl">Calitate JPEG<span id="vl-rszq">90</span></div><input type="range" id="sl-rszq" min="60" max="100" value="90" oninput="sv('rszq')"></div>
+      <div id="rsz-pg" style="display:none;flex-direction:column;gap:5px"><div class="pgw"><div class="pgb" id="rsz-pb" style="width:0%"></div></div><div class="st info" id="rsz-st"></div></div>
+      <div class="brow"><button class="btn p" id="btn-rsz" onclick="doResize()" disabled>▶ Generează &amp; Descarcă toate</button></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ COMPRESS ═══ -->
+<!-- ═══════ COMPRESS ═══════ -->
 <div class="panel" id="panel-compress">
   <div class="card">
     <div class="ch"><h3>Compresie</h3><span class="chsub">Compressor.js</span></div>
@@ -654,15 +576,20 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
         <div class="dz-ico">📦</div><h4>Click sau trage imaginea</h4>
       </div>
       <input type="file" id="fi-comp" style="display:none" accept="image/*" onchange="loadF(this,'comp')">
+      <!-- Preview mic -->
+      <div id="comp-prev-wrap" style="display:none">
+        <div style="font-size:10px;color:var(--text3);font-family:monospace;margin-bottom:4px">IMAGINE ÎNCĂRCATĂ:</div>
+        <div class="prev-sm"><canvas id="cv-comp-prev" style="display:block;max-width:100%;height:auto"></canvas></div>
+      </div>
       <div class="g2">
-        <div class="ctrl"><div class="cl">Calitate (0-100)<span id="vl-cq">82</span></div><input type="range" id="sl-cq" min="10" max="100" value="82" oninput="sv2('sl-cq','vl-cq')"></div>
+        <div class="ctrl"><div class="cl">Calitate (0-100)<span id="vl-cq">82</span></div><input type="range" id="sl-cq" min="10" max="100" value="82" oninput="sv('cq')"></div>
         <div class="ctrl">
           <div class="cl">Format</div>
-          <select id="sel-cfmt" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:4px 7px;font-size:11px;font-family:inherit">
+          <select id="sel-cfmt" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:4px 7px;font-size:11px;font-family:inherit;margin-top:3px;width:100%">
             <option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option><option value="image/png">PNG</option>
           </select>
         </div>
-        <div class="ctrl"><div class="cl">Max lățime px (0=none)<span id="vl-cmw">0</span></div><input type="range" id="sl-cmw" min="0" max="5000" step="100" value="0" oninput="sv2('sl-cmw','vl-cmw')"></div>
+        <div class="ctrl"><div class="cl">Max lățime px (0=none)<span id="vl-cmw">0</span></div><input type="range" id="sl-cmw" min="0" max="5000" step="100" value="0" oninput="sv('cmw')"></div>
       </div>
       <div id="comp-result" style="display:none"></div>
       <div class="brow">
@@ -673,96 +600,74 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
   </div>
 </div>
 
-<!-- ═══ PALETTE ═══ -->
+<!-- ═══════ PALETTE ═══════ -->
 <div class="panel" id="panel-palette">
   <div class="card">
-    <div class="ch"><h3>Paletă de culori</h3><span class="chsub">extragere culori dominante</span></div>
+    <div class="ch"><h3>Paletă de culori</h3><span class="chsub">culori dominante</span></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Extrage culorile dominante din fotografie. Util pentru branding, materiale de prezentare imobiliare.</div>
       <div class="dz" id="dz-pal" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'pal')" onclick="document.getElementById('fi-pal').click()">
         <div class="dz-ico">🎨</div><h4>Click sau trage imaginea</h4>
       </div>
       <input type="file" id="fi-pal" style="display:none" accept="image/*" onchange="loadF(this,'pal')">
       <div id="pal-result" style="display:none;flex-direction:column;gap:10px">
-        <canvas id="cv-pal-prev" style="max-width:100%;max-height:200px;display:block;border-radius:var(--r);border:1px solid var(--border)"></canvas>
+        <!-- Paleta sus -->
+        <div style="font-size:10px;color:var(--text2);font-family:monospace">CULORI DOMINANTE (click = copiază hex):</div>
         <div id="pal-swatches" class="palette-row"></div>
-        <div id="pal-info" style="font-size:10px;color:var(--text3);font-family:monospace"></div>
+        <div id="pal-hex-list" style="font-size:10px;font-family:monospace;color:var(--text3)"></div>
+        <!-- Poza jos, proporțional -->
+        <div style="font-size:10px;color:var(--text2);font-family:monospace">IMAGINE:</div>
+        <div style="background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;display:flex;align-items:center;justify-content:center">
+          <canvas id="cv-pal-prev" style="display:block;max-width:100%;height:auto;max-height:300px"></canvas>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══ QUALITY CHECK ═══ -->
+<!-- ═══════ QUALITY CHECK ═══════ -->
 <div class="panel" id="panel-quality">
   <div class="card">
-    <div class="ch"><h3>Quality Checker</h3><span class="chsub">verificare dimensiuni print/web</span></div>
+    <div class="ch"><h3>Quality Checker</h3><span class="chsub">verificare print/web/MLS</span></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Verifică dacă imaginea este suficient de mare pentru print, web, MLS sau social media. Calculează DPI și rezoluția de print.</div>
       <div class="dz" id="dz-qc" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'qc')" onclick="document.getElementById('fi-qc').click()">
         <div class="dz-ico">✓</div><h4>Click sau trage imaginea</h4>
       </div>
       <input type="file" id="fi-qc" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="loadF(this,'qc')">
+      <!-- Preview imagine -->
+      <div id="qc-prev-wrap" style="display:none">
+        <div style="font-size:10px;color:var(--text3);font-family:monospace;margin-bottom:4px">IMAGINE ANALIZATĂ:</div>
+        <div class="prev-sm"><canvas id="cv-qc-prev" style="display:block;max-width:100%;height:auto"></canvas></div>
+      </div>
       <div id="qc-result" class="qc-grid" style="display:none"></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ BATCH ═══ -->
+<!-- ═══════ BATCH ═══════ -->
 <div class="panel" id="panel-batch">
   <div class="card">
     <div class="ch"><h3>Batch Processing</h3><span class="chsub">procesare multiplă</span></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="st info">Aplică aceleași setări pe mai multe poze simultan. Selectează setările de mai jos, încarcă pozele și exportă toate odată.</div>
       <div class="dz" id="dz-batch" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDropBatch(event)" onclick="document.getElementById('fi-batch').click()">
-        <div class="dz-ico">⚡</div><h4>Click sau trage MULTIPLE imagini</h4><p>Selectează mai multe fișiere cu Ctrl+Click</p>
+        <div class="dz-ico">⚡</div><h4>Click sau trage MULTIPLE imagini</h4><p>Selectează mai multe cu Ctrl+Click</p>
       </div>
       <input type="file" id="fi-batch" style="display:none" accept="image/*" multiple onchange="loadBatch(this)">
       <div id="batch-list" class="batch-list"></div>
-      <div style="font-size:10px;font-weight:700;color:var(--text);margin-top:2px">Setări aplicare:</div>
-      <div class="g2">
-        <div class="ctrl"><div class="cl">Expunere<span id="vl-bexp">0</span></div><input type="range" id="sl-bexp" min="-100" max="100" value="0" oninput="sv2('sl-bexp','vl-bexp')"></div>
-        <div class="ctrl"><div class="cl">Contrast<span id="vl-bcon">0</span></div><input type="range" id="sl-bcon" min="-100" max="100" value="0" oninput="sv2('sl-bcon','vl-bcon')"></div>
-        <div class="ctrl"><div class="cl">Saturație<span id="vl-bsat">0</span></div><input type="range" id="sl-bsat" min="-100" max="100" value="0" oninput="sv2('sl-bsat','vl-bsat')"></div>
-        <div class="ctrl"><div class="cl">Sharpen<span id="vl-bshp">0</span></div><input type="range" id="sl-bshp" min="0" max="100" value="0" oninput="sv2('sl-bshp','vl-bshp')"></div>
-        <div class="ctrl"><div class="cl">Temperatură<span id="vl-btmp">0</span></div><input type="range" id="sl-btmp" min="-100" max="100" value="0" oninput="sv2('sl-btmp','vl-btmp')"></div>
-        <div class="ctrl"><div class="cl">Calitate export<span id="vl-bq">92</span></div><input type="range" id="sl-bq" min="60" max="100" value="92" oninput="sv2('sl-bq','vl-bq')"></div>
-      </div>
-      <div id="batch-prog" style="display:none;flex-direction:column;gap:5px"><div class="pgw"><div class="pgb" id="batch-pb" style="width:0%"></div></div><div class="st info" id="batch-st"></div></div>
+      <div id="batch-sliders" class="g2"></div>
+      <div id="batch-pg" style="display:none;flex-direction:column;gap:5px"><div class="pgw"><div class="pgb" id="batch-pb" style="width:0%"></div></div><div class="st info" id="batch-st"></div></div>
       <div class="brow"><button class="btn p" id="btn-batch" onclick="doBatch()" disabled>▶ Procesează și descarcă toate</button></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ FLIP/MIRROR ═══ -->
-<div class="panel" id="panel-flipmirror">
-  <div class="card">
-    <div class="ch"><h3>Flip / Mirror</h3></div>
-    <div class="cb" style="display:flex;flex-direction:column;gap:10px">
-      <div class="dz" id="dz-flip" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'flip')" onclick="document.getElementById('fi-flip').click()">
-        <div class="dz-ico">↔</div><h4>Click sau trage imaginea</h4>
-      </div>
-      <input type="file" id="fi-flip" style="display:none" accept="image/*" onchange="loadF(this,'flip')">
-      <div class="pvw" id="pvw-flip" style="min-height:100px"><div class="pvph">Încarcă imaginea</div><canvas id="cv-flip" style="display:none"></canvas></div>
-      <div class="g2">
-        <button class="btn p" onclick="doFlip('H')">↔ Mirror Orizontal</button>
-        <button class="btn p" onclick="doFlip('V')">↕ Mirror Vertical</button>
-        <button class="btn" onclick="doFlip('90')">↻ Rotire 90°</button>
-        <button class="btn" onclick="doFlip('270')">↺ Rotire -90°</button>
-        <button class="btn" onclick="doFlip('180')">↻ Rotire 180°</button>
-      </div>
-      <div class="brow"><button class="btn g" onclick="exportCv('cv-flip','flip')">⬇ Descarcă original</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ RAW EXIF ═══ -->
+<!-- ═══════ RAW EXIF ═══════ -->
 <div class="panel" id="panel-raw">
   <div class="card">
     <div class="ch"><h3>RAW &amp; EXIF Reader</h3><span class="chsub">ExifReader.js</span></div>
     <div class="cb" style="display:flex;flex-direction:column;gap:10px">
       <div class="dz" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDropRaw(event)" onclick="document.getElementById('fi-raw').click()">
         <div class="dz-ico">📷</div><h4>Click sau trage orice imagine / RAW</h4>
-        <div class="ftags"><span class="ft">CR2</span><span class="ft">CR3</span><span class="ft">NEF</span><span class="ft">ARW</span><span class="ft">DNG</span><span class="ft">RAF</span><span class="ft">ORF</span><span class="ft">RW2</span><span class="ft">PEF</span><span class="ft">3FR</span><span class="ft">MEF</span><span class="ft">IIQ</span><span class="ft">ERF</span><span class="ft">MRW</span><span class="ft">JPG</span><span class="ft">TIFF</span></div>
+        <div class="ftags"><span class="ft">CR2</span><span class="ft">CR3</span><span class="ft">NEF</span><span class="ft">ARW</span><span class="ft">DNG</span><span class="ft">RAF</span><span class="ft">ORF</span><span class="ft">RW2</span><span class="ft">PEF</span><span class="ft">3FR</span><span class="ft">IIQ</span><span class="ft">JPG</span><span class="ft">TIFF</span></div>
       </div>
       <input type="file" id="fi-raw" style="display:none" accept="image/*,.cr2,.cr3,.nef,.nrw,.arw,.srf,.dng,.raf,.orf,.rw2,.pef,.3fr,.mef,.mrw,.iiq,.erf" onchange="readExif(this)">
       <div id="exif-box"></div>
@@ -770,118 +675,131 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
   </div>
 </div>
 
-<!-- ═══ LIBS ═══ -->
-<div class="panel" id="panel-libs">
-  <div class="card">
-    <div class="ch"><h3>Librării JS — Instalare</h3></div>
-    <div class="cb" style="display:flex;gap:0;padding:0;min-height:400px">
-      <div style="width:150px;min-width:150px;border-right:1px solid var(--border);padding:8px 0;flex-shrink:0">
-        <button class="lib-nb on" onclick="showLib('status',this)">📋 Status</button>
-        <button class="lib-nb" onclick="showLib('pica',this)">⤡ pica.js</button>
-        <button class="lib-nb" onclick="showLib('exif',this)">🏷 ExifReader</button>
-        <button class="lib-nb" onclick="showLib('cropper',this)">✂ Cropper.js</button>
-        <button class="lib-nb" onclick="showLib('compressor',this)">📦 Compressor.js</button>
-        <button class="lib-nb" onclick="showLib('github',this)">🚀 GitHub Pages</button>
-      </div>
-      <div style="flex:1;padding:14px;overflow-y:auto;min-width:0">
-        <div class="lib-page on" id="lp-status">
-          <h4 style="font-size:13px;font-weight:700;margin-bottom:10px">Toate librăriile sunt deja active</h4>
-          <p style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.6">Fișierul tău <code class="ic">index.html</code> conține linkuri CDN care încarcă automat librăriile de pe internet. Nu trebuie să descarci sau instalezi nimic — urci doar <code class="ic">index.html</code> pe GitHub.</p>
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <div class="lib-row"><span class="lib-dot g"></span><div><b>pica.js</b> — Upscaler Lanczos3 · Folosit la Upscaler 4x</div></div>
-            <div class="lib-row"><span class="lib-dot g"></span><div><b>ExifReader.js</b> — Citire EXIF/RAW · Folosit la RAW &amp; EXIF</div></div>
-            <div class="lib-row"><span class="lib-dot g"></span><div><b>Cropper.js</b> — Crop/Rotate/Flip · Folosit la Crop</div></div>
-            <div class="lib-row"><span class="lib-dot g"></span><div><b>Compressor.js</b> — Compresie · Folosit la Compresie</div></div>
-          </div>
-          <div class="lib-tip" style="margin-top:12px">💡 Librăriile CDN funcționează pe GitHub Pages fără nicio problemă suplimentară. Ai nevoie de conexiune internet când folosești pagina.</div>
-        </div>
-        <div class="lib-page" id="lp-pica">
-          <div class="lib-badge-row"><span class="lbig">⤡</span><div><h4 class="lib-title">pica.js — Upscaling Lanczos3</h4><span class="lib-status">✓ activ</span></div></div>
-          <p class="lib-desc">Mărește imagini 2x-4x fără pixelare. MIT License.</p>
-          <div class="lib-step-title">Deja în fișierul tău:</div>
-          <div class="cb2">&lt;script src="https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js"&gt;&lt;/script&gt;</div>
-          <div class="lib-step-title">Cum se folosește:</div>
-          <div class="cb2">const p = pica();
-await p.resize(srcCanvas, dstCanvas, { quality: 3 });</div>
-          <a class="lib-link" href="https://github.com/nodeca/pica" target="_blank">→ github.com/nodeca/pica</a>
-        </div>
-        <div class="lib-page" id="lp-exif">
-          <div class="lib-badge-row"><span class="lbig">🏷</span><div><h4 class="lib-title">ExifReader.js — EXIF din RAW/JPEG</h4><span class="lib-status">✓ activ</span></div></div>
-          <p class="lib-desc">Citește cameră, obiectiv, ISO, GPS din orice format. MIT License.</p>
-          <div class="lib-step-title">Deja în fișierul tău:</div>
-          <div class="cb2">&lt;script src="https://cdn.jsdelivr.net/npm/exifreader@4.21.1/dist/exif-reader.min.js"&gt;&lt;/script&gt;</div>
-          <div class="lib-step-title">Cum se folosește:</div>
-          <div class="cb2">const reader = new FileReader();
-reader.onload = e => {
-  const tags = ExifReader.load(e.target.result, { expanded: true });
-  console.log(tags.exif.Model.description);
-};
-reader.readAsArrayBuffer(fisier);</div>
-          <a class="lib-link" href="https://github.com/mattiasw/ExifReader" target="_blank">→ github.com/mattiasw/ExifReader</a>
-        </div>
-        <div class="lib-page" id="lp-cropper">
-          <div class="lib-badge-row"><span class="lbig">✂</span><div><h4 class="lib-title">Cropper.js — Crop avansat</h4><span class="lib-status">✓ activ</span></div></div>
-          <p class="lib-desc">Crop interactiv, rotire, flip, aspect ratio fix. MIT License.</p>
-          <div class="lib-step-title">Deja în fișierul tău (CSS + JS):</div>
-          <div class="cb2">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css"&gt;
-&lt;script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"&gt;&lt;/script&gt;</div>
-          <div class="lib-step-title">Cum se folosește:</div>
-          <div class="cb2">const cropper = new Cropper(imgElement, { aspectRatio: 16/9 });
-const canvas = cropper.getCroppedCanvas(); // rezoluție originală</div>
-          <a class="lib-link" href="https://github.com/fengyuanchen/cropperjs" target="_blank">→ github.com/fengyuanchen/cropperjs</a>
-        </div>
-        <div class="lib-page" id="lp-compressor">
-          <div class="lib-badge-row"><span class="lbig">📦</span><div><h4 class="lib-title">Compressor.js — Compresie</h4><span class="lib-status">✓ activ</span></div></div>
-          <p class="lib-desc">Reduce fișierul cu 60-90% fără pierdere vizibilă. MIT License.</p>
-          <div class="lib-step-title">Deja în fișierul tău:</div>
-          <div class="cb2">&lt;script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"&gt;&lt;/script&gt;</div>
-          <div class="lib-step-title">Cum se folosește:</div>
-          <div class="cb2">new Compressor(file, {
-  quality: 0.8,
-  success(result) {
-    // result = Blob comprimat
-  }
-});</div>
-          <a class="lib-link" href="https://github.com/fengyuanchen/compressorjs" target="_blank">→ github.com/fengyuanchen/compressorjs</a>
-        </div>
-        <div class="lib-page" id="lp-github">
-          <div class="lib-badge-row"><span class="lbig">🚀</span><div><h4 class="lib-title">Cum pui pe GitHub Pages</h4><span class="lib-status">ghid pas cu pas</span></div></div>
-          <div class="lib-step-title">Prima dată:</div>
-          <div class="lib-step"><div class="step-num">1</div><div>Mergi la <a class="lib-link" href="https://github.com" target="_blank" style="display:inline">github.com</a> → fă cont dacă nu ai</div></div>
-          <div class="lib-step"><div class="step-num">2</div><div>Apasă <b>New repository</b> → denumire ex: <code class="ic">re-photo-editor</code> → bifează <b>Public</b> → <b>Create</b></div></div>
-          <div class="lib-step"><div class="step-num">3</div><div>Apasă <b>Add file → Upload files</b> → trage fișierul <code class="ic">index.html</code> → <b>Commit changes</b></div></div>
-          <div class="lib-step"><div class="step-num">4</div><div>Mergi la <b>Settings → Pages</b> → Source: <b>main / root</b> → <b>Save</b></div></div>
-          <div class="lib-step"><div class="step-num">5</div><div>Aștepți 1 minut → link-ul apare:</div></div>
-          <div class="cb2">https://NUMELE-TAU.github.io/re-photo-editor/</div>
-          <div class="lib-tip">💡 Actualizare: upload nou <code class="ic">index.html</code> → Commit → site se actualizează în ~30 sec.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-  </div>
-</div>
-</div>
+  </div><!-- ws -->
+</div><!-- main -->
+</div><!-- app -->
 
 <script>
 // ================================================================
+// SLIDER SYSTEM — creates styled sliders with gradient + ticks
+// ================================================================
+function makeSL(id, label, min, max, val, step, cb) {
+  step = step || 1;
+  var range = max - min;
+  var cls = min < 0 && max > 0 ? '' : min >= 0 ? ' pos-only' : ' neg-only';
+  // Ticks: show min, mid, max (and 0 if range straddles 0)
+  var ticks = [];
+  if (min < 0 && max > 0) {
+    ticks = [min, Math.round(min/2), 0, Math.round(max/2), max];
+  } else {
+    ticks = [min, Math.round((min+max)/2), max];
+  }
+  var ticksHTML = ticks.map(function(t){ return '<span class="sl-tick">'+t+'</span>'; }).join('');
+  return '<div class="ctrl"><div class="cl">'+label+'<span id="vl-'+id+'">'+val+'</span></div>'
+    +'<div class="sl-wrap">'
+    +'<div class="sl-ticks">'+ticksHTML+'</div>'
+    +'<input type="range" id="sl-'+id+'" class="'+cls.trim()+'" min="'+min+'" max="'+max+'" value="'+val+'" step="'+step+'" oninput="sv(\''+id+'\');'+cb+'">'
+    +'</div></div>';
+}
+
+// ================================================================
+// BUILD SLIDERS INTO CONTAINERS
+// ================================================================
+function buildAllSliders() {
+  // ENHANCE sliders
+  var enh = [
+    makeSL('exp','Expunere',-100,100,0,1,'renderEnh()'),
+    makeSL('con','Contrast',-100,100,0,1,'renderEnh()'),
+    makeSL('hl','Highlights',-100,100,0,1,'renderEnh()'),
+    makeSL('sh','Shadows',-100,100,0,1,'renderEnh()'),
+    makeSL('wb2','Alb (Whites)',-100,100,0,1,'renderEnh()'),
+    makeSL('bk','Negru (Blacks)',-100,100,0,1,'renderEnh()'),
+    makeSL('cl','Claritate',-100,100,0,1,'renderEnh()'),
+    makeSL('sat','Saturație',-100,100,0,1,'renderEnh()'),
+    makeSL('vib','Vivacitate',-100,100,0,1,'renderEnh()'),
+    makeSL('tmp','Temperatură',-100,100,0,1,'renderEnh()'),
+    makeSL('tnt','Tint',-100,100,0,1,'renderEnh()'),
+    makeSL('dhz','Dehaze',0,100,0,1,'renderEnh()'),
+    makeSL('shp','Sharpen',0,100,0,1,'renderEnh()'),
+    makeSL('vig','Vignetă',-80,0,0,1,'renderEnh()')
+  ];
+  document.getElementById('enh-sliders').innerHTML = enh.join('');
+
+  // DENOISE sliders
+  var dn = [
+    makeSL('dnamt','Reducere zgomot',0,100,30,1,'renderDN()'),
+    makeSL('dnr','Raza blur',1,4,1,1,'renderDN()'),
+    makeSL('dnprot','Protejare detalii',0,100,60,1,'renderDN()'),
+    makeSL('dnshp','Sharpen final',0,100,20,1,'renderDN()')
+  ];
+  document.getElementById('dn-sliders').innerHTML = dn.join('');
+
+  // WINDOW FIX sliders
+  var win = [
+    makeSL('whl','Recuperare Highlights',0,100,55,1,'renderWin()'),
+    makeSL('wthr','Prag fereastră',80,255,185,1,'renderWin()'),
+    makeSL('wext','Luminozitate exterior',-80,80,0,1,'renderWin()'),
+    makeSL('wint','Luminozitate interior',-50,50,0,1,'renderWin()'),
+    makeSL('wcon','Contrast fereastră',-50,50,0,1,'renderWin()'),
+    makeSL('wsat','Saturație fereastră',-50,50,0,1,'renderWin()')
+  ];
+  document.getElementById('win-sliders').innerHTML = win.join('');
+
+  // WB sliders
+  var wb = [
+    makeSL('wbm','Rece ←→ Cald',-100,100,0,1,'renderWB()'),
+    makeSL('wbt','Verde ←→ Magenta',-50,50,0,1,'renderWB()')
+  ];
+  document.getElementById('wb-sliders').innerHTML = wb.join('');
+
+  // UPSCALE sliders
+  var us = [makeSL('uss','Sharpen post-upscale',0,100,25,1,'')];
+  document.getElementById('us-sliders').innerHTML = us.join('');
+
+  // PERSPECTIVE sliders
+  var persp = [
+    makeSL('pv','Vertical (Keystone)',-40,40,0,1,'renderPersp()'),
+    makeSL('ph','Orizontal',-40,40,0,1,'renderPersp()'),
+    makeSL('pb2','Barrel distortion',-50,50,0,1,'renderPersp()'),
+    makeSL('pr','Rotire fină',-10,10,0,0.1,'renderPersp()'),
+    makeSL('pz','Zoom (fill borduri)',0,20,0,1,'renderPersp()')
+  ];
+  document.getElementById('persp-sliders').innerHTML = persp.join('');
+
+  // STRAIGHTEN sliders
+  var str = [makeSL('stra','Unghi rotire (grade)',-15,15,0,0.1,'renderStr()')];
+  document.getElementById('str-sliders').innerHTML = str.join('');
+
+  // BATCH sliders
+  var batch = [
+    makeSL('bexp','Expunere',-100,100,0,1,''),
+    makeSL('bcon','Contrast',-100,100,0,1,''),
+    makeSL('bsat','Saturație',-100,100,0,1,''),
+    makeSL('bshp','Sharpen',0,100,0,1,''),
+    makeSL('btmp','Temperatură',-100,100,0,1,''),
+    makeSL('bq','Calitate export',60,100,92,1,'')
+  ];
+  document.getElementById('batch-sliders').innerHTML = batch.join('');
+}
+
+// ================================================================
 // STATE
 // ================================================================
-var ORIG={}, HDR=[null,null,null], WB_GAINS=null, UF=2, PICA_I=null;
-var cropperInst=null, cropFlipX=1, cropFlipY=1;
+var ORIG={}, WB_GAINS=null, UF=2, PICA_I=null;
+var cropperInst=null, cropFX=1, cropFY=1;
 var compBlob=null, batchFiles=[], wmLogoImg=null;
-var curveChannel='master', curvePoints={master:[[0,0],[255,255]],R:[[0,0],[255,255]],G:[[0,0],[255,255]],B:[[0,0],[255,255]]};
+var curveChannel='master';
+var curvePoints={master:[[0,0],[255,255]],R:[[0,0],[255,255]],G:[[0,0],[255,255]],B:[[0,0],[255,255]]};
 var dragPt=null;
 var HSL_TAB='h';
 var HSL_VALS={h:{red:0,orange:0,yellow:0,green:0,aqua:0,blue:0,purple:0,magenta:0},s:{red:0,orange:0,yellow:0,green:0,aqua:0,blue:0,purple:0,magenta:0},l:{red:0,orange:0,yellow:0,green:0,aqua:0,blue:0,purple:0,magenta:0}};
 var HSL_COLORS=['red','orange','yellow','green','aqua','blue','purple','magenta'];
-var HSL_LABELS={'red':'Roșu','orange':'Portocaliu','yellow':'Galben','green':'Verde','aqua':'Aqua','blue':'Albastru','purple':'Violet','magenta':'Magenta'};
+var HSL_LABELS={red:'Roșu',orange:'Portocaliu',yellow:'Galben',green:'Verde',aqua:'Aqua',blue:'Albastru',purple:'Violet',magenta:'Magenta'};
 
 // ================================================================
 // NAVIGATION
 // ================================================================
-var PM={enhance:['Enhance','Ajustări · Preseturi'],hdr:['HDR Merge','Exposure Fusion'],window:['Window Fix','Ferestre arse'],curves:['Curves RGB','Control precis tonuri'],hsl:['HSL Color','Hue · Saturation · Luminance'],denoise:['Denoise','Reducere zgomot'],wb:['White Balance AI','Detecție Kelvin'],upscale:['Upscaler','pica.js Lanczos3'],crop:['Crop/Rotate','Cropper.js'],perspective:['Perspectivă','Keystone · Lens correction'],straighten:['Îndreaptă','Auto-rotate horizon'],histogram:['Histogram','RGB distribution live'],watermark:['Watermark','Text · Logo'],resize:['Resize Export','Multiple formate simultan'],compress:['Compresie','Compressor.js'],palette:['Paletă culori','Culori dominante'],quality:['Quality Check','Verificare print/web/MLS'],batch:['Batch Process','Procesare multiplă'],flipmirror:['Flip/Mirror','Rotire liberă'],raw:['RAW & EXIF','ExifReader.js'],libs:['Librării JS','Instalare · GitHub Pages']};
+var PM={enhance:['Enhance','Ajustări · Preseturi'],curves:['Curves RGB','Control precis tonuri'],hsl:['HSL Color','Hue · Saturation · Luminance'],denoise:['Denoise','Reducere zgomot'],window:['Window Fix','Ferestre arse'],wb:['White Balance AI','Detecție Kelvin'],upscale:['Upscaler','pica.js Lanczos3'],crop:['Crop/Rotate/Flip','Cropper.js'],perspective:['Perspectivă','Keystone · Lens'],straighten:['Îndreaptă','Auto-rotate'],histogram:['Histogram','RGB + expunere'],watermark:['Watermark','Text · Logo'],resize:['Resize Export','Crop inteligent per platformă'],compress:['Compresie','Compressor.js'],palette:['Paletă culori','Culori dominante'],quality:['Quality Check','Verificare print/web/MLS'],batch:['Batch Process','Procesare multiplă'],raw:['RAW & EXIF','ExifReader.js']};
 function goP(id,btn){
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
   document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on');});
@@ -900,115 +818,95 @@ function dzDropRaw(ev){ev.preventDefault();ev.currentTarget.classList.remove('dr
 function dzDropBatch(ev){ev.preventDefault();ev.currentTarget.classList.remove('drag');var files=ev.dataTransfer&&ev.dataTransfer.files;if(files&&files.length>0)processBatchFiles(files);}
 function loadF(inp,mode){if(inp.files&&inp.files[0])loadFileObj(inp.files[0],mode);}
 function loadBatch(inp){if(inp.files&&inp.files.length>0)processBatchFiles(inp.files);}
-
 function loadFileObj(file,mode){
   var url=URL.createObjectURL(file);
   var img=new Image();
   img.onload=function(){ORIG[mode]=img;afterLoad(mode,img,file,url);};
-  img.onerror=function(){alert('Nu s-a putut deschide fișierul.');};
+  img.onerror=function(){alert('Nu s-a putut deschide. RAW: browserul afișează preview JPEG embedded.');};
   img.src=url;
 }
 
 function afterLoad(mode,img,file,url){
   var W=img.naturalWidth,H=img.naturalHeight;
   function hideDZ(id){var d=document.getElementById('dz-'+id);if(d)d.style.display='none';}
-  function setCV(cvId,W2,H2,draw){var cv=document.getElementById(cvId);cv.width=W2;cv.height=H2;if(draw)cv.getContext('2d').drawImage(img,0,0);return cv;}
+  function setCV(id,draw){var cv=document.getElementById(id);cv.width=W;cv.height=H;if(draw)cv.getContext('2d').drawImage(img,0,0);cv.style.display='block';return cv;}
+  function setCVsm(id,maxW,maxH){var cv=document.getElementById(id);var sc=Math.min(1,maxW/W,maxH/H);cv.width=Math.round(W*sc);cv.height=Math.round(H*sc);cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);cv.style.display='block';return cv;}
 
   if(mode==='enh'){
-    hideDZ('enh');
-    document.getElementById('ph-enh').style.display='none';
+    hideDZ('enh');document.getElementById('ph-enh').style.display='none';
     document.getElementById('enh-info').textContent=file.name+' · '+W+'×'+H;
-    var cv=setCV('cv-enh',W,H,true);cv.style.display='block';
-    renderEnh();
+    setCV('cv-enh',true);renderEnh();
   } else if(mode==='win'){
-    hideDZ('win');
-    document.getElementById('win-cmp').style.display='block';
-    setCV('cv-winb',W,H,true);setCV('cv-win',W,H,true);
-    renderWin();
+    hideDZ('win');document.getElementById('win-cmp').style.display='grid';
+    setCV('cv-winb',true);setCV('cv-win',true);renderWin();
   } else if(mode==='wb'){
-    hideDZ('wb');
-    document.getElementById('wb-box').style.display='flex';
-    setCV('cv-wbb',W,H,true);setCV('cv-wb',W,H,true);
-    analyzeWB(img);
+    hideDZ('wb');document.getElementById('wb-box').style.display='flex';
+    setCV('cv-wbb',true);setCV('cv-wb',true);analyzeWB(img);
   } else if(mode==='curves'){
-    hideDZ('curves');
-    document.getElementById('curves-ui').style.display='flex';
-    setCV('cv-curvb',W,H,true).style.display='block';
-    setCV('cv-curves',W,H,true).style.display='block';
-    initCurvesCanvas();
+    hideDZ('curves');document.getElementById('curves-ui').style.display='flex';
+    setCV('cv-curvb',true);setCV('cv-curves',true);
+    curvePoints={master:[[0,0],[255,255]],R:[[0,0],[255,255]],G:[[0,0],[255,255]],B:[[0,0],[255,255]]};
+    drawCurvesCanvas();
   } else if(mode==='hsl'){
-    hideDZ('hsl');
-    document.getElementById('hsl-ui').style.display='flex';
-    setCV('cv-hslb',W,H,true).style.display='block';
-    setCV('cv-hsl',W,H,true).style.display='block';
+    hideDZ('hsl');document.getElementById('hsl-ui').style.display='flex';
+    setCV('cv-hslb',true);setCV('cv-hsl',true);
     buildHSLSliders();
   } else if(mode==='dn'){
-    hideDZ('dn');
-    document.getElementById('dn-cmp').style.display='grid';
-    setCV('cv-dnb',W,H,true).style.display='block';
-    setCV('cv-dn',W,H,true).style.display='block';
-    renderDN();
+    hideDZ('dn');document.getElementById('dn-cmp').style.display='grid';
+    setCV('cv-dnb',true);setCV('cv-dn',true);renderDN();
   } else if(mode==='us'){
-    hideDZ('us');
-    document.getElementById('us-dims').style.display='block';
+    hideDZ('us');document.getElementById('us-dims').style.display='flex';
     document.getElementById('us-orig').textContent=W+'×'+H+' px';
     var prev=document.getElementById('cv-us-prev');
     var pw=document.getElementById('pvw-us');pw.style.display='flex';
-    var sc=Math.min(1,780/W,520/H);
+    var sc=Math.min(1,780/W,500/H);
     prev.width=Math.round(W*sc);prev.height=Math.round(H*sc);
     prev.getContext('2d').drawImage(img,0,0,prev.width,prev.height);
     updateUSDim();document.getElementById('btn-us-go').disabled=false;
   } else if(mode==='crop'){
-    hideDZ('crop');
-    if(cropperInst){cropperInst.destroy();cropperInst=null;}
-    cropFlipX=1;cropFlipY=1;
+    hideDZ('crop');if(cropperInst){cropperInst.destroy();cropperInst=null;}
+    cropFX=1;cropFY=1;
     var ci=document.getElementById('crop-container');ci.style.display='block';
     document.getElementById('crop-controls').style.display='flex';
     var cimg=document.getElementById('crop-img');cimg.src=url;
     cimg.onload=function(){cropperInst=new Cropper(cimg,{viewMode:1,dragMode:'move',autoCropArea:0.85,responsive:true,background:false});};
   } else if(mode==='persp'){
-    hideDZ('persp');
-    document.getElementById('persp-cmp').style.display='grid';
-    setCV('cv-perspb',W,H,true).style.display='block';
-    setCV('cv-persp',W,H,true).style.display='block';
-    renderPersp();
+    hideDZ('persp');document.getElementById('persp-cmp').style.display='grid';
+    setCV('cv-perspb',true);setCV('cv-persp',true);renderPersp();
   } else if(mode==='str'){
-    hideDZ('str');
-    document.getElementById('str-cmp').style.display='grid';
-    setCV('cv-strb',W,H,true).style.display='block';
-    setCV('cv-str',W,H,true).style.display='block';
-    renderStr();
+    hideDZ('str');document.getElementById('str-cmp').style.display='grid';
+    setCV('cv-strb',true);setCV('cv-str',true);renderStr();
   } else if(mode==='hist'){
-    hideDZ('hist');
-    drawHistogram(img);
+    hideDZ('hist');drawHistogram(img);
   } else if(mode==='wm'){
     hideDZ('wm');
-    document.getElementById('pvw-wm').querySelector('.pvph')&&(document.getElementById('pvw-wm').querySelector('.pvph').style.display='none');
-    document.getElementById('cv-wm').style.display='block';
+    // Full res canvas hidden
+    setCV('cv-wm',true);
+    // Small preview
+    setCVsm('cv-wm-prev',600,200);
     renderWM();
   } else if(mode==='rsz'){
     hideDZ('rsz');document.getElementById('btn-rsz').disabled=false;
   } else if(mode==='comp'){
-    hideDZ('comp');
-    ORIG['_comp_file']=file;
+    hideDZ('comp');ORIG['_comp_file']=file;
     document.getElementById('btn-comp').disabled=false;
+    document.getElementById('comp-prev-wrap').style.display='block';
+    setCVsm('cv-comp-prev',600,180);
     document.getElementById('comp-result').style.display='block';
-    document.getElementById('comp-result').innerHTML='<div class="st info">Fișier: <b>'+file.name+'</b> · '+fmtSize(file.size)+' · '+W+'×'+H+'px</div>';
+    document.getElementById('comp-result').innerHTML='<div class="st info">'+file.name+' · '+fmtSize(file.size)+' · '+W+'×'+H+'px. Apasă Compresează.</div>';
   } else if(mode==='pal'){
-    hideDZ('pal');
-    document.getElementById('pal-result').style.display='flex';
-    var pv=document.getElementById('cv-pal-prev');
-    var sc2=Math.min(1,600/W,200/H);
-    pv.width=Math.round(W*sc2);pv.height=Math.round(H*sc2);
-    pv.getContext('2d').drawImage(img,0,0,pv.width,pv.height);
+    hideDZ('pal');document.getElementById('pal-result').style.display='flex';
+    // Poza jos proporțional
+    var cv3=document.getElementById('cv-pal-prev');
+    var sc3=Math.min(1,700/W,300/H);
+    cv3.width=Math.round(W*sc3);cv3.height=Math.round(H*sc3);
+    cv3.getContext('2d').drawImage(img,0,0,cv3.width,cv3.height);
     extractPalette(img);
   } else if(mode==='qc'){
     hideDZ('qc');
-    showQualityCheck(img,file);
-  } else if(mode==='flip'){
-    hideDZ('flip');
-    document.getElementById('pvw-flip').querySelector('.pvph').style.display='none';
-    var cvf=setCV('cv-flip',W,H,true);cvf.style.display='block';
+    document.getElementById('qc-prev-wrap').style.display='block';
+    setCVsm('cv-qc-prev',600,180);
+    showQC(img,file);
   }
 }
 
@@ -1017,11 +915,45 @@ function afterLoad(mode,img,file,url){
 // ================================================================
 function clamp(v){return v<0?0:v>255?255:(v+.5)|0;}
 function fmtSize(b){return b>1048576?(b/1048576).toFixed(2)+' MB':(b/1024).toFixed(0)+' KB';}
-function sv(k){var el=document.getElementById('vl-'+k);if(el)el.textContent=document.getElementById('sl-'+k).value;}
-function sv2(sid,vid){var el=document.getElementById(vid);if(el)el.textContent=document.getElementById(sid).value;}
-function gv(k){return +document.getElementById('sl-'+k).value;}
-function gv2(id){return +document.getElementById(id).value;}
+function sv(k){var el=document.getElementById('vl-'+k);var sl=document.getElementById('sl-'+k);if(el&&sl)el.textContent=(+sl.value).toFixed(sl.step==='0.1'?1:0);}
+function gv(k){var sl=document.getElementById('sl-'+k);return sl?+sl.value:0;}
 function setPG(pbid,stid,pct,msg,cls){var pb=document.getElementById(pbid),st=document.getElementById(stid);if(pb)pb.style.width=pct+'%';if(st){st.textContent=msg;st.className='st '+(cls||'info');}}
+
+// ================================================================
+// PIXEL OPS
+// ================================================================
+function applyPixelOps(d,n,o){
+  for(var i=0;i<n;i+=4){
+    var r=d[i],g=d[i+1],b=d[i+2];
+    if(o.tmp){r=clamp(r+o.tmp*.55);b=clamp(b-o.tmp*.45);}
+    if(o.tnt){g=clamp(g+o.tnt*.3);}
+    if(o.exp){var ef=Math.pow(2,o.exp/65);r=clamp(r*ef);g=clamp(g*ef);b=clamp(b*ef);}
+    if(o.con){var cf=(259*(o.con+127))/(127*(259-o.con));r=clamp(cf*(r-128)+128);g=clamp(cf*(g-128)+128);b=clamp(cf*(b-128)+128);}
+    var lum=.299*r+.587*g+.114*b;
+    if(o.hl&&lum>160){var hf=1+(o.hl/100)*(lum-160)/95;r=clamp(r*hf);g=clamp(g*hf);b=clamp(b*hf);}
+    if(o.sh&&lum<90){var sf2=o.sh*.85*(90-lum)/90;r=clamp(r+sf2);g=clamp(g+sf2);b=clamp(b+sf2);}
+    if(o.wb&&lum>200){r=clamp(r+o.wb*.28);g=clamp(g+o.wb*.28);b=clamp(b+o.wb*.28);}
+    if(o.bk&&lum<40){r=clamp(r+o.bk*.28);g=clamp(g+o.bk*.28);b=clamp(b+o.bk*.28);}
+    if(o.sat){var g2=.299*r+.587*g+.114*b,sf3=1+o.sat/100;r=clamp(g2+sf3*(r-g2));g=clamp(g2+sf3*(g-g2));b=clamp(g2+sf3*(b-g2));}
+    if(o.vib){var g3=.299*r+.587*g+.114*b,cs=(Math.max(r,g,b)-Math.min(r,g,b))/255,vf=1+(o.vib/100)*(1-cs);r=clamp(g3+vf*(r-g3));g=clamp(g3+vf*(g-g3));b=clamp(g3+vf*(b-g3));}
+    if(o.dhz){var df=1+o.dhz/130;r=clamp(128+(r-128)*df);g=clamp(128+(g-128)*df);b=clamp(128+(b-128)*df);}
+    d[i]=r;d[i+1]=g;d[i+2]=b;
+  }
+}
+function applySharpen(d,W,H,amt){
+  if(!amt)return;
+  var cp=new Uint8ClampedArray(d);
+  for(var py=1;py<H-1;py++){for(var px=1;px<W-1;px++){
+    var ii=(py*W+px)*4;
+    for(var c=0;c<3;c++){var ctr=cp[ii+c],bl=(cp[((py-1)*W+px)*4+c]+cp[((py+1)*W+px)*4+c]+cp[(py*W+px-1)*4+c]+cp[(py*W+px+1)*4+c])/4;d[ii+c]=clamp(ctr+(amt/100)*1.6*(ctr-bl));}
+  }}
+}
+function applyVignette(ctx,W,H,vig){
+  if(vig>=0)return;
+  var gr=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.25,W/2,H/2,Math.max(W,H)*.75);
+  gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,'+Math.abs(vig/100)+')');
+  ctx.fillStyle=gr;ctx.fillRect(0,0,W,H);
+}
 
 // ================================================================
 // ENHANCE
@@ -1044,44 +976,6 @@ function preset(name,btn){
   if(btn)btn.classList.add('on');renderEnh();
 }
 function resetAll(){preset('reset',null);}
-
-function applyPixelOps(d,n,opts){
-  var exp=opts.exp||0,con=opts.con||0,hl=opts.hl||0,sh=opts.sh||0;
-  var wb=opts.wb||0,bk=opts.bk||0,sat=opts.sat||0,vib=opts.vib||0;
-  var tmp=opts.tmp||0,tnt=opts.tnt||0,dhz=opts.dhz||0,shpAmt=opts.shp||0;
-  for(var i=0;i<n;i+=4){
-    var r=d[i],g=d[i+1],b=d[i+2];
-    r=clamp(r+tmp*.55);b=clamp(b-tmp*.45);g=clamp(g+tnt*.3);
-    var ef=Math.pow(2,exp/65);r=clamp(r*ef);g=clamp(g*ef);b=clamp(b*ef);
-    var cf=(259*(con+127))/(127*(259-con));
-    r=clamp(cf*(r-128)+128);g=clamp(cf*(g-128)+128);b=clamp(cf*(b-128)+128);
-    var lum=.299*r+.587*g+.114*b;
-    if(hl&&lum>160){var hf=1+(hl/100)*(lum-160)/95;r=clamp(r*hf);g=clamp(g*hf);b=clamp(b*hf);}
-    if(sh&&lum<90){var sf=sh*.85*(90-lum)/90;r=clamp(r+sf);g=clamp(g+sf);b=clamp(b+sf);}
-    if(lum>200){r=clamp(r+wb*.28);g=clamp(g+wb*.28);b=clamp(b+wb*.28);}
-    if(lum<40){r=clamp(r+bk*.28);g=clamp(g+bk*.28);b=clamp(b+bk*.28);}
-    if(sat){var g2=.299*r+.587*g+.114*b,sf2=1+sat/100;r=clamp(g2+sf2*(r-g2));g=clamp(g2+sf2*(g-g2));b=clamp(g2+sf2*(b-g2));}
-    if(vib){var g3=.299*r+.587*g+.114*b,cs=(Math.max(r,g,b)-Math.min(r,g,b))/255,vf=1+(vib/100)*(1-cs);r=clamp(g3+vf*(r-g3));g=clamp(g3+vf*(g-g3));b=clamp(g3+vf*(b-g3));}
-    if(dhz){var df=1+dhz/130;r=clamp(128+(r-128)*df);g=clamp(128+(g-128)*df);b=clamp(128+(b-128)*df);}
-    d[i]=r;d[i+1]=g;d[i+2]=b;
-  }
-}
-function applySharpen(d,W,H,shpAmt){
-  if(shpAmt<=0)return;
-  var cp=new Uint8ClampedArray(d);
-  for(var py=1;py<H-1;py++){for(var px=1;px<W-1;px++){
-    var ii=(py*W+px)*4;
-    for(var c=0;c<3;c++){var ctr=cp[ii+c],bl=(cp[((py-1)*W+px)*4+c]+cp[((py+1)*W+px)*4+c]+cp[(py*W+px-1)*4+c]+cp[(py*W+px+1)*4+c])/4;d[ii+c]=clamp(ctr+(shpAmt/100)*1.6*(ctr-bl));}
-  }}
-}
-function applyVignette(ctx,W,H,vigAmt){
-  if(vigAmt>=0)return;
-  var cx=W/2,cy=H/2;
-  var gr=ctx.createRadialGradient(cx,cy,Math.min(W,H)*.25,cx,cy,Math.max(W,H)*.75);
-  gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,'+Math.abs(vigAmt/100)+')');
-  ctx.fillStyle=gr;ctx.fillRect(0,0,W,H);
-}
-
 function renderEnh(){
   var img=ORIG['enh'];if(!img)return;
   var cv=document.getElementById('cv-enh');
@@ -1095,76 +989,8 @@ function renderEnh(){
 }
 
 // ================================================================
-// HDR
+// CURVES
 // ================================================================
-function hdrLoad(inp,idx){
-  if(!inp.files||!inp.files[0])return;
-  var file=inp.files[0];var url=URL.createObjectURL(file);
-  var img=new Image();
-  img.onload=function(){
-    HDR[idx]=img;
-    var slot=document.getElementById('hs'+idx);slot.innerHTML='';
-    var im=document.createElement('img');im.src=url;
-    var ov=document.createElement('div');ov.className='eov';
-    ov.innerHTML='<span style="color:#28c87e;font-weight:700">✓ '+['-2 EV','0 EV','+2 EV'][idx]+'</span><span>'+file.name.substring(0,16)+'</span>';
-    slot.appendChild(im);slot.appendChild(ov);
-  };
-  img.src=url;
-}
-function doHDR(){
-  var loaded=HDR.filter(function(x){return x!==null;});
-  if(loaded.length<2){alert('Încarcă cel puțin 2 poze!');return;}
-  var pg=document.getElementById('hdr-pg');pg.style.display='flex';
-  setPG('hdr-pb','hdr-st',10,'Pregătesc...','info');
-  var ref=HDR[1]||HDR[0];var W=ref.naturalWidth,H=ref.naturalHeight;
-  var cv=document.getElementById('cv-hdr');cv.width=W;cv.height=H;cv.style.display='block';
-  document.querySelector('#pvw-hdr .pvph').style.display='none';
-  var tm=gv2('sl-tm')/100;
-  setPG('hdr-pb','hdr-st',30,'Calculez ponderi...','info');
-  setTimeout(function(){
-    var tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;
-    var tctx=tmp.getContext('2d');
-    var frames=HDR.map(function(img){if(!img)return null;tctx.clearRect(0,0,W,H);tctx.drawImage(img,0,0,W,H);return tctx.getImageData(0,0,W,H).data.slice();});
-    setPG('hdr-pb','hdr-st',55,'Exposure Fusion...','info');
-    setTimeout(function(){
-      var ctx=cv.getContext('2d');var res=ctx.getImageData(0,0,W,H);var rd=res.data;
-      for(var i=0;i<rd.length;i+=4){
-        var rS=0,gS=0,bS=0,wS=0;
-        for(var fi=0;fi<3;fi++){var f=frames[fi];if(!f)continue;var lum=(0.299*f[i]+0.587*f[i+1]+0.114*f[i+2])/255;var w=Math.exp(-12*(lum-.5)*(lum-.5))+0.01;rS+=f[i]*w;gS+=f[i+1]*w;bS+=f[i+2]*w;wS+=w;}
-        if(wS>0){rd[i]=clamp(rS/wS);rd[i+1]=clamp(gS/wS);rd[i+2]=clamp(bS/wS);}
-        for(var c=0;c<3;c++){var v=rd[i+c]/255;v=v/(v+(1-v)*tm*.82+.008);rd[i+c]=clamp(v*255);}
-      }
-      ctx.putImageData(res,0,0);
-      setPG('hdr-pb','hdr-st',100,'✓ HDR complet: '+W+'×'+H+' px','ok');
-    },30);
-  },20);
-}
-
-// ================================================================
-// WINDOW FIX
-// ================================================================
-function renderWin(){
-  var img=ORIG['win'];if(!img)return;
-  var cv=document.getElementById('cv-win');
-  if(cv.width!==img.naturalWidth){cv.width=img.naturalWidth;cv.height=img.naturalHeight;}
-  var ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
-  var id=ctx.getImageData(0,0,cv.width,cv.height),d=id.data;
-  var hlR=gv2('sl-whl')/100,thr=gv2('sl-wthr'),ext=gv2('sl-wext'),int2=gv2('sl-wint'),con=gv2('sl-wcon'),sat=gv2('sl-wsat');
-  for(var i=0;i<d.length;i+=4){
-    var r=d[i],g=d[i+1],b=d[i+2],lum=.299*r+.587*g+.114*b;
-    if(lum>thr){var pull=hlR*(lum-thr)/(255-thr),fac=1-pull*.7;r=clamp(r*fac+ext*.2);g=clamp(g*fac+ext*.15);b=clamp(b*fac+ext*.2);if(con){var cf=(259*(con+127))/(127*(259-con));r=clamp(cf*(r-128)+128);g=clamp(cf*(g-128)+128);b=clamp(cf*(b-128)+128);}if(sat){var gw=.299*r+.587*g+.114*b,sf=1+sat/100;r=clamp(gw+sf*(r-gw));g=clamp(gw+sf*(g-gw));b=clamp(gw+sf*(b-gw));}}else{r=clamp(r+int2*.4);g=clamp(g+int2*.4);b=clamp(b+int2*.4);}
-    d[i]=r;d[i+1]=g;d[i+2]=b;
-  }
-  ctx.putImageData(id,0,0);
-}
-
-// ================================================================
-// CURVES RGB
-// ================================================================
-function initCurvesCanvas(){
-  curvePoints={master:[[0,0],[255,255]],R:[[0,0],[255,255]],G:[[0,0],[255,255]],B:[[0,0],[255,255]]};
-  drawCurvesCanvas();
-}
 function setCurveChannel(ch,btn){
   curveChannel=ch;
   document.querySelectorAll('#panel-curves .pb').forEach(function(b){b.classList.remove('on');});
@@ -1173,25 +999,27 @@ function setCurveChannel(ch,btn){
 }
 function drawCurvesCanvas(){
   var cv=document.getElementById('curves-canvas');
+  if(!cv)return;
+  var W=cv.width,H=cv.height;
   var ctx=cv.getContext('2d');
-  var W=256,H=160;
-  ctx.clearRect(0,0,W,H);
-  // BG
-  ctx.fillStyle='#0d0f12';ctx.fillRect(0,0,W,H);
-  // Grid
-  ctx.strokeStyle='#222830';ctx.lineWidth=1;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#080a0d';ctx.fillRect(0,0,W,H);
+  // Grid lines
+  ctx.strokeStyle='#1e242c';ctx.lineWidth=1;
   for(var i=1;i<4;i++){ctx.beginPath();ctx.moveTo(W*i/4,0);ctx.lineTo(W*i/4,H);ctx.stroke();ctx.beginPath();ctx.moveTo(0,H*i/4);ctx.lineTo(W,H*i/4);ctx.stroke();}
-  // Diagonal reference
-  ctx.strokeStyle='#2a3040';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,H);ctx.lineTo(W,0);ctx.stroke();
+  // Diagonal
+  ctx.strokeStyle='#1e2a38';ctx.beginPath();ctx.moveTo(0,H);ctx.lineTo(W,0);ctx.stroke();
   // Curve
   var colors={master:'#c8d0e0',R:'#e84848',G:'#28c87e',B:'#3d7eff'};
-  var pts=curvePoints[curveChannel];
-  var sorted=pts.slice().sort(function(a,b){return a[0]-b[0];});
+  var pts=curvePoints[curveChannel].slice().sort(function(a,b){return a[0]-b[0];});
   ctx.strokeStyle=colors[curveChannel];ctx.lineWidth=2;ctx.beginPath();
-  for(var x=0;x<=255;x++){var y=interpCurve(sorted,x);var cx=x/255*W,cy=(1-y/255)*H;if(x===0)ctx.moveTo(cx,cy);else ctx.lineTo(cx,cy);}
+  for(var x=0;x<=255;x++){var y=interpCurve(pts,x);var cx2=x/255*W,cy=H-(y/255)*H;if(x===0)ctx.moveTo(cx2,cy);else ctx.lineTo(cx2,cy);}
   ctx.stroke();
   // Points
-  sorted.forEach(function(pt){ctx.fillStyle=colors[curveChannel];ctx.beginPath();ctx.arc(pt[0]/255*W,(1-pt[1]/255)*H,4,0,Math.PI*2);ctx.fill();});
+  curvePoints[curveChannel].forEach(function(pt){
+    ctx.fillStyle=colors[curveChannel];ctx.beginPath();
+    ctx.arc(pt[0]/255*W,H-(pt[1]/255)*H,4,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.stroke();
+  });
 }
 function interpCurve(pts,x){
   if(pts.length<2)return x;
@@ -1200,40 +1028,7 @@ function interpCurve(pts,x){
   for(var i=0;i<pts.length-1;i++){if(x>=pts[i][0]&&x<=pts[i+1][0]){var t=(x-pts[i][0])/(pts[i+1][0]-pts[i][0]);return pts[i][1]*(1-t)+pts[i+1][1]*t;}}
   return x;
 }
-function buildLUT(pts){
-  var sorted=pts.slice().sort(function(a,b){return a[0]-b[0];});
-  var lut=new Uint8Array(256);
-  for(var i=0;i<256;i++)lut[i]=clamp(interpCurve(sorted,i));
-  return lut;
-}
-(function(){
-  var cv2=null;
-  function init(){
-    cv2=document.getElementById('curves-canvas');
-    cv2.addEventListener('mousedown',function(e){
-      var rect=cv2.getBoundingClientRect();
-      var x=Math.round((e.clientX-rect.left)/rect.width*255);
-      var y=Math.round((1-(e.clientY-rect.top)/rect.height)*255);
-      var pts=curvePoints[curveChannel];
-      // Check near existing point
-      dragPt=null;
-      for(var i=0;i<pts.length;i++){if(Math.abs(pts[i][0]-x)<12&&Math.abs(pts[i][1]-y)<12){dragPt=i;break;}}
-      if(dragPt===null){pts.push([x,y]);dragPt=pts.length-1;}
-      drawCurvesCanvas();
-    });
-    cv2.addEventListener('mousemove',function(e){
-      if(dragPt===null)return;
-      var rect=cv2.getBoundingClientRect();
-      var x=Math.round(Math.max(0,Math.min(255,(e.clientX-rect.left)/rect.width*255)));
-      var y=Math.round(Math.max(0,Math.min(255,(1-(e.clientY-rect.top)/rect.height)*255)));
-      curvePoints[curveChannel][dragPt]=[x,y];
-      drawCurvesCanvas();
-    });
-    cv2.addEventListener('mouseup',function(){dragPt=null;});
-    cv2.addEventListener('mouseleave',function(){dragPt=null;});
-  }
-  window.addEventListener('load',init);
-})();
+function buildLUT(pts){var sorted=pts.slice().sort(function(a,b){return a[0]-b[0];});var lut=new Uint8Array(256);for(var i=0;i<256;i++)lut[i]=clamp(interpCurve(sorted,i));return lut;}
 function resetCurves(){curvePoints={master:[[0,0],[255,255]],R:[[0,0],[255,255]],G:[[0,0],[255,255]],B:[[0,0],[255,255]]};drawCurvesCanvas();}
 function applyCurves(){
   var img=ORIG['curves'];if(!img)return;
@@ -1241,13 +1036,51 @@ function applyCurves(){
   if(cv.width!==img.naturalWidth){cv.width=img.naturalWidth;cv.height=img.naturalHeight;}
   var ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
   var id=ctx.getImageData(0,0,cv.width,cv.height),d=id.data;
-  var lutM=buildLUT(curvePoints.master),lutR=buildLUT(curvePoints.R),lutG=buildLUT(curvePoints.G),lutB=buildLUT(curvePoints.B);
-  for(var i=0;i<d.length;i+=4){d[i]=lutM[lutR[d[i]]];d[i+1]=lutM[lutG[d[i+1]]];d[i+2]=lutM[lutB[d[i+2]]];}
+  var lM=buildLUT(curvePoints.master),lR=buildLUT(curvePoints.R),lG=buildLUT(curvePoints.G),lB=buildLUT(curvePoints.B);
+  for(var i=0;i<d.length;i+=4){d[i]=lM[lR[d[i]]];d[i+1]=lM[lG[d[i+1]]];d[i+2]=lM[lB[d[i+2]]];}
   ctx.putImageData(id,0,0);
 }
+// Curves mouse events
+(function(){
+  var initDone=false;
+  function initCurves(){
+    if(initDone)return;initDone=true;
+    var cv=document.getElementById('curves-canvas');
+    cv.addEventListener('mousedown',function(e){
+      var rect=cv.getBoundingClientRect();
+      var x=Math.round((e.clientX-rect.left)/rect.width*255);
+      var y=Math.round((1-(e.clientY-rect.top)/rect.height)*255);
+      var pts=curvePoints[curveChannel];
+      dragPt=null;
+      for(var i=0;i<pts.length;i++){if(Math.abs(pts[i][0]-x)<12&&Math.abs(pts[i][1]-y)<12){dragPt=i;break;}}
+      if(dragPt===null){pts.push([x,y]);dragPt=pts.length-1;}
+      drawCurvesCanvas();
+    });
+    cv.addEventListener('mousemove',function(e){
+      if(dragPt===null)return;
+      var rect=cv.getBoundingClientRect();
+      var x=Math.round(Math.max(0,Math.min(255,(e.clientX-rect.left)/rect.width*255)));
+      var y=Math.round(Math.max(0,Math.min(255,(1-(e.clientY-rect.top)/rect.height)*255)));
+      curvePoints[curveChannel][dragPt]=[x,y];drawCurvesCanvas();
+    });
+    cv.addEventListener('mouseup',function(){dragPt=null;});
+    cv.addEventListener('mouseleave',function(){dragPt=null;});
+    cv.addEventListener('dblclick',function(e){
+      var rect=cv.getBoundingClientRect();
+      var x=Math.round((e.clientX-rect.left)/rect.width*255);
+      var y=Math.round((1-(e.clientY-rect.top)/rect.height)*255);
+      var pts=curvePoints[curveChannel];
+      var toRemove=-1;
+      for(var i=0;i<pts.length;i++){if(Math.abs(pts[i][0]-x)<12&&Math.abs(pts[i][1]-y)<12){toRemove=i;break;}}
+      if(toRemove>0&&toRemove<pts.length-1){pts.splice(toRemove,1);drawCurvesCanvas();}
+    });
+  }
+  // Init when panel is shown
+  window.addEventListener('load',function(){setTimeout(initCurves,500);});
+})();
 
 // ================================================================
-// HSL COLOR GRADING
+// HSL
 // ================================================================
 var HSL_RANGES={red:[345,15],orange:[15,45],yellow:[45,75],green:[75,165],aqua:[165,195],blue:[195,255],purple:[255,315],magenta:[315,345]};
 function buildHSLSliders(){
@@ -1255,21 +1088,24 @@ function buildHSLSliders(){
 }
 function setHSLTab(tab,btn){
   HSL_TAB=tab;
-  document.querySelectorAll('#panel-hsl .pb').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('#hsl-ui .pb').forEach(function(b){b.classList.remove('on');});
   if(btn)btn.classList.add('on');
   var cont=document.getElementById('hsl-sliders');cont.innerHTML='';
+  var min=tab==='h'?-180:tab==='s'?-100:-100;
+  var max=tab==='h'?180:100;
   HSL_COLORS.forEach(function(color){
-    var div=document.createElement('div');div.className='ctrl';
-    var lbl=HSL_LABELS[color];
     var val=HSL_VALS[tab][color];
-    div.innerHTML='<div class="cl">'+lbl+'<span id="hsl-v-'+tab+'-'+color+'">'+val+'</span></div><input type="range" id="hsl-s-'+tab+'-'+color+'" min="-100" max="100" value="'+val+'" oninput="hslChange(\''+tab+'\',\''+color+'\',this.value)">';
-    cont.appendChild(div);
+    cont.innerHTML+=makeSL('hsl-'+tab+'-'+color,HSL_LABELS[color],min,max,val,1,'hslChange(\''+tab+'\',\''+color+'\',this.value)');
   });
+}
+function resetHSL(){
+  HSL_VALS={h:{red:0,orange:0,yellow:0,green:0,aqua:0,blue:0,purple:0,magenta:0},s:{red:0,orange:0,yellow:0,green:0,aqua:0,blue:0,purple:0,magenta:0},l:{red:0,orange:0,yellow:0,green:0,aqua:0,blue:0,purple:0,magenta:0}};
+  setHSLTab(HSL_TAB,document.getElementById('hsl-tab-'+HSL_TAB));
+  var img=ORIG['hsl'];if(img){var cv=document.getElementById('cv-hsl');cv.getContext('2d').drawImage(img,0,0);}
 }
 function hslChange(tab,color,val){
   HSL_VALS[tab][color]=+val;
-  var el=document.getElementById('hsl-v-'+tab+'-'+color);if(el)el.textContent=val;
-  renderHSL();
+  var el=document.getElementById('vl-hsl-'+tab+'-'+color);if(el)el.textContent=val;
 }
 function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;var max=Math.max(r,g,b),min=Math.min(r,g,b),h,s,l=(max+min)/2;if(max===min){h=s=0;}else{var d=max-min;s=l>.5?d/(2-max-min):d/(max+min);switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}}return[h*360,s,l];}
 function hslToRgb(h,s,l){var r,g,b;if(s===0){r=g=b=l;}else{var hue2rgb=function(p,q,t){if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;};var q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;r=hue2rgb(p,q,h/360+1/3);g=hue2rgb(p,q,h/360);b=hue2rgb(p,q,h/360-1/3);}return[r*255,g*255,b*255];}
@@ -1280,6 +1116,10 @@ function renderHSL(){
   if(cv.width!==img.naturalWidth){cv.width=img.naturalWidth;cv.height=img.naturalHeight;}
   var ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
   var id=ctx.getImageData(0,0,cv.width,cv.height),d=id.data;
+  // Check if any changes
+  var hasChange=false;
+  HSL_COLORS.forEach(function(c){if(HSL_VALS.h[c]||HSL_VALS.s[c]||HSL_VALS.l[c])hasChange=true;});
+  if(!hasChange)return;
   for(var i=0;i<d.length;i+=4){
     var hsl=rgbToHsl(d[i],d[i+1],d[i+2]);
     var h=hsl[0],s=hsl[1],l=hsl[2];
@@ -1303,37 +1143,42 @@ function renderDN(){
   var cv=document.getElementById('cv-dn');
   if(cv.width!==img.naturalWidth){cv.width=img.naturalWidth;cv.height=img.naturalHeight;}
   var ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
-  var W=cv.width,H=cv.height;
-  var id=ctx.getImageData(0,0,W,H),d=id.data;
-  var amt=gv2('sl-dnamt')/100,rad=Math.max(1,gv2('sl-dnr')),prot=gv2('sl-dnprot')/100,shp=gv2('sl-dnshp')/100;
+  var W=cv.width,H=cv.height;var id=ctx.getImageData(0,0,W,H),d=id.data;
+  var amt=gv('dnamt')/100,rad=Math.max(1,gv('dnr')),prot=gv('dnprot')/100,shp=gv('dnshp')/100;
   var blr=new Uint8ClampedArray(d.length);
-  for(var py=0;py<H;py++){for(var px=0;px<W;px++){
-    var rs=0,gs=0,bs=0,cnt=0;
-    for(var dy=-rad;dy<=rad;dy++){for(var dx=-rad;dx<=rad;dx++){var ny=Math.max(0,Math.min(H-1,py+dy)),nx=Math.max(0,Math.min(W-1,px+dx)),ni=(ny*W+nx)*4;rs+=d[ni];gs+=d[ni+1];bs+=d[ni+2];cnt++;}}
-    var bi=(py*W+px)*4;blr[bi]=rs/cnt;blr[bi+1]=gs/cnt;blr[bi+2]=bs/cnt;blr[bi+3]=255;
-  }}
+  for(var py=0;py<H;py++){for(var px=0;px<W;px++){var rs=0,gs=0,bs=0,cnt=0;for(var dy=-rad;dy<=rad;dy++){for(var dx=-rad;dx<=rad;dx++){var ny=Math.max(0,Math.min(H-1,py+dy)),nx=Math.max(0,Math.min(W-1,px+dx)),ni=(ny*W+nx)*4;rs+=d[ni];gs+=d[ni+1];bs+=d[ni+2];cnt++;}}var bi=(py*W+px)*4;blr[bi]=rs/cnt;blr[bi+1]=gs/cnt;blr[bi+2]=bs/cnt;blr[bi+3]=255;}}
   var res=new Uint8ClampedArray(d.length);
-  for(var i=0;i<d.length;i+=4){
-    for(var c=0;c<3;c++){
-      var diff=Math.abs(d[i+c]-blr[i+c]);
-      var edge=diff>20?1:diff/20;
-      var blend=amt*(1-edge*prot);
-      res[i+c]=clamp(d[i+c]*(1-blend)+blr[i+c]*blend);
-    }
-    res[i+3]=255;
-  }
+  for(var i=0;i<d.length;i+=4){for(var c=0;c<3;c++){var diff=Math.abs(d[i+c]-blr[i+c]);var edge=diff>20?1:diff/20;var blend=amt*(1-edge*prot);res[i+c]=clamp(d[i+c]*(1-blend)+blr[i+c]*blend);}res[i+3]=255;}
   if(shp>0){var cp=new Uint8ClampedArray(res);for(var py2=1;py2<H-1;py2++){for(var px2=1;px2<W-1;px2++){var ii=(py2*W+px2)*4;for(var c2=0;c2<3;c2++){var ctr=cp[ii+c2],bl2=(cp[((py2-1)*W+px2)*4+c2]+cp[((py2+1)*W+px2)*4+c2]+cp[(py2*W+px2-1)*4+c2]+cp[(py2*W+px2+1)*4+c2])/4;res[ii+c2]=clamp(ctr+shp*1.4*(ctr-bl2));}}}}
   ctx.putImageData(new ImageData(res,W,H),0,0);
 }
 
 // ================================================================
-// WHITE BALANCE AI
+// WINDOW FIX
+// ================================================================
+function renderWin(){
+  var img=ORIG['win'];if(!img)return;
+  var cv=document.getElementById('cv-win');
+  if(cv.width!==img.naturalWidth){cv.width=img.naturalWidth;cv.height=img.naturalHeight;}
+  var ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
+  var id=ctx.getImageData(0,0,cv.width,cv.height),d=id.data;
+  var hlR=gv('whl')/100,thr=gv('wthr'),ext=gv('wext'),int2=gv('wint'),con=gv('wcon'),sat=gv('wsat');
+  for(var i=0;i<d.length;i+=4){
+    var r=d[i],g=d[i+1],b=d[i+2],lum=.299*r+.587*g+.114*b;
+    if(lum>thr){var pull=hlR*(lum-thr)/(255-thr),fac=1-pull*.7;r=clamp(r*fac+ext*.2);g=clamp(g*fac+ext*.15);b=clamp(b*fac+ext*.2);if(con){var cf=(259*(con+127))/(127*(259-con));r=clamp(cf*(r-128)+128);g=clamp(cf*(g-128)+128);b=clamp(cf*(b-128)+128);}if(sat){var gw=.299*r+.587*g+.114*b,sf=1+sat/100;r=clamp(gw+sf*(r-gw));g=clamp(gw+sf*(g-gw));b=clamp(gw+sf*(b-gw));}}else{r=clamp(r+int2*.4);g=clamp(g+int2*.4);b=clamp(b+int2*.4);}
+    d[i]=r;d[i+1]=g;d[i+2]=b;
+  }
+  ctx.putImageData(id,0,0);
+}
+
+// ================================================================
+// WHITE BALANCE
 // ================================================================
 function analyzeWB(img){
-  var tc=document.createElement('canvas');var sc=Math.min(1,500/Math.max(img.naturalWidth,img.naturalHeight));tc.width=Math.round(img.naturalWidth*sc);tc.height=Math.round(img.naturalHeight*sc);tc.getContext('2d').drawImage(img,0,0,tc.width,tc.height);var d=tc.getContext('2d').getImageData(0,0,tc.width,tc.height).data;
+  var tc=document.createElement('canvas');var sc=Math.min(1,500/Math.max(img.naturalWidth,img.naturalHeight));tc.width=Math.round(img.naturalWidth*sc);tc.height=Math.round(img.naturalHeight*sc);tc.getContext('2d').drawImage(img,0,0,tc.width,tc.height);
+  var d=tc.getContext('2d').getImageData(0,0,tc.width,tc.height).data;
   var rS=0,gS=0,bS=0,n=0;for(var i=0;i<d.length;i+=4){var lum=.299*d[i]+.587*d[i+1]+.114*d[i+2];if(lum>15&&lum<240){rS+=d[i];gS+=d[i+1];bS+=d[i+2];n++;}}
-  if(!n)return;
-  var rA=rS/n,gA=gS/n,bA=bS/n;WB_GAINS={rG:gA/rA,bG:gA/bA};
+  if(!n)return;var rA=rS/n,gA=gS/n,bA=bS/n;WB_GAINS={rG:gA/rA,bG:gA/bA};
   var rb=rA/bA,temp=rb<.72?3200:rb<.86?4000:rb<.96?4500:rb<1.06?5500:rb<1.22?6500:rb<1.4?7500:9000;
   var tint=Math.round((gA-(rA+bA)/2)/2.55);
   var src=temp<3500?'tungsten':temp<4500?'fluorescent':temp<5200?'lumina zilei':temp<6800?'nori/umbră':'cer deschis';
@@ -1349,7 +1194,7 @@ function renderWB(){
   var img=ORIG['wb'];if(!img||!WB_GAINS)return;
   var cv=document.getElementById('cv-wb');if(cv.width!==img.naturalWidth){cv.width=img.naturalWidth;cv.height=img.naturalHeight;}
   var ctx=cv.getContext('2d');ctx.drawImage(img,0,0);var id=ctx.getImageData(0,0,cv.width,cv.height),d=id.data;
-  var rG=WB_GAINS.rG,bG=WB_GAINS.bG,man=gv2('sl-wbm'),tnt=gv2('sl-wbt');
+  var rG=WB_GAINS.rG,bG=WB_GAINS.bG,man=gv('wbm'),tnt=gv('wbt');
   for(var i=0;i<d.length;i+=4){d[i]=clamp(d[i]*rG+man*.55);d[i+2]=clamp(d[i+2]*bG-man*.45);d[i+1]=clamp(d[i+1]+tnt*.3);}
   ctx.putImageData(id,0,0);
 }
@@ -1365,29 +1210,25 @@ function doUpscale(){
   var W=img.naturalWidth,H=img.naturalHeight,dW=Math.round(W*UF),dH=Math.round(H*UF);
   var srcCv=document.createElement('canvas');srcCv.width=W;srcCv.height=H;srcCv.getContext('2d').drawImage(img,0,0);
   var fullCv=document.getElementById('cv-us-full');fullCv.width=dW;fullCv.height=dH;
-  setPG('us-pb','us-st',30,'Upscaling '+dW+'×'+dH+'...','info');
-  var shp=gv2('sl-uss')/100;
+  var shp=gv('uss')/100;
   function finalize(){
-    if(shp>0){var ctx2=fullCv.getContext('2d');var id2=ctx2.getImageData(0,0,dW,dH);var d2=id2.data;var cp=new Uint8ClampedArray(d2);for(var py=1;py<dH-1;py++){for(var px=1;px<dW-1;px++){var ii=(py*dW+px)*4;for(var c=0;c<3;c++){var ctr=cp[ii+c],bl=(cp[((py-1)*dW+px)*4+c]+cp[((py+1)*dW+px)*4+c]+cp[(py*dW+px-1)*4+c]+cp[(py*dW+px+1)*4+c])/4;d2[ii+c]=clamp(ctr+shp*1.2*(ctr-bl));}}}ctx2.putImageData(id2,0,0);}
+    if(shp>0){var ctx2=fullCv.getContext('2d');var id2=ctx2.getImageData(0,0,dW,dH),d2=id2.data,cp=new Uint8ClampedArray(d2);for(var py=1;py<dH-1;py++){for(var px=1;px<dW-1;px++){var ii=(py*dW+px)*4;for(var c=0;c<3;c++){var ctr=cp[ii+c],bl=(cp[((py-1)*dW+px)*4+c]+cp[((py+1)*dW+px)*4+c]+cp[(py*dW+px-1)*4+c]+cp[(py*dW+px+1)*4+c])/4;d2[ii+c]=clamp(ctr+shp*1.2*(ctr-bl));}}}ctx2.putImageData(id2,0,0);}
     var prev=document.getElementById('cv-us-prev');var pw=document.getElementById('pvw-us');var maxW=pw.offsetWidth||700;var sc=Math.min(1,maxW/dW,500/dH);prev.width=Math.round(dW*sc);prev.height=Math.round(dH*sc);
-    if(typeof pica!=='undefined'&&PICA_I){PICA_I.resize(fullCv,prev,{quality:3}).then(function(){setPG('us-pb','us-st',100,'✓ Complet: '+dW+'×'+dH+' px','ok');document.getElementById('btn-us-dl').disabled=false;});}
-    else{var pctx=prev.getContext('2d');pctx.imageSmoothingEnabled=true;pctx.imageSmoothingQuality='high';pctx.drawImage(fullCv,0,0,prev.width,prev.height);setPG('us-pb','us-st',100,'✓ Complet: '+dW+'×'+dH+' px','ok');document.getElementById('btn-us-dl').disabled=false;}
+    if(typeof pica!=='undefined'&&PICA_I){PICA_I.resize(fullCv,prev,{quality:3}).then(function(){setPG('us-pb','us-st',100,'✓ Complet: '+dW+'×'+dH+' px — apasă Descarcă HD','ok');document.getElementById('btn-us-dl').disabled=false;});}
+    else{var pctx=prev.getContext('2d');pctx.imageSmoothingEnabled=true;pctx.imageSmoothingQuality='high';pctx.drawImage(fullCv,0,0,prev.width,prev.height);setPG('us-pb','us-st',100,'✓ Complet: '+dW+'×'+dH+' px — apasă Descarcă HD','ok');document.getElementById('btn-us-dl').disabled=false;}
   }
+  setPG('us-pb','us-st',30,'Upscaling '+dW+'×'+dH+'...','info');
   if(typeof pica!=='undefined'){if(!PICA_I)PICA_I=pica();PICA_I.resize(srcCv,fullCv,{quality:3}).then(function(){setPG('us-pb','us-st',80,'Post-process...','info');setTimeout(finalize,10);}).catch(function(e){setPG('us-pb','us-st','Eroare: '+e.message,'err');});}
-  else{var ctx3=fullCv.getContext('2d');ctx3.imageSmoothingEnabled=true;ctx3.imageSmoothingQuality='high';ctx3.drawImage(srcCv,0,0,dW,dH);setPG('us-pb','us-st',80,'Post-process...','info');setTimeout(finalize,10);}
+  else{var ctx3=fullCv.getContext('2d');ctx3.imageSmoothingEnabled=true;ctx3.imageSmoothingQuality='high';ctx3.drawImage(srcCv,0,0,dW,dH);setTimeout(finalize,10);}
 }
 
 // ================================================================
-// CROP
+// CROP / ROTATE / FLIP
 // ================================================================
-function setCropAR(r,btn){if(!cropperInst)return;cropperInst.setAspectRatio(r);document.querySelectorAll('#panel-crop .pb').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');}
-function doFlipH(){if(!cropperInst)return;cropFlipX*=-1;cropperInst.scaleX(cropFlipX);}
-function doFlipV(){if(!cropperInst)return;cropFlipY*=-1;cropperInst.scaleY(cropFlipY);}
-function exportCrop(){
-  if(!cropperInst){alert('Încarcă mai întâi o imagine!');return;}
-  var canvas=cropperInst.getCroppedCanvas();
-  canvas.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='RE-crop-'+Date.now()+'.jpg';a.click();},'image/jpeg',1.0);
-}
+function setCropAR(r,btn){if(!cropperInst)return;cropperInst.setAspectRatio(r);document.querySelectorAll('#crop-controls .pb').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');}
+function doCropFlipH(){if(!cropperInst)return;cropFX*=-1;cropperInst.scaleX(cropFX);}
+function doCropFlipV(){if(!cropperInst)return;cropFY*=-1;cropperInst.scaleY(cropFY);}
+function exportCrop(){if(!cropperInst){alert('Încarcă mai întâi o imagine!');return;}var canvas=cropperInst.getCroppedCanvas();canvas.toBlob(function(blob){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='RE-crop-'+Date.now()+'.jpg';a.click();},'image/jpeg',1.0);}
 
 // ================================================================
 // PERSPECTIVE
@@ -1397,17 +1238,11 @@ function renderPersp(){
   var cv=document.getElementById('cv-persp');var W=img.naturalWidth,H=img.naturalHeight;
   if(cv.width!==W){cv.width=W;cv.height=H;}
   var ctx=cv.getContext('2d');ctx.clearRect(0,0,W,H);
-  var pv=gv2('sl-pv'),ph=gv2('sl-ph'),barrel=gv2('sl-pb2'),rot=gv2('sl-pr'),zoom=1+gv2('sl-pz')/100;
+  var pv=gv('pv'),ph=gv('ph'),barrel=gv('pb2'),rot=gv('pr'),zoom=1+gv('pz')/100;
   ctx.save();ctx.translate(W/2,H/2);ctx.rotate(rot*Math.PI/180);ctx.scale(zoom,zoom);ctx.translate(-W/2,-H/2);
-  // Keystone via transform
-  var skewX=ph/100,skewY=pv/100;
-  ctx.transform(1,skewY,skewX,1,0,0);
-  if(barrel!==0){
-    // Simple barrel via scaling approximation
-    var bf=1+barrel/500;ctx.scale(bf,bf);ctx.translate(-W*(bf-1)/2,-H*(bf-1)/2);
-  }
-  ctx.drawImage(img,0,0,W,H);
-  ctx.restore();
+  ctx.transform(1,pv/100,ph/100,1,0,0);
+  if(barrel!==0){var bf=1+barrel/500;ctx.scale(bf,bf);ctx.translate(-W*(bf-1)/2,-H*(bf-1)/2);}
+  ctx.drawImage(img,0,0,W,H);ctx.restore();
 }
 
 // ================================================================
@@ -1418,50 +1253,90 @@ function renderStr(){
   var cv=document.getElementById('cv-str');var W=img.naturalWidth,H=img.naturalHeight;
   if(cv.width!==W){cv.width=W;cv.height=H;}
   var ctx=cv.getContext('2d');ctx.clearRect(0,0,W,H);
-  var ang=gv2('sl-stra')*Math.PI/180;
-  ctx.save();ctx.translate(W/2,H/2);ctx.rotate(ang);ctx.drawImage(img,-W/2,-H/2,W,H);ctx.restore();
+  ctx.save();ctx.translate(W/2,H/2);ctx.rotate(gv('stra')*Math.PI/180);ctx.drawImage(img,-W/2,-H/2,W,H);ctx.restore();
 }
 function autoStraighten(){
   var img=ORIG['str'];if(!img){alert('Încarcă mai întâi o imagine!');return;}
-  // Simple heuristic — look at edge gradients for dominant angle
   var tc=document.createElement('canvas');var sc=Math.min(1,400/Math.max(img.naturalWidth,img.naturalHeight));tc.width=Math.round(img.naturalWidth*sc);tc.height=Math.round(img.naturalHeight*sc);tc.getContext('2d').drawImage(img,0,0,tc.width,tc.height);
-  var d=tc.getContext('2d').getImageData(0,0,tc.width,tc.height).data;
-  // Sample bottom strip for horizontal edges
-  var W=tc.width,H=tc.height;var angles=[];
-  for(var y=Math.round(H*.6);y<H-1;y+=3){for(var x=1;x<W-1;x+=3){var i=(y*W+x)*4;var gx=d[i]-d[i+4];var gy=d[i]-d[(y+1)*W*4+x*4]||0;if(Math.abs(gx)>10){angles.push(Math.atan2(gy,gx)*180/Math.PI);}}}
-  if(!angles.length){alert('Nu s-a putut detecta orizontul automat. Ajustează manual cu sliderul.');return;}
-  angles.sort(function(a,b){return a-b;});var med=angles[Math.floor(angles.length/2)];
-  var correction=-med*.05; // Small correction
-  correction=Math.max(-15,Math.min(15,correction));
-  var sl=document.getElementById('sl-stra');sl.value=correction;document.getElementById('vl-stra').textContent=correction.toFixed(1);
-  renderStr();
+  var d=tc.getContext('2d').getImageData(0,0,tc.width,tc.height).data;var W=tc.width,H=tc.height;var angles=[];
+  for(var y=Math.round(H*.55);y<H-1;y+=4){for(var x=2;x<W-2;x+=4){var i=(y*W+x)*4;var gx=d[i]-d[i+8];var gy=d[i]-d[(y+1)*W*4+x*4];if(Math.abs(gx)>15)angles.push(Math.atan2(gy,gx)*180/Math.PI);}}
+  if(!angles.length){alert('Nu s-a putut detecta automat. Ajustează manual.');return;}
+  angles.sort(function(a,b){return a-b;});var med=angles[Math.floor(angles.length/2)];var correction=Math.max(-15,Math.min(15,-med*.04));
+  var sl=document.getElementById('sl-stra');sl.value=correction;document.getElementById('vl-stra').textContent=correction.toFixed(1);renderStr();
 }
 
 // ================================================================
-// HISTOGRAM
+// HISTOGRAM — smooth anti-aliased
 // ================================================================
 function drawHistogram(img){
-  var cv=document.getElementById('hist-canvas');cv.style.display='block';
-  var tc=document.createElement('canvas');var sc=Math.min(1,600/Math.max(img.naturalWidth,img.naturalHeight));tc.width=Math.round(img.naturalWidth*sc);tc.height=Math.round(img.naturalHeight*sc);tc.getContext('2d').drawImage(img,0,0,tc.width,tc.height);
+  // Preview cu overlay
+  var wrap=document.getElementById('hist-prev-wrap');wrap.style.display='block';
+  var prev=document.getElementById('cv-hist-prev');
+  var sc=Math.min(1,700/img.naturalWidth,280/img.naturalHeight);
+  prev.width=Math.round(img.naturalWidth*sc);prev.height=Math.round(img.naturalHeight*sc);
+  prev.getContext('2d').drawImage(img,0,0,prev.width,prev.height);
+
+  // Analyze
+  var tc=document.createElement('canvas');var sc2=Math.min(1,600/Math.max(img.naturalWidth,img.naturalHeight));tc.width=Math.round(img.naturalWidth*sc2);tc.height=Math.round(img.naturalHeight*sc2);tc.getContext('2d').drawImage(img,0,0,tc.width,tc.height);
   var d=tc.getContext('2d').getImageData(0,0,tc.width,tc.height).data;
   var rH=new Array(256).fill(0),gH=new Array(256).fill(0),bH=new Array(256).fill(0),lH=new Array(256).fill(0);
   for(var i=0;i<d.length;i+=4){rH[d[i]]++;gH[d[i+1]]++;bH[d[i+2]]++;lH[Math.round(.299*d[i]+.587*d[i+1]+.114*d[i+2])]++;}
-  var maxV=Math.max.apply(null,lH);
-  var ctx=cv.getContext('2d');var W=cv.width,H=cv.height;
-  ctx.clearRect(0,0,W,H);ctx.fillStyle='#06070a';ctx.fillRect(0,0,W,H);
-  function drawChan(hist,color,alpha){
-    ctx.fillStyle=color;ctx.globalAlpha=alpha;
-    for(var x=0;x<256;x++){var h=hist[x]/maxV*H;ctx.fillRect(Math.round(x/256*W),H-h,Math.max(1,Math.round(W/256)),h);}
-    ctx.globalAlpha=1;
+
+  // Overlay on preview — highlight under/overexposed zones
+  var overlay=document.getElementById('cv-hist-overlay');
+  overlay.width=prev.width;overlay.height=prev.height;
+  var octx=overlay.getContext('2d');
+  var pd=prev.getContext('2d').getImageData(0,0,prev.width,prev.height).data;
+  var od=octx.createImageData(prev.width,prev.height);
+  for(var i2=0;i2<pd.length;i2+=4){
+    var lum2=.299*pd[i2]+.587*pd[i2+1]+.114*pd[i2+2];
+    if(lum2<10){od.data[i2]=0;od.data[i2+1]=0;od.data[i2+2]=200;od.data[i2+3]=120;}      // albastru = subexpus
+    else if(lum2>248){od.data[i2]=220;od.data[i2+1]=50;od.data[i2+2]=0;od.data[i2+3]=120;} // roșu = supraexpus
+    else{od.data[i2+3]=0;}
   }
-  drawChan(rH,'#e84848',.5);drawChan(gH,'#28c87e',.5);drawChan(bH,'#3d7eff',.5);drawChan(lH,'#c8d0e0',.3);
+  octx.putImageData(od,0,0);
+
+  // Legend
+  var leg=document.getElementById('hist-legend');
+  leg.innerHTML='<span style="background:rgba(220,50,0,.7);color:#fff;font-size:9px;font-family:monospace;padding:2px 6px;border-radius:3px">■ Supraexpus</span><span style="background:rgba(0,0,200,.7);color:#fff;font-size:9px;font-family:monospace;padding:2px 6px;border-radius:3px">■ Subexpus</span>';
+
+  // Smooth histogram chart
+  document.getElementById('hist-chart-wrap').style.display='block';
+  var cv=document.getElementById('hist-canvas');cv.style.display='block';
+  var W=cv.width,H=cv.height;
+  var ctx=cv.getContext('2d');ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#06070a';ctx.fillRect(0,0,W,H);
+
+  // Grid
+  ctx.strokeStyle='#14191f';ctx.lineWidth=1;
+  for(var x=0;x<=4;x++){ctx.beginPath();ctx.moveTo(x*W/4,0);ctx.lineTo(x*W/4,H);ctx.stroke();}
+  for(var y=1;y<3;y++){ctx.beginPath();ctx.moveTo(0,y*H/3);ctx.lineTo(W,y*H/3);ctx.stroke();}
+
+  // Smooth with gaussian and draw as filled area
+  function smooth(h){var s=h.slice();for(var k=2;k<254;k++)s[k]=(h[k-2]+h[k-1]*2+h[k]*4+h[k+1]*2+h[k+2])/10;return s;}
+  var sR=smooth(rH),sG=smooth(gH),sB=smooth(bH),sL=smooth(lH);
+  var maxV=Math.max.apply(null,sL.concat(sR,sG,sB));
+
+  function drawChan(hist,color,alpha){
+    ctx.beginPath();ctx.moveTo(0,H);
+    for(var x2=0;x2<=255;x2++){var xp=x2/255*W;var yp=H-(hist[x2]/maxV*(H-2));ctx.lineTo(xp,yp);}
+    ctx.lineTo(W,H);ctx.closePath();
+    ctx.fillStyle=color;ctx.globalAlpha=alpha;ctx.fill();ctx.globalAlpha=1;
+  }
+  drawChan(sB,'#3d7eff',.45);drawChan(sG,'#28c87e',.45);drawChan(sR,'#e84848',.45);drawChan(sL,'rgba(200,208,224,.25)',1);
+
+  // Tick labels
+  ctx.fillStyle='#3e4858';ctx.font='8px monospace';
+  [0,64,128,192,255].forEach(function(v){ctx.fillText(v,v/255*W-4,H-1);});
+
   // Stats
   var total=tc.width*tc.height;
   var under=0,over=0,rMean=0,gMean=0,bMean=0;
-  for(var x2=0;x2<256;x2++){under+=lH[x2]*(x2<10?1:0);over+=lH[x2]*(x2>245?1:0);rMean+=rH[x2]*x2;gMean+=gH[x2]*x2;bMean+=bH[x2]*x2;}
+  for(var x3=0;x3<256;x3++){if(x3<10)under+=lH[x3];if(x3>245)over+=lH[x3];rMean+=rH[x3]*x3;gMean+=gH[x3]*x3;bMean+=bH[x3]*x3;}
   rMean/=total;gMean/=total;bMean/=total;
   var stats=document.getElementById('hist-stats');stats.style.display='grid';
-  stats.innerHTML='<div class="qc-item"><div class="qc-label">R mediu</div><div class="qc-val" style="color:#e84848">'+Math.round(rMean)+'</div></div><div class="qc-item"><div class="qc-label">G mediu</div><div class="qc-val" style="color:#28c87e">'+Math.round(gMean)+'</div></div><div class="qc-item"><div class="qc-label">B mediu</div><div class="qc-val" style="color:#3d7eff">'+Math.round(bMean)+'</div></div><div class="qc-item"><div class="qc-label">Subexpus %</div><div class="qc-val '+(under/total>.05?'warn':'ok')+'">'+((under/total)*100).toFixed(1)+'%</div></div><div class="qc-item"><div class="qc-label">Supraexpus %</div><div class="qc-val '+(over/total>.05?'warn':'ok')+'">'+((over/total)*100).toFixed(1)+'%</div></div>';
+  function qci(l,v,c){return'<div class="qc-item"><div class="qc-label">'+l+'</div><div class="qc-val '+c+'">'+v+'</div></div>';}
+  stats.innerHTML=qci('R mediu',''+Math.round(rMean),'ok')+qci('G mediu',''+Math.round(gMean),'ok')+qci('B mediu',''+Math.round(bMean),'ok')+qci('Subexpus %',((under/total)*100).toFixed(1)+'%',under/total>.05?'warn':'ok')+qci('Supraexpus %',((over/total)*100).toFixed(1)+'%',over/total>.05?'warn':'ok');
 }
 
 // ================================================================
@@ -1470,50 +1345,68 @@ function drawHistogram(img){
 function loadWMLogo(inp){if(!inp.files||!inp.files[0])return;var url=URL.createObjectURL(inp.files[0]);var img=new Image();img.onload=function(){wmLogoImg=img;renderWM();};img.src=url;}
 function renderWM(){
   var img=ORIG['wm'];if(!img)return;
-  var cv=document.getElementById('cv-wm');var W=img.naturalWidth,H=img.naturalHeight;
-  if(cv.width!==W){cv.width=W;cv.height=H;}
-  var ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
+  var W=img.naturalWidth,H=img.naturalHeight;
   var text=document.getElementById('wm-text').value;
-  var fs=gv2('sl-wmfs');var op=gv2('sl-wmop')/100;var pos=document.getElementById('wm-pos').value;
+  var fs=gv('wmfs'),op=gv('wmop')/100;
+  var pos=document.getElementById('wm-pos').value;
   var color=document.getElementById('wm-color').value;
-  ctx.globalAlpha=op;
-  if(wmLogoImg){
-    var lW=Math.round(W*.2),lH=Math.round(lW*wmLogoImg.naturalHeight/wmLogoImg.naturalWidth);
-    var lx,ly;
-    if(pos==='br'){lx=W-lW-20;ly=H-lH-20;}else if(pos==='bl'){lx=20;ly=H-lH-20;}else if(pos==='tr'){lx=W-lW-20;ly=20;}else if(pos==='tl'){lx=20;ly=20;}else{lx=(W-lW)/2;ly=(H-lH)/2;}
-    ctx.drawImage(wmLogoImg,lx,ly,lW,lH);
+
+  function applyWMToCanvas(cv){
+    if(cv.width!==W){cv.width=W;cv.height=H;}
+    var ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
+    ctx.globalAlpha=op;
+    if(wmLogoImg){var lW=Math.round(W*.18),lH=Math.round(lW*wmLogoImg.naturalHeight/wmLogoImg.naturalWidth);var lx,ly;if(pos==='br'){lx=W-lW-20;ly=H-lH-20;}else if(pos==='bl'){lx=20;ly=H-lH-20;}else if(pos==='tr'){lx=W-lW-20;ly=20;}else if(pos==='tl'){lx=20;ly=20;}else{lx=(W-lW)/2;ly=(H-lH)/2;}ctx.drawImage(wmLogoImg,lx,ly,lW,lH);}
+    if(text){ctx.font='bold '+fs+'px Arial,sans-serif';ctx.fillStyle=color;var tw=ctx.measureText(text).width;var tx,ty;if(pos==='br'){tx=W-tw-20;ty=H-20;}else if(pos==='bl'){tx=20;ty=H-20;}else if(pos==='tr'){tx=W-tw-20;ty=fs+10;}else if(pos==='tl'){tx=20;ty=fs+10;}else{tx=(W-tw)/2;ty=(H+fs)/2;}ctx.fillText(text,tx,ty);}
+    ctx.globalAlpha=1;
   }
-  if(text){
-    ctx.font='bold '+fs+'px Arial,sans-serif';ctx.fillStyle=color;
-    var tw=ctx.measureText(text).width;var tx,ty;
-    if(pos==='br'){tx=W-tw-20;ty=H-20;}else if(pos==='bl'){tx=20;ty=H-20;}else if(pos==='tr'){tx=W-tw-20;ty=fs+10;}else if(pos==='tl'){tx=20;ty=fs+10;}else{tx=(W-tw)/2;ty=(H+fs)/2;}
-    ctx.fillText(text,tx,ty);
-  }
-  ctx.globalAlpha=1;
+
+  // Full res
+  applyWMToCanvas(document.getElementById('cv-wm'));
+  // Small preview
+  var prev=document.getElementById('cv-wm-prev');
+  var sc=Math.min(1,600/W,180/H);
+  var tmpCv=document.createElement('canvas');tmpCv.width=W;tmpCv.height=H;
+  applyWMToCanvas(tmpCv);
+  prev.width=Math.round(W*sc);prev.height=Math.round(H*sc);
+  prev.getContext('2d').drawImage(tmpCv,0,0,prev.width,prev.height);
 }
 
 // ================================================================
-// RESIZE EXPORT
+// RESIZE — crop inteligent din centru
 // ================================================================
+function smartCrop(img,targetW,targetH){
+  var W=img.naturalWidth,H=img.naturalHeight;
+  var tc=document.createElement('canvas');tc.width=targetW;tc.height=targetH;
+  var ctx=tc.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  // Scale to fill target
+  var scaleW=targetW/W,scaleH=targetH/H;
+  var scale=Math.max(scaleW,scaleH);
+  var sw=Math.round(targetW/scale),sh=Math.round(targetH/scale);
+  var sx=Math.round((W-sw)/2),sy=Math.round((H-sh)/2);
+  ctx.drawImage(img,sx,sy,sw,sh,0,0,targetW,targetH);
+  return tc;
+}
 function doResize(){
   var img=ORIG['rsz'];if(!img){alert('Încarcă mai întâi o imagine!');return;}
-  var pg=document.getElementById('rsz-prog');pg.style.display='flex';
-  var q=gv2('sl-rszq')/100;var W=img.naturalWidth,H=img.naturalHeight;
+  var pg=document.getElementById('rsz-pg');pg.style.display='flex';
+  var W=img.naturalWidth,H=img.naturalHeight;
+  var q=gv('rszq')/100;
   var targets=[];
-  if(document.getElementById('rsz-orig').checked)targets.push({label:'original',w:W,h:H});
-  if(document.getElementById('rsz-web').checked){var sc=Math.min(1,2048/W,2048/H);targets.push({label:'web-2048px',w:Math.round(W*sc),h:Math.round(H*sc)});}
-  if(document.getElementById('rsz-thumb').checked)targets.push({label:'thumbnail-400x300',w:400,h:300});
-  if(document.getElementById('rsz-ig').checked)targets.push({label:'instagram-1080x1080',w:1080,h:1080});
-  if(document.getElementById('rsz-fb').checked)targets.push({label:'facebook-1200x630',w:1200,h:630});
-  if(document.getElementById('rsz-print').checked)targets.push({label:'print-A4-300dpi',w:3508,h:2480});
+  if(document.getElementById('rsz-orig').checked)targets.push({l:'original',w:W,h:H});
+  if(document.getElementById('rsz-web').checked){var sc=Math.min(1,2048/W,2048/H);targets.push({l:'web-MLS-2048px',w:Math.round(W*sc),h:Math.round(H*sc)});}
+  if(document.getElementById('rsz-thumb').checked)targets.push({l:'thumbnail-400x300',w:400,h:300,crop:true});
+  if(document.getElementById('rsz-ig').checked)targets.push({l:'instagram-1080x1080',w:1080,h:1080,crop:true});
+  if(document.getElementById('rsz-igland').checked)targets.push({l:'instagram-1080x566',w:1080,h:566,crop:true});
+  if(document.getElementById('rsz-fb').checked)targets.push({l:'facebook-1200x630',w:1200,h:630,crop:true});
+  if(document.getElementById('rsz-print').checked)targets.push({l:'print-A4-300dpi-3508x2480',w:3508,h:2480,crop:true});
+  if(document.getElementById('rsz-a3').checked)targets.push({l:'print-A3-300dpi-4961x3508',w:4961,h:3508,crop:true});
   var idx=0;
   function next(){
     if(idx>=targets.length){setPG('rsz-pb','rsz-st',100,'✓ Toate exportate!','ok');return;}
-    var t=targets[idx];setPG('rsz-pb','rsz-st',Math.round(idx/targets.length*100),'Generez: '+t.label+'...','info');
-    var tc=document.createElement('canvas');tc.width=t.w;tc.height=t.h;
-    var tctx=tc.getContext('2d');tctx.imageSmoothingEnabled=true;tctx.imageSmoothingQuality='high';tctx.drawImage(img,0,0,t.w,t.h);
-    var a=document.createElement('a');a.download='RE-'+t.label+'-'+Date.now()+'.jpg';a.href=tc.toDataURL('image/jpeg',q);a.click();
-    idx++;setTimeout(next,300);
+    var t=targets[idx];setPG('rsz-pb','rsz-st',Math.round(idx/targets.length*100),'Generez: '+t.l+'...','info');
+    var cv=t.crop?smartCrop(img,t.w,t.h):(function(){var c=document.createElement('canvas');c.width=t.w;c.height=t.h;c.getContext('2d').drawImage(img,0,0,t.w,t.h);return c;})();
+    var a=document.createElement('a');a.download='RE-'+t.l+'-'+Date.now()+'.jpg';a.href=cv.toDataURL('image/jpeg',q);a.click();
+    idx++;setTimeout(next,350);
   }
   next();
 }
@@ -1522,12 +1415,12 @@ function doResize(){
 // COMPRESS
 // ================================================================
 function doCompress(){
-  var file=ORIG['_comp_file'];if(!file){alert('Încarcă mai întâi o imagine!');return;}
-  var q=gv2('sl-cq')/100,fmt=document.getElementById('sel-cfmt').value,mw=gv2('sl-cmw')||undefined;
+  var file=ORIG['_comp_file'];if(!file){alert('Încarcă mai întâi!');return;}
+  var q=gv('cq')/100,fmt=document.getElementById('sel-cfmt').value,mw=gv('cmw')||undefined;
   var cr=document.getElementById('comp-result');cr.innerHTML='<div class="st info">Compresare...</div>';
   new Compressor(file,{quality:q,mimeType:fmt,maxWidth:mw,success:function(result){
     compBlob=result;var ratio=((1-result.size/file.size)*100).toFixed(1);
-    cr.innerHTML='<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px"><div><div style="font-size:9px;color:var(--text3);font-family:monospace">ORIGINAL</div><div style="font-size:13px;font-family:monospace">'+fmtSize(file.size)+'</div></div><div style="color:var(--accent)">→</div><div><div style="font-size:9px;color:var(--text3);font-family:monospace">COMPRIMAT</div><div style="font-size:13px;font-family:monospace;color:var(--green)">'+fmtSize(result.size)+'</div></div><div><div style="font-size:9px;color:var(--text3);font-family:monospace">ECONOMIE</div><div style="font-size:13px;font-family:monospace;color:var(--yellow)">'+ratio+'%</div></div></div>';
+    cr.innerHTML='<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px"><div><div style="font-size:9px;color:var(--text3);font-family:monospace">ORIGINAL</div><div style="font-size:13px;font-family:monospace">'+fmtSize(file.size)+'</div></div><div style="color:var(--accent)">→</div><div><div style="font-size:9px;color:var(--text3);font-family:monospace">COMPRIMAT</div><div style="font-size:13px;font-family:monospace;color:var(--green)">'+fmtSize(result.size)+'</div></div><div><div style="font-size:9px;color:var(--text3);font-family:monospace">ECONOMIE</div><div style="font-size:13px;font-family:monospace;color:var(--yellow)">'+ratio+'%</div></div></div>';
     document.getElementById('btn-comp-dl').style.display='inline-flex';
   },error:function(e){cr.innerHTML='<div class="st err">Eroare: '+e.message+'</div>';}});
 }
@@ -1537,41 +1430,43 @@ function dlCompResult(){if(!compBlob)return;var ext=compBlob.type==='image/webp'
 // PALETTE
 // ================================================================
 function extractPalette(img){
-  var tc=document.createElement('canvas');var sc=Math.min(1,150/Math.max(img.naturalWidth,img.naturalHeight));tc.width=Math.round(img.naturalWidth*sc);tc.height=Math.round(img.naturalHeight*sc);tc.getContext('2d').drawImage(img,0,0,tc.width,tc.height);
+  var tc=document.createElement('canvas');var sc=Math.min(1,120/Math.max(img.naturalWidth,img.naturalHeight));tc.width=Math.round(img.naturalWidth*sc);tc.height=Math.round(img.naturalHeight*sc);tc.getContext('2d').drawImage(img,0,0,tc.width,tc.height);
   var d=tc.getContext('2d').getImageData(0,0,tc.width,tc.height).data;
   var buckets={};
-  for(var i=0;i<d.length;i+=4){var r=d[i]>>4,g=d[i+1]>>4,b=d[i+2]>>4;var key=r+','+g+','+b;buckets[key]=(buckets[key]||{count:0,r:0,g:0,b:0});buckets[key].count++;buckets[key].r+=d[i];buckets[key].g+=d[i+1];buckets[key].b+=d[i+2];}
-  var sorted=Object.values(buckets).sort(function(a,b){return b.count-a.count;}).slice(0,10);
-  var cont=document.getElementById('pal-swatches');cont.innerHTML='';
+  for(var i=0;i<d.length;i+=4){var r=d[i]>>4,g=d[i+1]>>4,b=d[i+2]>>4;var key=r+','+g+','+b;if(!buckets[key])buckets[key]={count:0,r:0,g:0,b:0};buckets[key].count++;buckets[key].r+=d[i];buckets[key].g+=d[i+1];buckets[key].b+=d[i+2];}
+  var sorted=Object.values(buckets).sort(function(a,b){return b.count-a.count;}).slice(0,12);
+  var cont=document.getElementById('pal-swatches');var hexList=[];cont.innerHTML='';
   sorted.forEach(function(bkt){
     var r=Math.round(bkt.r/bkt.count),g=Math.round(bkt.g/bkt.count),b=Math.round(bkt.b/bkt.count);
     var hex='#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
-    var sw=document.createElement('div');sw.className='pal-swatch';sw.style.background=hex;sw.setAttribute('data-hex',hex);sw.title=hex;
-    sw.onclick=function(){navigator.clipboard&&navigator.clipboard.writeText(hex).then(function(){sw.title='✓ Copiat: '+hex;});};
+    hexList.push(hex);
+    var sw=document.createElement('div');sw.className='pal-swatch';sw.style.background=hex;sw.title='Click = copiază '+hex;
+    sw.onclick=(function(h){return function(){if(navigator.clipboard)navigator.clipboard.writeText(h);this.title='✓ Copiat: '+h;};})(hex);
     cont.appendChild(sw);
   });
-  document.getElementById('pal-info').textContent='Click pe culoare pentru a copia codul hex în clipboard';
+  document.getElementById('pal-hex-list').textContent=hexList.join('  ');
 }
 
 // ================================================================
 // QUALITY CHECK
 // ================================================================
-function showQualityCheck(img,file){
-  var W=img.naturalWidth,H=img.naturalHeight;var cont=document.getElementById('qc-result');cont.style.display='grid';
-  function qci(label,val,cls){return'<div class="qc-item"><div class="qc-label">'+label+'</div><div class="qc-val '+cls+'">'+val+'</div></div>';}
-  var dpi300w=Math.round(W/300*2.54),dpi300h=Math.round(H/300*2.54);
-  var webOk=W>=1920&&H>=1080,mlsOk=W>=1024,printA4Ok=W>=3508||H>=2480;
+function showQC(img,file){
+  var W=img.naturalWidth,H=img.naturalHeight;
+  var cont=document.getElementById('qc-result');cont.style.display='grid';
+  function qci(l,v,c){return'<div class="qc-item"><div class="qc-label">'+l+'</div><div class="qc-val '+c+'">'+v+'</div></div>';}
+  var dpi300w=(W/300*2.54).toFixed(1),dpi300h=(H/300*2.54).toFixed(1);
+  var mp=W*H/1000000;
   cont.innerHTML=
     qci('Rezoluție',W+'×'+H,'ok')+
-    qci('Megapixeli',(W*H/1000000).toFixed(1)+' MP',W*H>8000000?'ok':W*H>3000000?'warn':'bad')+
-    qci('Dimensiune fișier',fmtSize(file.size),file.size>500000?'ok':'warn')+
-    qci('Web (1920px)',webOk?'✓ OK':'✗ Mic',webOk?'ok':'warn')+
-    qci('MLS (1024px)',mlsOk?'✓ OK':'✗ Mic',mlsOk?'ok':'bad')+
-    qci('Print A4 300dpi',printA4Ok?'✓ OK':'✗ Mic',printA4Ok?'ok':'warn')+
-    qci('Print la 300dpi',dpi300w+'×'+dpi300h+' cm','ok')+
-    qci('Print la 150dpi',Math.round(dpi300w*2)+'×'+Math.round(dpi300h*2)+' cm','ok')+
-    qci('Instagram 1080','1080 sqr → '+(W>=1080?'✓':'✗ mic'),W>=1080?'ok':'warn')+
-    qci('Raport lățime/înălțime',(W/H).toFixed(2),'ok');
+    qci('Megapixeli',mp.toFixed(1)+' MP',mp>8?'ok':mp>3?'warn':'bad')+
+    qci('Fișier',fmtSize(file.size),file.size>500000?'ok':'warn')+
+    qci('Web 1920px',W>=1920?'✓ OK':'✗ Mic',W>=1920?'ok':'warn')+
+    qci('MLS 1024px',W>=1024?'✓ OK':'✗ Mic',W>=1024?'ok':'bad')+
+    qci('Print A4 300dpi',(W>=3508||H>=2480)?'✓ OK':'✗ Mic',(W>=3508||H>=2480)?'ok':'warn')+
+    qci('Print 300dpi',dpi300w+'×'+dpi300h+' cm','ok')+
+    qci('Print 150dpi',(dpi300w*2).toFixed(1)+'×'+(dpi300h*2).toFixed(1)+' cm','ok')+
+    qci('Instagram 1080px',W>=1080?'✓ OK':'✗ Mic',W>=1080?'ok':'warn')+
+    qci('Raport W/H',(W/H).toFixed(2),'ok');
 }
 
 // ================================================================
@@ -1584,11 +1479,10 @@ function processBatchFiles(files){
   document.getElementById('btn-batch').disabled=false;
 }
 function doBatch(){
-  if(!batchFiles.length){alert('Încarcă mai întâi imagini!');return;}
-  var pg=document.getElementById('batch-prog');pg.style.display='flex';
-  var opts={exp:gv2('sl-bexp'),con:gv2('sl-bcon'),sat:gv2('sl-bsat'),shp:gv2('sl-bshp'),tmp:gv2('sl-btmp')};
-  var q=gv2('sl-bq')/100;
-  var idx=0;
+  if(!batchFiles.length){alert('Încarcă imagini!');return;}
+  var pg=document.getElementById('batch-pg');pg.style.display='flex';
+  var opts={exp:gv('bexp'),con:gv('bcon'),sat:gv('bsat'),shp:gv('bshp'),tmp:gv('btmp')};
+  var q=gv('bq')/100;var idx=0;
   function next(){
     if(idx>=batchFiles.length){setPG('batch-pb','batch-st',100,'✓ Toate procesate!','ok');return;}
     var file=batchFiles[idx];
@@ -1599,10 +1493,8 @@ function doBatch(){
       var cv=document.createElement('canvas');cv.width=img.naturalWidth;cv.height=img.naturalHeight;
       var ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
       var id=ctx.getImageData(0,0,cv.width,cv.height),d=id.data;
-      applyPixelOps(d,d.length,opts);
-      applySharpen(d,cv.width,cv.height,opts.shp);
-      ctx.putImageData(id,0,0);
-      var a=document.createElement('a');a.download='RE-batch-'+file.name.replace(/\.[^.]+$/,'')+'.jpg';a.href=cv.toDataURL('image/jpeg',q);a.click();
+      applyPixelOps(d,d.length,opts);applySharpen(d,cv.width,cv.height,opts.shp);ctx.putImageData(id,0,0);
+      var a=document.createElement('a');a.download='RE-batch-'+file.name.replace(/\.[^.]+$/,'')+'-edit.jpg';a.href=cv.toDataURL('image/jpeg',q);a.click();
       URL.revokeObjectURL(url);
       if(item){item.classList.remove('proc');item.classList.add('done');item.querySelector('.bi-st').textContent='✓ gata';}
       idx++;setTimeout(next,400);
@@ -1610,27 +1502,6 @@ function doBatch(){
     img.src=url;
   }
   next();
-}
-
-// ================================================================
-// FLIP/MIRROR
-// ================================================================
-function doFlip(mode){
-  var img=ORIG['flip'];if(!img){alert('Încarcă mai întâi o imagine!');return;}
-  var cv=document.getElementById('cv-flip');
-  var W=img.naturalWidth,H=img.naturalHeight;
-  if(mode==='90'||mode==='270'){cv.width=H;cv.height=W;}else{cv.width=W;cv.height=H;}
-  var ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);
-  ctx.save();
-  if(mode==='H'){ctx.translate(W,0);ctx.scale(-1,1);ctx.drawImage(img,0,0);}
-  else if(mode==='V'){ctx.translate(0,H);ctx.scale(1,-1);ctx.drawImage(img,0,0);}
-  else if(mode==='90'){ctx.translate(H,0);ctx.rotate(Math.PI/2);ctx.drawImage(img,0,0);}
-  else if(mode==='270'){ctx.translate(0,W);ctx.rotate(-Math.PI/2);ctx.drawImage(img,0,0);}
-  else if(mode==='180'){ctx.translate(W,H);ctx.rotate(Math.PI);ctx.drawImage(img,0,0);}
-  ctx.restore();
-  ORIG['flip']=null; // Update so export takes the flipped version
-  // Store result as new original for further ops
-  var newImg=new Image();newImg.src=cv.toDataURL();ORIG['flip_cv']=cv;
 }
 
 // ================================================================
@@ -1643,48 +1514,38 @@ function readExifFile(file){
     try{
       var tags=ExifReader.load(e.target.result,{expanded:true});var flat={};
       for(var g in tags){if(typeof tags[g]==='object'&&tags[g]!==null){for(var k in tags[g]){var v=tags[g][k];if(v&&v.description!==undefined)flat[k]=v.description;else if(typeof v==='string'||typeof v==='number')flat[k]=v;}}}
-      var FIELDS=[['Make','Producător'],['Model','Model cameră'],['LensModel','Obiectiv'],['DateTimeOriginal','Data/ora'],['ExposureTime','Timp expunere'],['FNumber','Apertură'],['ISOSpeedRatings','ISO'],['FocalLength','Focal'],['FocalLengthIn35mmFilm','Focal 35mm'],['WhiteBalance','WB cameră'],['ColorTemperature','Temperatură K'],['Flash','Bliț'],['MeteringMode','Metering'],['ExposureMode','Mod expunere'],['ExposureBiasValue','EV Comp.'],['Software','Software'],['Artist','Fotograf'],['Copyright','Copyright'],['PixelXDimension','Lățime'],['PixelYDimension','Înălțime'],['XResolution','Rez. X'],['ColorSpace','Spațiu culoare'],['Orientation','Orientare'],['GPSLatitude','GPS Lat'],['GPSLongitude','GPS Long'],['GPSAltitude','GPS Alt']];
-      var html='<div class="exifwrap"><div class="exifhead">📷 '+file.name+' · '+fmtSize(file.size)+' · '+file.type+'</div><table>';
-      var found=0;FIELDS.forEach(function(f){if(flat[f[0]]!==undefined){html+='<tr><td>'+f[1]+'</td><td>'+flat[f[0]]+'</td></tr>';found++;}});
+      var F=[['Make','Producător'],['Model','Cameră'],['LensModel','Obiectiv'],['DateTimeOriginal','Data/ora'],['ExposureTime','Expunere'],['FNumber','Apertură'],['ISOSpeedRatings','ISO'],['FocalLength','Focal mm'],['FocalLengthIn35mmFilm','Focal 35mm'],['WhiteBalance','WB cameră'],['ColorTemperature','Temp K'],['Flash','Bliț'],['MeteringMode','Metering'],['ExposureMode','Mod exp.'],['ExposureBiasValue','EV Comp'],['Software','Software'],['Artist','Fotograf'],['PixelXDimension','Lățime px'],['PixelYDimension','Înălțime px'],['ColorSpace','Culoare'],['GPSLatitude','GPS Lat'],['GPSLongitude','GPS Long']];
+      var html='<div class="exifwrap"><div class="exifhead">📷 '+file.name+' · '+fmtSize(file.size)+'</div><table>';
+      var found=0;F.forEach(function(f){if(flat[f[0]]!==undefined){html+='<tr><td>'+f[1]+'</td><td>'+flat[f[0]]+'</td></tr>';found++;}});
       if(!found)html+='<tr><td colspan="2" style="color:var(--text3);padding:10px">EXIF absent sau limitat.</td></tr>';
       html+='</table></div>';box.innerHTML=html;
-    }catch(e2){box.innerHTML='<div class="st err">Nu s-au putut citi EXIF: '+e2.message+'</div>';}
+    }catch(e2){box.innerHTML='<div class="st err">EXIF error: '+e2.message+'</div>';}
   };r.readAsArrayBuffer(file);
-}
-
-// ================================================================
-// LIBS NAV
-// ================================================================
-function showLib(id,btn){
-  document.querySelectorAll('.lib-page').forEach(function(p){p.classList.remove('on');});
-  document.querySelectorAll('.lib-nb').forEach(function(b){b.classList.remove('on');});
-  var p=document.getElementById('lp-'+id);if(p)p.classList.add('on');if(btn)btn.classList.add('on');
 }
 
 // ================================================================
 // EXPORT
 // ================================================================
 function exportCv(cvId,name){
-  var cv=document.getElementById(cvId);
-  if(!cv||!cv.width){alert('Procesează mai întâi imaginea!');return;}
-  var a=document.createElement('a');
-  a.download='RE-'+name+'-'+cv.width+'x'+cv.height+'-'+Date.now()+'.jpg';
-  a.href=cv.toDataURL('image/jpeg',1.0);a.click();
+  var cv=document.getElementById(cvId);if(!cv||!cv.width){alert('Procesează mai întâi imaginea!');return;}
+  var a=document.createElement('a');a.download='RE-'+name+'-'+cv.width+'x'+cv.height+'-'+Date.now()+'.jpg';a.href=cv.toDataURL('image/jpeg',1.0);a.click();
 }
 function exportNow(){
-  var a=document.querySelector('.panel.on');if(!a)return;
-  var id=a.id.replace('panel-','');
-  var map={enhance:'cv-enh',hdr:'cv-hdr',window:'cv-win',curves:'cv-curves',hsl:'cv-hsl',denoise:'cv-dn',wb:'cv-wb',upscale:'cv-us-full',perspective:'cv-persp',straighten:'cv-str',watermark:'cv-wm',flipmirror:'cv-flip'};
+  var a=document.querySelector('.panel.on');if(!a)return;var id=a.id.replace('panel-','');
+  var map={enhance:'cv-enh',curves:'cv-curves',hsl:'cv-hsl',denoise:'cv-dn',window:'cv-win',wb:'cv-wb',upscale:'cv-us-full',perspective:'cv-persp',straighten:'cv-str',watermark:'cv-wm',histogram:null,resize:null,compress:null,palette:null,quality:null,batch:null};
   if(map[id])exportCv(map[id],id);
   else if(id==='crop')exportCrop();
   else if(id==='compress')dlCompResult();
-  else alert('Nicio imagine procesată în această secțiune.');
+  else alert('Selectează un panel cu imagine procesată.');
 }
 
 // ================================================================
 // INIT
 // ================================================================
-window.addEventListener('load',function(){if(typeof pica!=='undefined')PICA_I=pica();});
+window.addEventListener('load',function(){
+  if(typeof pica!=='undefined')PICA_I=pica();
+  buildAllSliders();
+});
 </script>
 </body>
 </html>
