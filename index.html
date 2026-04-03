@@ -4,124 +4,174 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RE Photo Editor</title>
+<!-- pica.js — upscaler Lanczos3, deja integrat -->
 <script src="https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js"></script>
+<!-- ExifReader — citire EXIF din RAW/JPEG, deja integrat -->
 <script src="https://cdn.jsdelivr.net/npm/exifreader@4.21.1/dist/exif-reader.min.js"></script>
+<!-- CamanJS — filtere foto avansate, deja integrat -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
+<!-- Cropper.js — crop avansat, deja integrat -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+<!-- Compressor.js — compresie client-side, deja integrat -->
+<script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f1012;--bg2:#17191c;--bg3:#1e2125;--bg4:#26292e;
-  --border:#2a2d33;--border2:#3a3d44;
-  --text:#e4e6ea;--text2:#8a909d;--text3:#4a5060;
-  --accent:#4d8eff;--green:#3ecf8e;--yellow:#f5c518;--red:#f05050;
-  --r:8px;--r2:12px;
+  --bg:#0f1012;--bg2:#16181b;--bg3:#1d2023;--bg4:#252830;
+  --border:#282c32;--border2:#363b44;
+  --text:#e2e5ea;--text2:#848ea0;--text3:#444c5c;
+  --accent:#3d7eff;--green:#2ecc8e;--yellow:#f0c040;--red:#e85050;
+  --r:7px;--r2:11px;
 }
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;font-size:14px}
-/* LAYOUT */
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.4}
 #app{display:flex;height:100vh;overflow:hidden}
-#sidebar{width:210px;min-width:210px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
-#content{flex:1;display:flex;flex-direction:column;overflow:hidden}
-#topbar{height:50px;min-height:50px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:10px}
-#workspace{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
-/* SIDEBAR */
-.logo{padding:14px 14px 6px;font-size:16px;font-weight:700;color:var(--text)}
-.logo span{display:block;font-size:10px;font-weight:400;color:var(--text3);margin-top:2px;font-family:monospace}
-.nav-sec{padding:8px 14px 3px;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;font-family:monospace}
-.nav-btn{display:flex;align-items:center;gap:9px;padding:8px 12px;margin:1px 6px;border-radius:var(--r);cursor:pointer;color:var(--text2);font-size:13px;border:none;background:transparent;width:calc(100% - 12px);text-align:left;transition:background .15s,color .15s}
-.nav-btn:hover{background:var(--bg3);color:var(--text)}
-.nav-btn.active{background:var(--bg4);color:var(--text)}
-.nav-btn .ni{width:16px;text-align:center;font-size:15px;flex-shrink:0}
-.nbadge{margin-left:auto;font-size:9px;background:var(--green);color:#051a0e;padding:1px 5px;border-radius:3px;font-family:monospace;font-weight:700}
-.nbadge.ai{background:var(--yellow);color:#1a1400}
-/* TOPBAR */
-#panel-title{font-size:14px;font-weight:600}
-#panel-sub{font-size:11px;color:var(--text3);font-family:monospace;margin-left:4px}
+#sidebar{width:210px;min-width:210px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+.logo{padding:14px 14px 8px;font-size:15px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);margin-bottom:4px}
+.logo small{display:block;font-size:10px;color:var(--text3);font-weight:400;margin-top:1px}
+.ns{padding:8px 13px 3px;font-size:9px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.nb{display:flex;align-items:center;gap:8px;padding:7px 12px;margin:1px 5px;border-radius:var(--r);cursor:pointer;color:var(--text2);font-size:13px;border:none;background:transparent;width:calc(100% - 10px);text-align:left;transition:.12s}
+.nb:hover{background:var(--bg3);color:var(--text)}
+.nb.on{background:var(--bg4);color:var(--text)}
+.ni{width:16px;text-align:center;font-size:14px;flex-shrink:0}
+.bdg{margin-left:auto;font-size:8px;padding:1px 5px;border-radius:3px;font-weight:700}
+.bdg.g{background:var(--green);color:#041008}
+.bdg.y{background:var(--yellow);color:#181000}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#topbar{height:48px;min-height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0}
+#ptitle{font-size:14px;font-weight:600}
+#psub{font-size:11px;color:var(--text3);margin-left:3px}
 .sp{flex:1}
-.tbtn{padding:6px 13px;border-radius:var(--r);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;transition:.15s}
-.tbtn:hover{background:var(--bg4);color:var(--text)}
-.tbtn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.tbtn.primary:hover{opacity:.85}
-.tbtn.ok{background:var(--green);color:#051a0e;border-color:var(--green);font-weight:600}
-/* PANEL */
-.panel{display:none;flex-direction:column;gap:14px}
-.panel.active{display:flex}
-/* CARD */
+.btn{padding:5px 13px;border-radius:var(--r);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;transition:.12s;white-space:nowrap;font-family:inherit}
+.btn:hover{background:var(--bg4);color:var(--text)}
+.btn.p{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.p:hover{opacity:.85}
+.btn.g{background:var(--green);color:#041008;border-color:var(--green);font-weight:600}
+.btn.g:hover{opacity:.85}
+.btn.r{background:var(--red);color:#fff;border-color:var(--red);font-weight:600}
+.btn:disabled{opacity:.35;cursor:default;pointer-events:none}
+#ws{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+.panel{display:none;flex-direction:column;gap:12px}
+.panel.on{display:flex}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2)}
-.card-h{padding:11px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
-.card-h h3{font-size:13px;font-weight:600}
-.card-h .ch-sub{font-size:10px;color:var(--text3);font-family:monospace;margin-left:auto}
-.card-b{padding:15px}
+.ch{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ch h3{font-size:13px;font-weight:600}
+.chsub{font-size:10px;color:var(--text3);margin-left:auto;font-family:monospace}
+.cb{padding:14px}
 /* DROPZONE */
-.dz{border:1.5px dashed var(--border2);border-radius:var(--r2);padding:32px 20px;text-align:center;cursor:pointer;transition:.2s}
-.dz:hover,.dz.drag{border-color:var(--accent);background:rgba(77,142,255,.05)}
-.dz-ico{font-size:32px;margin-bottom:10px}
-.dz h4{font-size:14px;font-weight:600;margin-bottom:5px}
+.dz{border:1.5px dashed var(--border2);border-radius:var(--r2);padding:26px 18px;text-align:center;cursor:pointer;transition:.18s;user-select:none}
+.dz:hover,.dz.drag{border-color:var(--accent);background:rgba(61,126,255,.05)}
+.dz-ico{font-size:28px;margin-bottom:7px}
+.dz h4{font-size:13px;font-weight:600;margin-bottom:4px}
 .dz p{font-size:11px;color:var(--text3)}
-.ftags{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:8px}
-.ftag{background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:10px;font-family:monospace;color:var(--text3)}
-/* CANVAS */
-.cv-wrap{background:#080809;border-radius:var(--r);display:flex;align-items:center;justify-content:center;min-height:260px;overflow:hidden;position:relative}
-.cv-wrap canvas{max-width:100%;max-height:460px;display:block}
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.clabel{font-size:10px;color:var(--text3);text-align:center;font-family:monospace;padding:3px 0}
+.ftags{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.ft{background:var(--bg4);border:1px solid var(--border);border-radius:3px;padding:2px 6px;font-size:9px;font-family:monospace;color:var(--text3)}
+/* PREVIEW — full res, scrollabile */
+.pvwrap{background:#07080a;border-radius:var(--r);border:1px solid var(--border);overflow:auto;max-height:500px;display:flex;align-items:flex-start;justify-content:center}
+.pvwrap canvas{display:block;max-width:100%;height:auto}
+.pvph{color:var(--text3);font-size:12px;padding:50px 20px;text-align:center;width:100%}
+/* COMPARE */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cmpw{background:#07080a;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;max-height:400px;display:flex;align-items:center;justify-content:center}
+.cmpw canvas{display:block;max-width:100%;height:auto}
+.clbl{font-size:10px;color:var(--text3);text-align:center;font-family:monospace;padding:3px 0}
 /* SLIDERS */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
-.ctrl{display:flex;flex-direction:column;gap:4px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}
+.g1{display:grid;grid-template-columns:1fr;gap:9px}
+.ctrl{display:flex;flex-direction:column;gap:3px}
 .cl{font-size:11px;color:var(--text2);display:flex;justify-content:space-between}
-.cl span{color:var(--text);font-family:monospace}
-input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:var(--bg4);border-radius:2px;outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--accent);border-radius:50%;cursor:pointer;border:2px solid var(--bg2)}
+.cl span{color:var(--text);font-family:monospace;font-size:11px}
+input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:var(--bg4);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:var(--accent);border-radius:50%;cursor:pointer;border:2px solid var(--bg2)}
 /* PRESETS */
-.presets{display:flex;gap:5px;flex-wrap:wrap}
-.pbtn{padding:4px 11px;border-radius:999px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:11px;cursor:pointer;transition:.15s}
-.pbtn:hover{border-color:var(--accent);color:var(--accent)}
-.pbtn.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+.prow{display:flex;gap:5px;flex-wrap:wrap}
+.pb{padding:4px 10px;border-radius:999px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:11px;cursor:pointer;transition:.12s;font-family:inherit}
+.pb:hover{border-color:var(--accent);color:var(--accent)}
+.pb.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 /* HDR */
-.hdr-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.hdr-slot{border:1.5px dashed var(--border2);border-radius:var(--r);min-height:90px;cursor:pointer;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:.15s}
-.hdr-slot:hover{border-color:var(--accent)}
-.hdr-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.hdr-slot .sev{font-size:22px;font-weight:700;position:relative;z-index:1}
-.hdr-slot .slbl{font-size:10px;color:var(--text2);font-family:monospace;position:relative;z-index:1}
-.hdr-slot .sov{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:5px;gap:1px}
-.hdr-slot .sov span{font-size:10px;color:#fff;font-family:monospace}
+.hgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hs{border:1.5px dashed var(--border2);border-radius:var(--r);min-height:90px;cursor:pointer;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:.15s}
+.hs:hover{border-color:var(--accent);background:rgba(61,126,255,.04)}
+.hs img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.hs .ev{font-size:22px;font-weight:700;position:relative;z-index:1}
+.hs .elb{font-size:10px;color:var(--text2);font-family:monospace;position:relative;z-index:1}
+.hs .eov{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:5px;pointer-events:none}
+.hs .eov span{font-size:10px;color:#fff;font-family:monospace}
 /* STATUS */
-.st{font-size:11px;font-family:monospace;padding:7px 11px;border-radius:var(--r)}
-.st.info{background:rgba(77,142,255,.1);color:#7ab4ff;border:1px solid rgba(77,142,255,.2)}
-.st.ok{background:rgba(62,207,142,.08);color:var(--green);border:1px solid rgba(62,207,142,.18)}
-.st.warn{background:rgba(245,197,24,.08);color:var(--yellow);border:1px solid rgba(245,197,24,.18)}
-.st.err{background:rgba(240,80,80,.08);color:var(--red);border:1px solid rgba(240,80,80,.18)}
+.st{font-size:11px;font-family:monospace;padding:7px 11px;border-radius:var(--r);line-height:1.45}
+.st.info{background:rgba(61,126,255,.09);color:#6aa3ff;border:1px solid rgba(61,126,255,.18)}
+.st.ok{background:rgba(46,204,142,.08);color:var(--green);border:1px solid rgba(46,204,142,.16)}
+.st.warn{background:rgba(240,192,64,.08);color:var(--yellow);border:1px solid rgba(240,192,64,.15)}
+.st.err{background:rgba(232,80,80,.09);color:var(--red);border:1px solid rgba(232,80,80,.18)}
 /* PROGRESS */
-.progwrap{background:var(--bg4);border-radius:4px;height:4px;overflow:hidden}
-.progbar{height:100%;background:var(--accent);transition:width .3s;border-radius:4px}
-/* SKY GALLERY */
-.sky-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px}
-.sky-th{border-radius:6px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:.15s}
-.sky-th:hover{border-color:var(--accent)}
-.sky-th.sel{border-color:var(--green)}
-.sky-th canvas{width:100%;height:52px;display:block}
-.sky-th .sn{font-size:9px;color:var(--text3);text-align:center;font-family:monospace;padding:2px 0;background:var(--bg3)}
+.pgw{background:var(--bg4);border-radius:3px;height:3px;overflow:hidden}
+.pgb{height:100%;background:var(--accent);transition:width .25s;border-radius:3px}
 /* WB */
-.wb-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-.wb-lbl{font-size:10px;font-family:monospace;color:var(--text3);width:70px}
-.wb-bar{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
-.wb-fill{height:100%;border-radius:3px;transition:width .4s}
-.wb-val{font-size:10px;font-family:monospace;color:var(--text2);width:32px;text-align:right}
-/* TOOLS */
-.tool-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;display:flex;gap:11px;align-items:flex-start}
-.tool-item+.tool-item{margin-top:7px}
-.t-ico{font-size:18px;flex-shrink:0;margin-top:1px}
-.t-body h4{font-size:13px;font-weight:600;margin-bottom:2px}
-.t-body p{font-size:11px;color:var(--text3);line-height:1.5}
-.t-body a{font-size:10px;font-family:monospace;color:var(--accent);display:inline-block;margin-top:3px;text-decoration:none}
-.t-body a:hover{text-decoration:underline}
+.wbr{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.wbl{font-size:10px;font-family:monospace;color:var(--text3);width:65px}
+.wbb{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.wbf{height:100%;border-radius:2px;transition:width .3s}
+.wbv{font-size:10px;font-family:monospace;color:var(--text2);width:30px;text-align:right}
+/* EXIF */
+.exifwrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.exifwrap table{width:100%;border-collapse:collapse}
+.exifwrap td{padding:5px 12px;font-size:11px;border-bottom:1px solid var(--border)}
+.exifwrap td:first-child{color:var(--text3);font-family:monospace;width:38%;white-space:nowrap}
+.exifhead{padding:7px 12px;background:var(--bg4);border-bottom:1px solid var(--border);font-size:10px;font-family:monospace;color:var(--text2)}
+/* INSTALL CARDS */
+.lib-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:10px}
+.lib-card+.lib-card{margin-top:0}
+.lib-head{padding:10px 14px;background:var(--bg4);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.lib-head .lic{font-size:18px}
+.lib-head h4{font-size:13px;font-weight:600;flex:1}
+.lib-head .lbdg{font-size:9px;font-family:monospace;padding:2px 7px;border-radius:3px;font-weight:700}
+.lib-head .lbdg.act{background:var(--green);color:#041008}
+.lib-head .lbdg.cdn{background:var(--accent);color:#fff}
+.lib-body{padding:13px 14px;display:flex;flex-direction:column;gap:10px}
+.lib-body p{font-size:12px;color:var(--text2);line-height:1.5}
+.lib-section{font-size:10px;font-family:monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.code-block{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:monospace;font-size:11px;color:#a8c8ff;line-height:1.7;overflow-x:auto;white-space:pre}
+.code-block .cm{color:var(--text3)}
+.code-block .kw{color:#c792ea}
+.code-block .st{color:#c3e88d;font-style:normal;background:none;border:none;padding:0}
+.code-block .fn{color:#82aaff}
+.copy-btn{align-self:flex-start;padding:4px 10px;border-radius:var(--r);border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:10px;font-family:monospace;cursor:pointer;transition:.12s}
+.copy-btn:hover{background:var(--bg4);color:var(--text)}
+.lib-body a{font-size:11px;color:var(--accent);text-decoration:none}
+.lib-body a:hover{text-decoration:underline}
+/* CROP */
+#crop-container{max-height:450px;overflow:hidden;background:#07080a;border-radius:var(--r);border:1px solid var(--border)}
+#crop-container img{max-width:100%;display:block}
 /* BTN ROW */
-.btnrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
-/* PLACEHOLDER */
-.placeholder{color:var(--text3);font-size:13px;text-align:center;padding:40px 20px}
-/* UPSCALE INFO */
-.us-info{display:flex;gap:14px;align-items:center;padding:10px 0}
-.us-dim{font-size:13px;font-family:monospace;color:var(--text2)}
-.us-arr{font-size:20px;color:var(--accent)}
+.brow{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
+/* LIBS PANEL */
+.lib-nb{display:block;width:calc(100% - 10px);margin:1px 5px;padding:7px 10px;border-radius:var(--r);border:none;background:transparent;color:var(--text2);font-size:12px;text-align:left;cursor:pointer;transition:.12s;font-family:inherit}
+.lib-nb:hover{background:var(--bg3);color:var(--text)}
+.lib-nb.on{background:var(--bg4);color:var(--text);font-weight:600}
+.lib-page{display:none;flex-direction:column;gap:10px}
+.lib-page.on{display:flex}
+.lib-badge-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:4px}
+.lbig{font-size:26px;flex-shrink:0;margin-top:2px}
+.lib-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+.lib-status{font-size:11px;color:var(--green);font-family:monospace}
+.lib-desc{font-size:12px;color:var(--text2);line-height:1.65}
+.lib-step-title{font-size:11px;font-weight:600;color:var(--text);margin-top:6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.lib-step{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--text2);line-height:1.55}
+.step-num{width:20px;height:20px;min-width:20px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px}
+.cb2{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:monospace;font-size:11px;color:#9ecbff;line-height:1.7;overflow-x:auto;white-space:pre;margin:2px 0}
+.lib-tip{background:rgba(61,126,255,.07);border:1px solid rgba(61,126,255,.16);border-radius:var(--r);padding:8px 12px;font-size:11px;color:var(--text2);line-height:1.55}
+.lib-link{font-size:11px;color:var(--accent);text-decoration:none;font-family:monospace}
+.lib-link:hover{text-decoration:underline}
+.ic{background:var(--bg4);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-family:monospace;font-size:10px;color:var(--text)}
+.lib-row{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--text2);padding:6px 0;border-bottom:1px solid var(--border)}
+.lib-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.lib-dot.g{background:var(--green)}
+.lib-dot.y{background:var(--yellow)}
+/* COMPRESS RESULT */
+.comp-result{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.comp-stat{display:flex;flex-direction:column;gap:2px}
+.comp-stat .cs-label{font-size:10px;color:var(--text3);font-family:monospace}
+.comp-stat .cs-val{font-size:15px;font-weight:600;font-family:monospace}
 </style>
 </head>
 <body>
@@ -129,1199 +179,1197 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 
 <!-- SIDEBAR -->
 <nav id="sidebar">
-  <div class="logo">RE Photo Editor<span>v2.1 — Real Estate Tools</span></div>
-  <div class="nav-sec">Editare</div>
-  <button class="nav-btn active" onclick="goPanel('enhance',this)"><span class="ni">✦</span>Enhance</button>
-  <button class="nav-btn" onclick="goPanel('hdr',this)"><span class="ni">◈</span>HDR Merge</button>
-  <button class="nav-btn" onclick="goPanel('window',this)"><span class="ni">⬜</span>Window Fix</button>
-  <div class="nav-sec">AI Tools</div>
-  <button class="nav-btn" onclick="goPanel('wb',this)"><span class="ni">◐</span>White Balance AI<span class="nbadge ai">AI</span></button>
-  <button class="nav-btn" onclick="goPanel('sky',this)"><span class="ni">⛅</span>Sky Replace<span class="nbadge">NEW</span></button>
-  <button class="nav-btn" onclick="goPanel('deblur',this)"><span class="ni">◎</span>Deblur/Sharpen</button>
-  <button class="nav-btn" onclick="goPanel('upscale',this)"><span class="ni">⤡</span>Upscaler 4x</button>
-  <div class="nav-sec">Informații</div>
-  <button class="nav-btn" onclick="goPanel('raw',this)"><span class="ni">📷</span>RAW &amp; EXIF</button>
-  <button class="nav-btn" onclick="goPanel('tools',this)"><span class="ni">⊞</span>Open Source</button>
+  <div class="logo">RE Photo Editor<small>v3.1 · Real Estate</small></div>
+  <div class="ns">Editare</div>
+  <button class="nb on" onclick="goP('enhance',this)"><span class="ni">✦</span>Enhance</button>
+  <button class="nb" onclick="goP('hdr',this)"><span class="ni">◈</span>HDR Merge</button>
+  <button class="nb" onclick="goP('window',this)"><span class="ni">⬜</span>Window Fix</button>
+  <div class="ns">Utilitar</div>
+  <button class="nb" onclick="goP('wb',this)"><span class="ni">◐</span>White Balance AI<span class="bdg y">AI</span></button>
+  <button class="nb" onclick="goP('upscale',this)"><span class="ni">⤡</span>Upscaler 4x</button>
+  <button class="nb" onclick="goP('crop',this)"><span class="ni">✂</span>Crop / Rotate<span class="bdg g">NEW</span></button>
+  <button class="nb" onclick="goP('compress',this)"><span class="ni">📦</span>Compresie</button>
+  <div class="ns">Info</div>
+  <button class="nb" onclick="goP('raw',this)"><span class="ni">📷</span>RAW &amp; EXIF</button>
+  <div class="ns">Instalare</div>
+  <button class="nb" onclick="goP('libs',this)"><span class="ni">📚</span>Librării JS</button>
 </nav>
 
-<!-- CONTENT -->
-<div id="content">
+<!-- MAIN -->
+<div id="main">
   <div id="topbar">
-    <div>
-      <span id="panel-title">Enhance</span>
-      <span id="panel-sub">Ajustări de bază</span>
-    </div>
+    <span id="ptitle">Enhance</span>
+    <span id="psub">Ajustări imagine</span>
     <div class="sp"></div>
-    <button class="tbtn" id="btn-reset" onclick="resetSliders()">↺ Reset</button>
-    <button class="tbtn primary" id="btn-export" onclick="exportCurrent()">⬇ Descarcă</button>
+    <button class="btn" onclick="resetAll()">↺ Reset</button>
+    <button class="btn p" onclick="exportNow()">⬇ Export original</button>
   </div>
-  <div id="workspace">
+  <div id="ws">
 
-<!-- ======= ENHANCE ======= -->
-<div class="panel active" id="panel-enhance">
+<!-- ═══════════════════════════════════════════════
+     ENHANCE
+═══════════════════════════════════════════════ -->
+<div class="panel on" id="panel-enhance">
   <div class="card">
-    <div class="card-h"><h3>Încarcă imagine</h3><span class="ch-sub" id="info-enhance">nicio imagine</span></div>
-    <div class="card-b">
-      <div class="dz" id="dz-enhance"
-        onclick="document.getElementById('fi-enhance').click()"
+    <div class="ch"><h3>Încarcă imagine</h3><span class="chsub" id="enh-info">nicio imagine</span></div>
+    <div class="cb">
+      <div class="dz" id="dz-enh"
         ondragover="event.preventDefault();this.classList.add('drag')"
         ondragleave="this.classList.remove('drag')"
-        ondrop="dzDrop(event,'enhance')">
+        ondrop="dzDrop(event,'enh')"
+        onclick="document.getElementById('fi-enh').click()">
         <div class="dz-ico">🖼</div>
-        <h4>Trage sau apasă pentru a încărca</h4>
-        <p>Suport: JPG, PNG, WEBP, TIFF + preview RAW</p>
-        <div class="ftags"><span class="ftag">CR2</span><span class="ftag">CR3</span><span class="ftag">NEF</span><span class="ftag">ARW</span><span class="ftag">DNG</span><span class="ftag">JPG</span><span class="ftag">PNG</span><span class="ftag">TIFF</span></div>
+        <h4>Click sau trage imaginea aici</h4>
+        <p>JPG · PNG · WEBP · TIFF · preview RAW</p>
+        <div class="ftags"><span class="ft">CR2</span><span class="ft">CR3</span><span class="ft">NEF</span><span class="ft">ARW</span><span class="ft">DNG</span><span class="ft">RAF</span><span class="ft">ORF</span><span class="ft">JPG</span><span class="ft">PNG</span><span class="ft">TIFF</span></div>
       </div>
-      <input type="file" id="fi-enhance" accept="image/*,.cr2,.cr3,.nef,.arw,.dng,.raf,.orf,.rw2" style="display:none" onchange="loadImageFile(this,'enhance')">
+      <input type="file" id="fi-enh" style="display:none" accept="image/*,.cr2,.cr3,.nef,.arw,.dng,.raf,.orf,.rw2,.pef" onchange="loadF(this,'enh')">
     </div>
   </div>
   <div class="card">
-    <div class="card-h"><h3>Preseturi Real Estate</h3></div>
-    <div class="card-b">
-      <div class="presets">
-        <button class="pbtn" onclick="applyPreset('bright-airy',this)">Bright &amp; Airy</button>
-        <button class="pbtn" onclick="applyPreset('natural',this)">Natural Light</button>
-        <button class="pbtn" onclick="applyPreset('luxury',this)">Luxury Dark</button>
-        <button class="pbtn" onclick="applyPreset('vivid',this)">Vivid Outdoor</button>
-        <button class="pbtn" onclick="applyPreset('editorial',this)">Editorial</button>
-        <button class="pbtn" onclick="applyPreset('twilight',this)">Twilight</button>
-        <button class="pbtn" onclick="applyPreset('reset',this)">↺ Reset</button>
+    <div class="ch"><h3>Preseturi Real Estate</h3></div>
+    <div class="cb">
+      <div class="prow">
+        <button class="pb" onclick="preset('bright',this)">Bright &amp; Airy</button>
+        <button class="pb" onclick="preset('natural',this)">Natural</button>
+        <button class="pb" onclick="preset('luxury',this)">Luxury Dark</button>
+        <button class="pb" onclick="preset('vivid',this)">Vivid</button>
+        <button class="pb" onclick="preset('editorial',this)">Editorial</button>
+        <button class="pb" onclick="preset('twilight',this)">Twilight</button>
+        <button class="pb" onclick="preset('reset',this)">↺ Reset</button>
       </div>
     </div>
   </div>
   <div class="card">
-    <div class="card-h"><h3>Ajustări imagine</h3></div>
-    <div class="card-b" style="display:flex;flex-direction:column;gap:14px">
-      <div class="cv-wrap" id="cw-enhance">
-        <div class="placeholder" id="ph-enhance">Încarcă o imagine pentru a vedea previzualizarea</div>
-        <canvas id="cv-enhance" style="display:none"></canvas>
+    <div class="ch"><h3>Ajustări</h3><span class="chsub">preview calitate originală</span></div>
+    <div class="cb" style="display:flex;flex-direction:column;gap:12px">
+      <div class="pvwrap" id="pvw-enh">
+        <div class="pvph" id="ph-enh">Încarcă o imagine pentru preview</div>
+        <canvas id="cv-enh" style="display:none"></canvas>
       </div>
-      <div class="grid2">
-        <div class="ctrl"><div class="cl">Expunere<span id="v-exp">0</span></div><input type="range" id="s-exp" min="-100" max="100" value="0" oninput="sv('exp');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Contrast<span id="v-con">0</span></div><input type="range" id="s-con" min="-100" max="100" value="0" oninput="sv('con');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Highlights<span id="v-hl">0</span></div><input type="range" id="s-hl" min="-100" max="100" value="0" oninput="sv('hl');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Shadows<span id="v-sh">0</span></div><input type="range" id="s-sh" min="-100" max="100" value="0" oninput="sv('sh');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Alb<span id="v-wb">0</span></div><input type="range" id="s-wb" min="-100" max="100" value="0" oninput="sv('wb');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Negru<span id="v-bk">0</span></div><input type="range" id="s-bk" min="-100" max="100" value="0" oninput="sv('bk');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Claritate<span id="v-cl">0</span></div><input type="range" id="s-cl" min="-100" max="100" value="0" oninput="sv('cl');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Saturație<span id="v-sat">0</span></div><input type="range" id="s-sat" min="-100" max="100" value="0" oninput="sv('sat');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Vivacitate<span id="v-vib">0</span></div><input type="range" id="s-vib" min="-100" max="100" value="0" oninput="sv('vib');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Temperatură<span id="v-tmp">0</span></div><input type="range" id="s-tmp" min="-100" max="100" value="0" oninput="sv('tmp');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Tint<span id="v-tnt">0</span></div><input type="range" id="s-tnt" min="-100" max="100" value="0" oninput="sv('tnt');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Dehaze<span id="v-dhz">0</span></div><input type="range" id="s-dhz" min="0" max="100" value="0" oninput="sv('dhz');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Vignetă<span id="v-vig">0</span></div><input type="range" id="s-vig" min="-80" max="0" value="0" oninput="sv('vig');doEnhance()"></div>
-        <div class="ctrl"><div class="cl">Sharpen<span id="v-shp">0</span></div><input type="range" id="s-shp" min="0" max="100" value="0" oninput="sv('shp');doEnhance()"></div>
+      <div class="g2">
+        <div class="ctrl"><div class="cl">Expunere<span id="vl-exp">0</span></div><input type="range" id="sl-exp" min="-100" max="100" value="0" oninput="sv('exp');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Contrast<span id="vl-con">0</span></div><input type="range" id="sl-con" min="-100" max="100" value="0" oninput="sv('con');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Highlights<span id="vl-hl">0</span></div><input type="range" id="sl-hl" min="-100" max="100" value="0" oninput="sv('hl');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Shadows<span id="vl-sh">0</span></div><input type="range" id="sl-sh" min="-100" max="100" value="0" oninput="sv('sh');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Alb (Whites)<span id="vl-wb">0</span></div><input type="range" id="sl-wb" min="-100" max="100" value="0" oninput="sv('wb');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Negru (Blacks)<span id="vl-bk">0</span></div><input type="range" id="sl-bk" min="-100" max="100" value="0" oninput="sv('bk');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Claritate<span id="vl-cl">0</span></div><input type="range" id="sl-cl" min="-100" max="100" value="0" oninput="sv('cl');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Saturație<span id="vl-sat">0</span></div><input type="range" id="sl-sat" min="-100" max="100" value="0" oninput="sv('sat');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Vivacitate<span id="vl-vib">0</span></div><input type="range" id="sl-vib" min="-100" max="100" value="0" oninput="sv('vib');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Temperatură<span id="vl-tmp">0</span></div><input type="range" id="sl-tmp" min="-100" max="100" value="0" oninput="sv('tmp');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Tint<span id="vl-tnt">0</span></div><input type="range" id="sl-tnt" min="-100" max="100" value="0" oninput="sv('tnt');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Dehaze<span id="vl-dhz">0</span></div><input type="range" id="sl-dhz" min="0" max="100" value="0" oninput="sv('dhz');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Sharpen<span id="vl-shp">0</span></div><input type="range" id="sl-shp" min="0" max="100" value="0" oninput="sv('shp');renderEnh()"></div>
+        <div class="ctrl"><div class="cl">Vignetă<span id="vl-vig">0</span></div><input type="range" id="sl-vig" min="-80" max="0" value="0" oninput="sv('vig');renderEnh()"></div>
       </div>
-      <div class="btnrow">
-        <button class="tbtn ok" onclick="dlCanvas('cv-enhance','enhance')">⬇ Descarcă</button>
+      <div class="brow">
+        <button class="btn g" onclick="exportCv('cv-enh','enhance')">⬇ Descarcă — calitate originală</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ======= HDR ======= -->
+<!-- ═══════════════════════════════════════════════
+     HDR MERGE
+═══════════════════════════════════════════════ -->
 <div class="panel" id="panel-hdr">
   <div class="card">
-    <div class="card-h"><h3>HDR Merge — Exposure Fusion</h3><span class="ch-sub">Mertens algorithm</span></div>
-    <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
-      <div class="st info">Încarcă 3 poze bracket: -2EV (dark), 0EV (normal), +2EV (bright). Algoritmul Mertens Exposure Fusion combină detaliile din fiecare expunere automat.</div>
-      <div class="hdr-g">
-        <div class="hdr-slot" id="hs0" onclick="document.getElementById('hf0').click()">
-          <div class="sev" style="color:#f05050">-2</div><div class="slbl">EV · Dark</div>
-          <input type="file" id="hf0" accept="image/*,.cr2,.nef,.arw,.dng" style="display:none" onchange="loadHDRImg(this,0)">
+    <div class="ch"><h3>HDR Merge — Exposure Fusion</h3><span class="chsub">Mertens</span></div>
+    <div class="cb" style="display:flex;flex-direction:column;gap:11px">
+      <div class="st info">Apasă pe fiecare casetă și selectează poza. Minim 2 necesare. Merge la rezoluție originală.</div>
+      <div class="hgrid">
+        <div class="hs" id="hs0" onclick="document.getElementById('hf0').click()">
+          <div class="ev" style="color:#e85050">-2</div><div class="elb">EV · Întunecat</div>
         </div>
-        <div class="hdr-slot" id="hs1" onclick="document.getElementById('hf1').click()">
-          <div class="sev" style="color:#4d8eff">0</div><div class="slbl">EV · Normal</div>
-          <input type="file" id="hf1" accept="image/*,.cr2,.nef,.arw,.dng" style="display:none" onchange="loadHDRImg(this,1)">
+        <div class="hs" id="hs1" onclick="document.getElementById('hf1').click()">
+          <div class="ev" style="color:#3d7eff">0</div><div class="elb">EV · Normal</div>
         </div>
-        <div class="hdr-slot" id="hs2" onclick="document.getElementById('hf2').click()">
-          <div class="sev" style="color:#3ecf8e">+2</div><div class="slbl">EV · Bright</div>
-          <input type="file" id="hf2" accept="image/*,.cr2,.nef,.arw,.dng" style="display:none" onchange="loadHDRImg(this,2)">
+        <div class="hs" id="hs2" onclick="document.getElementById('hf2').click()">
+          <div class="ev" style="color:#2ecc8e">+2</div><div class="elb">EV · Deschis</div>
         </div>
       </div>
-      <div class="grid2" style="grid-template-columns:1fr">
-        <div class="ctrl"><div class="cl">Intensitate Tone Mapping<span id="v-hdrtm">65</span></div><input type="range" id="s-hdrtm" min="10" max="100" value="65" oninput="sv2('s-hdrtm','v-hdrtm')"></div>
+      <input type="file" id="hf0" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="hdrLoad(this,0)">
+      <input type="file" id="hf1" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="hdrLoad(this,1)">
+      <input type="file" id="hf2" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="hdrLoad(this,2)">
+      <div class="g1">
+        <div class="ctrl"><div class="cl">Intensitate Tone Mapping<span id="vl-tm">60</span></div><input type="range" id="sl-tm" min="10" max="100" value="60" oninput="sv2('sl-tm','vl-tm')"></div>
       </div>
-      <div class="cv-wrap" id="cw-hdr" style="min-height:180px">
-        <div class="placeholder" id="ph-hdr">HDR preview apare după generare</div>
+      <div id="hdr-pg" style="display:none;flex-direction:column;gap:6px">
+        <div class="pgw"><div class="pgb" id="hdr-pb" style="width:0%"></div></div>
+        <div class="st info" id="hdr-st"></div>
+      </div>
+      <div class="pvwrap" id="pvw-hdr" style="min-height:160px">
+        <div class="pvph">Preview HDR apare după generare</div>
         <canvas id="cv-hdr" style="display:none"></canvas>
       </div>
-      <div id="hdr-prog-wrap" style="display:none">
-        <div class="progwrap"><div class="progbar" id="hdr-pb" style="width:0%"></div></div>
-        <div class="st info" id="hdr-st" style="margin-top:6px"></div>
-      </div>
-      <div class="btnrow">
-        <button class="tbtn primary" onclick="doHDR()">▶ Generează HDR</button>
-        <button class="tbtn ok" onclick="dlCanvas('cv-hdr','hdr-merged')">⬇ Descarcă HDR</button>
+      <div class="brow">
+        <button class="btn p" onclick="doHDR()">▶ Generează HDR</button>
+        <button class="btn g" onclick="exportCv('cv-hdr','hdr-merged')">⬇ Export HDR original</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ======= WINDOW FIX ======= -->
+<!-- ═══════════════════════════════════════════════
+     WINDOW FIX
+═══════════════════════════════════════════════ -->
 <div class="panel" id="panel-window">
   <div class="card">
-    <div class="card-h"><h3>Window Fix — Recuperare ferestre</h3></div>
-    <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
-      <div class="st info">Recuperează ferestrele arse (blown highlights). Ideal pentru interior cu lumină naturală puternică — reduce zona albă fără a afecta restul imaginii.</div>
-      <div class="dz" id="dz-window"
-        onclick="document.getElementById('fi-window').click()"
+    <div class="ch"><h3>Window Fix — Ferestre arse</h3></div>
+    <div class="cb" style="display:flex;flex-direction:column;gap:11px">
+      <div class="st info">Recuperează ferestrele arse (blown highlights). Ajustează pragul de detecție, apoi luminozitate separat pentru interior și exterior.</div>
+      <div class="dz" id="dz-win"
         ondragover="event.preventDefault();this.classList.add('drag')"
         ondragleave="this.classList.remove('drag')"
-        ondrop="dzDrop(event,'window')">
+        ondrop="dzDrop(event,'win')"
+        onclick="document.getElementById('fi-win').click()">
         <div class="dz-ico">🪟</div>
-        <h4>Trage fotografia de interior</h4>
-        <p>JPG, PNG, TIFF, DNG, CR2, NEF...</p>
+        <h4>Click sau trage — fotografie interior</h4>
+        <p>JPG · PNG · TIFF · preview RAW</p>
       </div>
-      <input type="file" id="fi-window" accept="image/*,.cr2,.nef,.arw,.dng" style="display:none" onchange="loadImageFile(this,'window')">
-      <div class="compare">
-        <div><canvas id="cv-win-b" style="display:none;width:100%;border-radius:6px"></canvas><div class="clabel">Înainte</div></div>
-        <div><canvas id="cv-window" style="display:none;width:100%;border-radius:6px"></canvas><div class="clabel">Window Fix</div></div>
+      <input type="file" id="fi-win" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="loadF(this,'win')">
+      <div id="win-cmp" style="display:none">
+        <div class="cmp">
+          <div><div class="cmpw"><canvas id="cv-winb" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Original</div></div>
+          <div><div class="cmpw"><canvas id="cv-win" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Window Fix</div></div>
+        </div>
       </div>
-      <div class="grid2">
-        <div class="ctrl"><div class="cl">Recuperare Highlights<span id="v-whl">60</span></div><input type="range" id="s-whl" min="0" max="100" value="60" oninput="sv2('s-whl','v-whl');doWindow()"></div>
-        <div class="ctrl"><div class="cl">Prag detecție<span id="v-wthr">185</span></div><input type="range" id="s-wthr" min="100" max="255" value="185" oninput="sv2('s-wthr','v-wthr');doWindow()"></div>
-        <div class="ctrl"><div class="cl">Protejare interior<span id="v-wint">70</span></div><input type="range" id="s-wint" min="0" max="100" value="70" oninput="sv2('s-wint','v-wint');doWindow()"></div>
-        <div class="ctrl"><div class="cl">Luminozitate exterior<span id="v-wext">0</span></div><input type="range" id="s-wext" min="-80" max="80" value="0" oninput="sv2('s-wext','v-wext');doWindow()"></div>
+      <div class="g2">
+        <div class="ctrl"><div class="cl">Recuperare Highlights<span id="vl-whl">55</span></div><input type="range" id="sl-whl" min="0" max="100" value="55" oninput="sv2('sl-whl','vl-whl');renderWin()"></div>
+        <div class="ctrl"><div class="cl">Prag detecție fereastră<span id="vl-wthr">185</span></div><input type="range" id="sl-wthr" min="80" max="255" value="185" oninput="sv2('sl-wthr','vl-wthr');renderWin()"></div>
+        <div class="ctrl"><div class="cl">Luminozitate exterior<span id="vl-wext">0</span></div><input type="range" id="sl-wext" min="-80" max="80" value="0" oninput="sv2('sl-wext','vl-wext');renderWin()"></div>
+        <div class="ctrl"><div class="cl">Luminozitate interior<span id="vl-wint">0</span></div><input type="range" id="sl-wint" min="-50" max="50" value="0" oninput="sv2('sl-wint','vl-wint');renderWin()"></div>
+        <div class="ctrl"><div class="cl">Contrast fereastră<span id="vl-wcon">0</span></div><input type="range" id="sl-wcon" min="-50" max="50" value="0" oninput="sv2('sl-wcon','vl-wcon');renderWin()"></div>
+        <div class="ctrl"><div class="cl">Saturație fereastră<span id="vl-wsat">0</span></div><input type="range" id="sl-wsat" min="-50" max="50" value="0" oninput="sv2('sl-wsat','vl-wsat');renderWin()"></div>
       </div>
-      <div class="btnrow">
-        <button class="tbtn ok" onclick="dlCanvas('cv-window','window-fixed')">⬇ Descarcă</button>
+      <div class="brow">
+        <button class="btn g" onclick="exportCv('cv-win','window-fix')">⬇ Export original</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ======= WHITE BALANCE AI ======= -->
+<!-- ═══════════════════════════════════════════════
+     WHITE BALANCE AI
+═══════════════════════════════════════════════ -->
 <div class="panel" id="panel-wb">
   <div class="card">
-    <div class="card-h"><h3>White Balance AI Detector</h3><span class="ch-sub">Gray World + estimare K</span></div>
-    <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
-      <div class="st info">Algoritmul analizează canalele RGB, estimează temperatura de culoare în Kelvin și corectează automat balanța de alb cu metoda Gray World.</div>
+    <div class="ch"><h3>White Balance AI</h3><span class="chsub">Gray World · Kelvin estimate</span></div>
+    <div class="cb" style="display:flex;flex-direction:column;gap:11px">
+      <div class="st info">Algoritmul detectează temperatura de culoare și o corectează. Ajustează manual după corecția automată.</div>
       <div class="dz" id="dz-wb"
-        onclick="document.getElementById('fi-wb').click()"
         ondragover="event.preventDefault();this.classList.add('drag')"
         ondragleave="this.classList.remove('drag')"
-        ondrop="dzDrop(event,'wb')">
+        ondrop="dzDrop(event,'wb')"
+        onclick="document.getElementById('fi-wb').click()">
         <div class="dz-ico">🌡</div>
-        <h4>Încarcă imaginea pentru analiză WB</h4>
-        <p>JPG, PNG, TIFF, preview RAW</p>
+        <h4>Click sau trage — orice imagine</h4>
+        <p>JPG · PNG · TIFF · preview RAW</p>
       </div>
-      <input type="file" id="fi-wb" accept="image/*,.cr2,.nef,.arw,.dng" style="display:none" onchange="loadImageFile(this,'wb')">
-      <div id="wb-result-box" style="display:none;flex-direction:column;gap:10px">
-        <div style="display:flex;gap:14px;align-items:center">
+      <input type="file" id="fi-wb" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="loadF(this,'wb')">
+      <div id="wb-box" style="display:none;flex-direction:column;gap:11px">
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
           <div>
-            <div style="font-size:26px;font-weight:700;color:var(--yellow);font-family:monospace" id="wb-temp">5500K</div>
-            <div style="font-size:11px;color:var(--text3)" id="wb-tint">Tint: neutru</div>
-            <div style="font-size:11px;color:var(--text2);margin-top:2px" id="wb-source">Sursă: —</div>
+            <div style="font-size:26px;font-weight:700;font-family:monospace;color:var(--yellow)" id="wb-kv">5500K</div>
+            <div style="font-size:11px;color:var(--text3)" id="wb-tv">Tint: neutru</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:2px" id="wb-sv">Sursă: —</div>
           </div>
-          <div id="wb-swatch" style="width:44px;height:44px;border-radius:50%;border:2px solid var(--border);flex-shrink:0"></div>
+          <div id="wb-sw" style="width:40px;height:40px;border-radius:50%;border:2px solid var(--border);flex-shrink:0"></div>
         </div>
         <div>
-          <div class="wb-row"><div class="wb-lbl">R channel</div><div class="wb-bar"><div class="wb-fill" id="wbr-f" style="background:#f05050"></div></div><div class="wb-val" id="wbr-v">128</div></div>
-          <div class="wb-row"><div class="wb-lbl">G channel</div><div class="wb-bar"><div class="wb-fill" id="wbg-f" style="background:#3ecf8e"></div></div><div class="wb-val" id="wbg-v">128</div></div>
-          <div class="wb-row"><div class="wb-lbl">B channel</div><div class="wb-bar"><div class="wb-fill" id="wbb-f" style="background:#4d8eff"></div></div><div class="wb-val" id="wbb-v">128</div></div>
+          <div class="wbr"><div class="wbl">R channel</div><div class="wbb"><div class="wbf" id="wbrf" style="background:#e85050"></div></div><div class="wbv" id="wbrv">128</div></div>
+          <div class="wbr"><div class="wbl">G channel</div><div class="wbb"><div class="wbf" id="wbgf" style="background:#2ecc8e"></div></div><div class="wbv" id="wbgv">128</div></div>
+          <div class="wbr"><div class="wbl">B channel</div><div class="wbb"><div class="wbf" id="wbbf" style="background:#3d7eff"></div></div><div class="wbv" id="wbbv">128</div></div>
         </div>
-        <div class="compare">
-          <div><canvas id="cv-wb-b" style="display:none;width:100%;border-radius:6px"></canvas><div class="clabel">Original</div></div>
-          <div><canvas id="cv-wb" style="display:none;width:100%;border-radius:6px"></canvas><div class="clabel">WB Corectat</div></div>
+        <div class="g1">
+          <div class="ctrl"><div class="cl">Rece ←——→ Cald (manual)<span id="vl-wbm">0</span></div><input type="range" id="sl-wbm" min="-100" max="100" value="0" oninput="sv2('sl-wbm','vl-wbm');renderWB()"></div>
+          <div class="ctrl"><div class="cl">Verde ←——→ Magenta (Tint)<span id="vl-wbt">0</span></div><input type="range" id="sl-wbt" min="-50" max="50" value="0" oninput="sv2('sl-wbt','vl-wbt');renderWB()"></div>
         </div>
-        <div class="btnrow">
-          <button class="tbtn primary" onclick="applyWB()">✦ Aplică WB Automat</button>
-          <button class="tbtn ok" onclick="dlCanvas('cv-wb','wb-corrected')">⬇ Descarcă corectat</button>
+        <div class="cmp" id="wb-cmp">
+          <div><div class="cmpw"><canvas id="cv-wbb" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">Original</div></div>
+          <div><div class="cmpw"><canvas id="cv-wb" style="display:block;max-width:100%;height:auto"></canvas></div><div class="clbl">WB Corectat</div></div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ======= SKY REPLACE ======= -->
-<div class="panel" id="panel-sky">
-  <div class="card">
-    <div class="card-h"><h3>Sky Replacement</h3><span class="ch-sub">Detectare automată cer</span></div>
-    <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
-      <div class="st warn">Detectarea cerului folosește analiza de culoare și luminozitate. Funcționează bine pe exterioare cu cer vizibil. Ajustează pragul dacă marginile nu sunt precise.</div>
-      <div class="dz" id="dz-sky"
-        onclick="document.getElementById('fi-sky').click()"
-        ondragover="event.preventDefault();this.classList.add('drag')"
-        ondragleave="this.classList.remove('drag')"
-        ondrop="dzDrop(event,'sky')">
-        <div class="dz-ico">🏠</div>
-        <h4>Încarcă fotografia exterioară</h4>
-        <p>JPG, PNG, TIFF</p>
-      </div>
-      <input type="file" id="fi-sky" accept="image/*" style="display:none" onchange="loadImageFile(this,'sky')">
-      <div id="sky-controls" style="display:none;flex-direction:column;gap:10px">
-        <div style="font-size:11px;color:var(--text2);font-family:monospace">ALEGE CER NOU:</div>
-        <div class="sky-g" id="sky-gallery"></div>
-        <div class="btnrow">
-          <button class="tbtn" onclick="document.getElementById('fi-sky-custom').click()">+ Cer propriu</button>
-          <input type="file" id="fi-sky-custom" accept="image/*" style="display:none" onchange="addCustomSky(this)">
-        </div>
-        <div class="grid2">
-          <div class="ctrl"><div class="cl">Prag detecție cer<span id="v-skythr">45</span></div><input type="range" id="s-skythr" min="5" max="120" value="45" oninput="sv2('s-skythr','v-skythr')"></div>
-          <div class="ctrl"><div class="cl">Featherare margini<span id="v-skyblend">6</span></div><input type="range" id="s-skyblend" min="1" max="25" value="6" oninput="sv2('s-skyblend','v-skyblend')"></div>
-          <div class="ctrl"><div class="cl">Luminozitate cer<span id="v-skybr">0</span></div><input type="range" id="s-skybr" min="-80" max="80" value="0" oninput="sv2('s-skybr','v-skybr')"></div>
-          <div class="ctrl"><div class="cl">Saturație cer<span id="v-skysat">0</span></div><input type="range" id="s-skysat" min="-80" max="80" value="0" oninput="sv2('s-skysat','v-skysat')"></div>
-        </div>
-        <div class="compare">
-          <div><canvas id="cv-sky-b" style="display:none;width:100%;border-radius:6px"></canvas><div class="clabel">Original</div></div>
-          <div><canvas id="cv-sky" style="display:none;width:100%;border-radius:6px"></canvas><div class="clabel">Sky Replaced</div></div>
-        </div>
-        <div class="btnrow">
-          <button class="tbtn primary" onclick="doSkyReplace()">▶ Aplică Sky</button>
-          <button class="tbtn ok" onclick="dlCanvas('cv-sky','sky-replaced')">⬇ Descarcă</button>
+        <div class="brow">
+          <button class="btn p" onclick="renderWB()">↺ Re-aplică WB</button>
+          <button class="btn g" onclick="exportCv('cv-wb','wb-corrected')">⬇ Export original</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ======= DEBLUR ======= -->
-<div class="panel" id="panel-deblur">
-  <div class="card">
-    <div class="card-h"><h3>Deblur / Sharpen</h3><span class="ch-sub">Unsharp Mask + Edge Clarity</span></div>
-    <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
-      <div class="st info">Sharpening avansat cu Unsharp Mask și edge enhancement. Ideal pentru poze ușor mișcate, focus imperfect, sau imagini care au nevoie de mai multă claritate.</div>
-      <div class="dz" id="dz-deblur"
-        onclick="document.getElementById('fi-deblur').click()"
-        ondragover="event.preventDefault();this.classList.add('drag')"
-        ondragleave="this.classList.remove('drag')"
-        ondrop="dzDrop(event,'deblur')">
-        <div class="dz-ico">◎</div>
-        <h4>Încarcă poza pentru sharpening</h4>
-        <p>JPG, PNG, TIFF, WEBP</p>
-      </div>
-      <input type="file" id="fi-deblur" accept="image/*,.cr2,.nef,.arw,.dng" style="display:none" onchange="loadImageFile(this,'deblur')">
-      <div class="compare">
-        <div><canvas id="cv-deb-b" style="display:none;width:100%;border-radius:6px"></canvas><div class="clabel">Original</div></div>
-        <div><canvas id="cv-deblur" style="display:none;width:100%;border-radius:6px"></canvas><div class="clabel">Sharpened</div></div>
-      </div>
-      <div class="grid2">
-        <div class="ctrl"><div class="cl">Sharpening Amount<span id="v-sham">80</span></div><input type="range" id="s-sham" min="0" max="250" value="80" oninput="sv2('s-sham','v-sham');doDeblur()"></div>
-        <div class="ctrl"><div class="cl">Raza blur (px)<span id="v-shr">1</span></div><input type="range" id="s-shr" min="1" max="4" value="1" step="1" oninput="sv2('s-shr','v-shr');doDeblur()"></div>
-        <div class="ctrl"><div class="cl">Threshold<span id="v-shthr">5</span></div><input type="range" id="s-shthr" min="0" max="30" value="5" oninput="sv2('s-shthr','v-shthr');doDeblur()"></div>
-        <div class="ctrl"><div class="cl">Reducere zgomot<span id="v-den">15</span></div><input type="range" id="s-den" min="0" max="80" value="15" oninput="sv2('s-den','v-den');doDeblur()"></div>
-        <div class="ctrl"><div class="cl">Edge Clarity<span id="v-edg">25</span></div><input type="range" id="s-edg" min="0" max="100" value="25" oninput="sv2('s-edg','v-edg');doDeblur()"></div>
-      </div>
-      <div class="btnrow">
-        <button class="tbtn ok" onclick="dlCanvas('cv-deblur','sharpened')">⬇ Descarcă</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ======= UPSCALER ======= -->
+<!-- ═══════════════════════════════════════════════
+     UPSCALER
+═══════════════════════════════════════════════ -->
 <div class="panel" id="panel-upscale">
   <div class="card">
-    <div class="card-h"><h3>Upscaler 2x / 4x</h3><span class="ch-sub">pica.js — Lanczos3</span></div>
-    <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
-      <div class="st info">Upscaling de înaltă calitate cu <b>pica.js Lanczos3</b> — același algoritm ca Photoshop "Bicubic Sharper". Produce rezultate mult mai bune decât resize-ul simplu din browser.</div>
-      <div class="dz" id="dz-upscale"
-        onclick="document.getElementById('fi-upscale').click()"
+    <div class="ch"><h3>Upscaler</h3><span class="chsub">pica.js Lanczos3</span></div>
+    <div class="cb" style="display:flex;flex-direction:column;gap:11px">
+      <div class="st info">Upscaling de înaltă calitate cu <b>pica.js Lanczos3</b>. Preview arată imaginea scalată să încapă pe ecran. Descărcarea exportă rezoluția HD completă.</div>
+      <div class="dz" id="dz-us"
         ondragover="event.preventDefault();this.classList.add('drag')"
         ondragleave="this.classList.remove('drag')"
-        ondrop="dzDrop(event,'upscale')">
+        ondrop="dzDrop(event,'us')"
+        onclick="document.getElementById('fi-us').click()">
         <div class="dz-ico">⤡</div>
-        <h4>Încarcă imaginea de upscalat</h4>
-        <p>Funcționează cu orice dimensiune</p>
+        <h4>Click sau trage imaginea</h4>
+        <p>JPG · PNG · WEBP · orice dimensiune</p>
       </div>
-      <input type="file" id="fi-upscale" accept="image/*" style="display:none" onchange="loadImageFile(this,'upscale')">
-      <div id="us-info" style="display:none">
-        <div class="us-info">
-          <div><div class="clabel">Original</div><div class="us-dim" id="us-orig">—</div></div>
-          <div class="us-arr">→</div>
-          <div><div class="clabel">Upscalat</div><div class="us-dim" id="us-new">—</div></div>
+      <input type="file" id="fi-us" style="display:none" accept="image/*" onchange="loadF(this,'us')">
+      <div id="us-dims" style="display:none">
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;flex-wrap:wrap">
+          <div><div style="font-size:9px;color:var(--text3);font-family:monospace">ORIGINAL</div><div style="font-size:13px;font-family:monospace;color:var(--text)" id="us-orig">—</div></div>
+          <div style="font-size:16px;color:var(--accent)">→</div>
+          <div><div style="font-size:9px;color:var(--text3);font-family:monospace">REZULTAT</div><div style="font-size:13px;font-family:monospace;color:var(--green)" id="us-new">—</div></div>
         </div>
       </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="pbtn" id="usf-1" onclick="setUF(1.5,this)">1.5x</button>
-        <button class="pbtn sel" id="usf-2" onclick="setUF(2,this)">2x</button>
-        <button class="pbtn" id="usf-3" onclick="setUF(3,this)">3x</button>
-        <button class="pbtn" id="usf-4" onclick="setUF(4,this)">4x</button>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="pb" onclick="setUF(1.5,this)">1.5x</button>
+        <button class="pb on" id="usb2" onclick="setUF(2,this)">2x</button>
+        <button class="pb" onclick="setUF(3,this)">3x</button>
+        <button class="pb" onclick="setUF(4,this)">4x</button>
       </div>
-      <div class="grid2" style="grid-template-columns:1fr">
-        <div class="ctrl"><div class="cl">Sharpen post-upscale<span id="v-uss">30</span></div><input type="range" id="s-uss" min="0" max="100" value="30" oninput="sv2('s-uss','v-uss')"></div>
+      <div class="g1">
+        <div class="ctrl"><div class="cl">Sharpen post-upscale<span id="vl-uss">25</span></div><input type="range" id="sl-uss" min="0" max="100" value="25" oninput="sv2('sl-uss','vl-uss')"></div>
       </div>
-      <div id="us-prog-wrap" style="display:none">
-        <div class="progwrap"><div class="progbar" id="us-pb" style="width:0%"></div></div>
-        <div class="st info" id="us-st" style="margin-top:6px"></div>
+      <div id="us-pg" style="display:none;flex-direction:column;gap:6px">
+        <div class="pgw"><div class="pgb" id="us-pb" style="width:0%"></div></div>
+        <div class="st info" id="us-st"></div>
       </div>
-      <canvas id="cv-us-prev" style="display:none;max-width:100%;max-height:280px;border-radius:6px"></canvas>
-      <canvas id="cv-us-result" style="display:none"></canvas>
-      <div class="btnrow">
-        <button class="tbtn primary" id="btn-us-go" onclick="doUpscale()" disabled>▶ Upscalează</button>
-        <button class="tbtn ok" id="btn-us-dl" onclick="dlCanvas('cv-us-result','upscaled')" disabled>⬇ Descarcă HD</button>
+      <!-- Preview scaled to fit — calitate buna dar micsorata -->
+      <div class="pvwrap" id="pvw-us" style="display:none">
+        <canvas id="cv-us-prev" style="display:block;max-width:100%;height:auto"></canvas>
+      </div>
+      <!-- Canvas rezultat la rezolutie COMPLETA, ascuns -->
+      <canvas id="cv-us-full" style="display:none"></canvas>
+      <div class="brow">
+        <button class="btn p" id="btn-us-go" onclick="doUpscale()" disabled>▶ Upscalează</button>
+        <button class="btn g" id="btn-us-dl" onclick="exportCv('cv-us-full','upscaled')" disabled>⬇ Descarcă HD — rezoluție completă</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ======= RAW EXIF ======= -->
+<!-- ═══════════════════════════════════════════════
+     CROP / ROTATE — Cropper.js
+═══════════════════════════════════════════════ -->
+<div class="panel" id="panel-crop">
+  <div class="card">
+    <div class="ch"><h3>Crop / Rotate / Flip</h3><span class="chsub">Cropper.js</span></div>
+    <div class="cb" style="display:flex;flex-direction:column;gap:11px">
+      <div class="st info">Crop avansat cu aspect ratio fix, rotire liberă, flip. Rezultatul se exportă la rezoluție originală decupată.</div>
+      <div class="dz" id="dz-crop"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="dzDrop(event,'crop')"
+        onclick="document.getElementById('fi-crop').click()">
+        <div class="dz-ico">✂</div>
+        <h4>Click sau trage imaginea</h4>
+        <p>JPG · PNG · WEBP · TIFF</p>
+      </div>
+      <input type="file" id="fi-crop" style="display:none" accept="image/*" onchange="loadF(this,'crop')">
+      <div id="crop-container" style="display:none">
+        <img id="crop-img" style="max-width:100%;display:block">
+      </div>
+      <div id="crop-controls" style="display:none;flex-direction:column;gap:10px">
+        <div style="font-size:11px;color:var(--text2)">Aspect Ratio:</div>
+        <div class="prow">
+          <button class="pb" onclick="setCropAR(NaN)">Liber</button>
+          <button class="pb" onclick="setCropAR(1)">1:1</button>
+          <button class="pb" onclick="setCropAR(4/3)">4:3</button>
+          <button class="pb" onclick="setCropAR(16/9)">16:9</button>
+          <button class="pb" onclick="setCropAR(3/2)">3:2</button>
+          <button class="pb" onclick="setCropAR(2/3)">2:3</button>
+        </div>
+        <div class="g2">
+          <button class="btn" onclick="cropperInst&&cropperInst.rotate(-90)">↺ Rotire -90°</button>
+          <button class="btn" onclick="cropperInst&&cropperInst.rotate(90)">↻ Rotire +90°</button>
+          <button class="btn" onclick="cropperInst&&cropperInst.scaleX(cropperInst.getData().scaleX===-1?1:-1)">↔ Flip H</button>
+          <button class="btn" onclick="cropperInst&&cropperInst.scaleY(cropperInst.getData().scaleY===-1?1:-1)">↕ Flip V</button>
+        </div>
+        <div class="brow">
+          <button class="btn g" onclick="exportCrop()">⬇ Export crop — rezoluție originală</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     COMPRESIE — Compressor.js
+═══════════════════════════════════════════════ -->
+<div class="panel" id="panel-compress">
+  <div class="card">
+    <div class="ch"><h3>Compresie Imagine</h3><span class="chsub">Compressor.js</span></div>
+    <div class="cb" style="display:flex;flex-direction:column;gap:11px">
+      <div class="st info">Compresie client-side cu <b>Compressor.js</b>. Reduce dimensiunea fișierului fără a pierde calitatea vizibilă. Ideal pentru upload pe site-uri imobiliare.</div>
+      <div class="dz" id="dz-comp"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="dzDrop(event,'comp')"
+        onclick="document.getElementById('fi-comp').click()">
+        <div class="dz-ico">📦</div>
+        <h4>Click sau trage imaginea</h4>
+        <p>JPG · PNG · WEBP</p>
+      </div>
+      <input type="file" id="fi-comp" style="display:none" accept="image/*" onchange="loadF(this,'comp')">
+      <div class="g2">
+        <div class="ctrl"><div class="cl">Calitate output (0-100)<span id="vl-cq">82</span></div><input type="range" id="sl-cq" min="10" max="100" value="82" oninput="sv2('sl-cq','vl-cq')"></div>
+        <div class="ctrl">
+          <div class="cl">Format output</div>
+          <select id="sel-cfmt" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:4px 8px;font-size:12px;font-family:inherit">
+            <option value="image/jpeg">JPEG</option>
+            <option value="image/webp">WebP</option>
+            <option value="image/png">PNG</option>
+          </select>
+        </div>
+        <div class="ctrl"><div class="cl">Lățime maximă (px)<span id="vl-cmw">0</span></div><input type="range" id="sl-cmw" min="0" max="5000" step="100" value="0" oninput="sv2('sl-cmw','vl-cmw')"></div>
+        <div class="ctrl"><div class="cl">Înălțime maximă (px)<span id="vl-cmh">0</span></div><input type="range" id="sl-cmh" min="0" max="5000" step="100" value="0" oninput="sv2('sl-cmh','vl-cmh')"></div>
+      </div>
+      <div id="comp-result" style="display:none"></div>
+      <div class="brow">
+        <button class="btn p" id="btn-comp" onclick="doCompress()" disabled>▶ Compresează</button>
+        <button class="btn g" id="btn-comp-dl" style="display:none" onclick="dlCompResult()">⬇ Descarcă comprimat</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     RAW & EXIF
+═══════════════════════════════════════════════ -->
 <div class="panel" id="panel-raw">
   <div class="card">
-    <div class="card-h"><h3>RAW Info &amp; EXIF Reader</h3></div>
-    <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
-      <div class="st warn">Browserele pot afișa preview JPEG din fișiere RAW. Datele EXIF sunt citite complet din orice RAW sau JPG — cameră, obiectiv, ISO, WB, GPS și altele.</div>
+    <div class="ch"><h3>RAW &amp; EXIF Reader</h3><span class="chsub">ExifReader.js</span></div>
+    <div class="cb" style="display:flex;flex-direction:column;gap:11px">
+      <div class="st warn">Browserele afișează preview JPEG din fișiere RAW. Datele EXIF sunt citite complet din orice format.</div>
       <div class="dz"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="dzDropRaw(event)"
         onclick="document.getElementById('fi-raw').click()">
         <div class="dz-ico">📷</div>
-        <h4>Încarcă fișier RAW sau JPG/TIFF</h4>
-        <p>Citim toate datele EXIF disponibile</p>
-        <div class="ftags"><span class="ftag">CR2/CR3</span><span class="ftag">NEF</span><span class="ftag">ARW/DNG</span><span class="ftag">RAF/ORF</span><span class="ftag">JPG/TIFF</span></div>
+        <h4>Click sau trage orice imagine / RAW</h4>
+        <div class="ftags">
+          <span class="ft">CR2</span><span class="ft">CR3</span><span class="ft">NEF</span><span class="ft">NRW</span>
+          <span class="ft">ARW</span><span class="ft">DNG</span><span class="ft">RAF</span><span class="ft">ORF</span>
+          <span class="ft">RW2</span><span class="ft">PEF</span><span class="ft">3FR</span><span class="ft">MEF</span>
+          <span class="ft">IIQ</span><span class="ft">ERF</span><span class="ft">MRW</span><span class="ft">SRF</span>
+          <span class="ft">JPG</span><span class="ft">TIFF</span><span class="ft">WEBP</span><span class="ft">PNG</span>
+        </div>
       </div>
-      <input type="file" id="fi-raw" accept="image/*,.cr2,.cr3,.nef,.arw,.dng,.raf,.orf,.rw2" style="display:none" onchange="readExif(this)">
-      <div id="exif-box" style="display:none"></div>
+      <input type="file" id="fi-raw" style="display:none" accept="image/*,.cr2,.cr3,.nef,.nrw,.arw,.srf,.dng,.raf,.orf,.rw2,.pef,.3fr,.mef,.mrw,.iiq,.erf" onchange="readExif(this)">
+      <div id="exif-box"></div>
     </div>
   </div>
 </div>
 
-<!-- ======= OPEN SOURCE TOOLS ======= -->
-<div class="panel" id="panel-tools">
+<!-- ═══════════════════════════════════════════════
+     LIBRĂRII JS — INSTALARE DETALIATĂ
+═══════════════════════════════════════════════ -->
+<div class="panel" id="panel-libs">
   <div class="card">
-    <div class="card-h"><h3>Open Source Tools Recomandate</h3></div>
-    <div class="card-b">
-      <div class="tool-item"><div class="t-ico">🌅</div><div class="t-body"><h4>Darktable — Alternativa gratuită la Lightroom</h4><p>Editor RAW complet cu HDR merge, tethering, batch export. Windows/Mac/Linux.</p><a href="https://www.darktable.org" target="_blank">→ darktable.org</a></div></div>
-      <div class="tool-item"><div class="t-ico">📦</div><div class="t-body"><h4>RawTherapee — RAW processing avansat</h4><p>Wavelet denoising, retinex, HDR, tone mapping. 100% gratuit.</p><a href="https://rawtherapee.com" target="_blank">→ rawtherapee.com</a></div></div>
-      <div class="tool-item"><div class="t-ico">🖼</div><div class="t-body"><h4>GIMP + G'MIC — Editare avansată</h4><p>G'MIC oferă HDR, sky replace, inpainting, deblur prin deconvoluție, upscaling ESRGAN. Filters > G'MIC.</p><a href="https://gmic.eu" target="_blank">→ gmic.eu</a></div></div>
-      <div class="tool-item"><div class="t-ico">🤖</div><div class="t-body"><h4>Real-ESRGAN — Upscaling AI (4x, 8x)</h4><p>Cel mai bun upscaler AI open-source. Rulează local, fără cont, fără limite.</p><a href="https://github.com/xinntao/Real-ESRGAN" target="_blank">→ github.com/xinntao/Real-ESRGAN</a></div></div>
-      <div class="tool-item"><div class="t-ico">🔍</div><div class="t-body"><h4>Upscayl — AI Upscaler Desktop (gratuit)</h4><p>Aplicație desktop cu Real-ESRGAN. Drag &amp; drop, batch, 4x cu un click.</p><a href="https://upscayl.org" target="_blank">→ upscayl.org</a></div></div>
-      <div class="tool-item"><div class="t-ico">🎨</div><div class="t-body"><h4>Luminance HDR — HDR merge dedicat</h4><p>Algoritmi multipli: Mantiuk, Fattal, Drago, Reinhard. Ideal pentru interior cu ferestre.</p><a href="https://qtpfsgui.sourceforge.net" target="_blank">→ qtpfsgui.sourceforge.net</a></div></div>
-      <div class="tool-item"><div class="t-ico">🧹</div><div class="t-body"><h4>Cleanup.pictures — Object Removal gratuit</h4><p>Elimină obiecte nedorite: mașini, cabluri, obiecte. Direct în browser.</p><a href="https://cleanup.pictures" target="_blank">→ cleanup.pictures</a></div></div>
-      <div class="tool-item"><div class="t-ico">⚡</div><div class="t-body"><h4>Squoosh — Compresie avansată (Google)</h4><p>WebP, AVIF, MozJPEG, OxiPNG. Reduce dimensiunea fără pierdere vizibilă.</p><a href="https://squoosh.app" target="_blank">→ squoosh.app</a></div></div>
-      <div class="tool-item"><div class="t-ico">☁</div><div class="t-body"><h4>SkyFilter — Sky Replacement AI (Python)</h4><p>Script Python care înlocuiește cerul cu AI. Mult mai precis decât metoda pe culoare.</p><a href="https://github.com/xiaohu2015/SkyFilter" target="_blank">→ github.com/xiaohu2015/SkyFilter</a></div></div>
-    </div>
-  </div>
-</div>
+    <div class="ch"><h3>Librării integrate în pagina ta</h3></div>
+    <div class="cb" style="display:flex;gap:0;padding:0;min-height:440px">
 
-  </div><!-- workspace -->
-</div><!-- content -->
+      <!-- LEFT NAV -->
+      <div id="lib-nav" style="width:160px;min-width:160px;border-right:1px solid var(--border);padding:10px 0;flex-shrink:0">
+        <button class="lib-nb on" onclick="showLib('status',this)">📋 Status librării</button>
+        <button class="lib-nb" onclick="showLib('pica',this)">⤡ pica.js</button>
+        <button class="lib-nb" onclick="showLib('exif',this)">🏷 ExifReader</button>
+        <button class="lib-nb" onclick="showLib('caman',this)">🎨 CamanJS</button>
+        <button class="lib-nb" onclick="showLib('cropper',this)">✂ Cropper.js</button>
+        <button class="lib-nb" onclick="showLib('compressor',this)">📦 Compressor.js</button>
+        <button class="lib-nb" onclick="showLib('github',this)">🚀 GitHub Pages</button>
+      </div>
+
+      <!-- RIGHT CONTENT -->
+      <div style="flex:1;padding:16px;overflow-y:auto;min-width:0">
+
+        <!-- STATUS -->
+        <div class="lib-page on" id="lp-status">
+          <h4 style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text)">Ce librării sunt în pagina ta</h4>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6">
+            Toate librăriile de mai jos sunt <b style="color:var(--green)">deja active</b> în fișierul tău <code class="ic">index.html</code>.
+            Nu trebuie să descarci sau instalezi nimic. Ele se încarcă automat de pe internet (CDN) când deschizi pagina.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="lib-row"><span class="lib-dot g"></span><div><b>pica.js</b> — Upscaler Lanczos3<br><span style="font-size:11px;color:var(--text3)">Folosit la secțiunea Upscaler 4x</span></div></div>
+            <div class="lib-row"><span class="lib-dot g"></span><div><b>ExifReader.js</b> — Citire EXIF/RAW<br><span style="font-size:11px;color:var(--text3)">Folosit la secțiunea RAW &amp; EXIF</span></div></div>
+            <div class="lib-row"><span class="lib-dot g"></span><div><b>CamanJS</b> — Filtere foto avansate<br><span style="font-size:11px;color:var(--text3)">Disponibil, nefolosit direct — poți adăuga</span></div></div>
+            <div class="lib-row"><span class="lib-dot g"></span><div><b>Cropper.js</b> — Crop / Rotate / Flip<br><span style="font-size:11px;color:var(--text3)">Folosit la secțiunea Crop</span></div></div>
+            <div class="lib-row"><span class="lib-dot g"></span><div><b>Compressor.js</b> — Compresie imagine<br><span style="font-size:11px;color:var(--text3)">Folosit la secțiunea Compresie</span></div></div>
+          </div>
+          <div class="lib-tip" style="margin-top:16px">
+            💡 <b>Cum funcționează CDN:</b> Fișierul tău <code class="ic">index.html</code> conține linkuri care descarcă automat librăriile de pe internet când cineva deschide pagina. Nu trebuie să urci nimic în plus pe GitHub.
+          </div>
+        </div>
+
+        <!-- PICA -->
+        <div class="lib-page" id="lp-pica">
+          <div class="lib-badge-row"><span class="lbig">⤡</span><div><h4 class="lib-title">pica.js — Upscaling de înaltă calitate</h4><span class="lib-status">✓ activ în pagina ta</span></div></div>
+          <p class="lib-desc">Mărește imaginile (2x, 3x, 4x) fără a le face pixelate. Folosește algoritmul Lanczos3, același ca Photoshop. Deja integrat și funcțional în secțiunea <b>Upscaler 4x</b>.</p>
+
+          <div class="lib-step-title">Este deja în fișierul tău — linia din &lt;head&gt;:</div>
+          <div class="cb2">&lt;script src="https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js"&gt;&lt;/script&gt;</div>
+
+          <div class="lib-step-title">Dacă vrei să o folosești și în altă pagină:</div>
+          <div class="lib-step">
+            <div class="step-num">1</div>
+            <div>Deschide fișierul HTML nou cu Notepad / VS Code</div>
+          </div>
+          <div class="lib-step">
+            <div class="step-num">2</div>
+            <div>Găsește linia <code class="ic">&lt;/head&gt;</code> și adaugă ÎNAINTE de ea:</div>
+          </div>
+          <div class="cb2">&lt;script src="https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js"&gt;&lt;/script&gt;</div>
+          <div class="lib-step">
+            <div class="step-num">3</div>
+            <div>Gata. Acum în codul tău JS poți scrie:</div>
+          </div>
+          <div class="cb2">const p = pica();
+await p.resize(canvasSursa, canvasDestinatie, { quality: 3 });</div>
+          <div class="lib-tip">💡 <code class="ic">quality: 3</code> = Lanczos3, cel mai bun. <code class="ic">quality: 1</code> = rapid dar mai slab.</div>
+          <a class="lib-link" href="https://github.com/nodeca/pica" target="_blank">→ Documentație completă: github.com/nodeca/pica</a>
+        </div>
+
+        <!-- EXIF -->
+        <div class="lib-page" id="lp-exif">
+          <div class="lib-badge-row"><span class="lbig">🏷</span><div><h4 class="lib-title">ExifReader.js — Citire metadate RAW/JPEG</h4><span class="lib-status">✓ activ în pagina ta</span></div></div>
+          <p class="lib-desc">Citește toate informațiile dintr-o fotografie: cameră, obiectiv, ISO, timp expunere, GPS și altele. Funcționează cu RAW (CR2, NEF, ARW, DNG) și JPEG. Deja integrat în secțiunea <b>RAW &amp; EXIF</b>.</p>
+
+          <div class="lib-step-title">Este deja în fișierul tău — linia din &lt;head&gt;:</div>
+          <div class="cb2">&lt;script src="https://cdn.jsdelivr.net/npm/exifreader@4.21.1/dist/exif-reader.min.js"&gt;&lt;/script&gt;</div>
+
+          <div class="lib-step-title">Dacă vrei să o folosești și în altă pagină:</div>
+          <div class="lib-step"><div class="step-num">1</div><div>Adaugă în <code class="ic">&lt;head&gt;</code>:</div></div>
+          <div class="cb2">&lt;script src="https://cdn.jsdelivr.net/npm/exifreader@4.21.1/dist/exif-reader.min.js"&gt;&lt;/script&gt;</div>
+          <div class="lib-step"><div class="step-num">2</div><div>Folosești cu un <code class="ic">input[type=file]</code>:</div></div>
+          <div class="cb2">const reader = new FileReader();
+reader.onload = e => {
+  const tags = ExifReader.load(e.target.result, { expanded: true });
+  console.log(tags.exif.Model.description); // ex: "Canon EOS R5"
+  console.log(tags.exif.ISOSpeedRatings.value); // ex: 400
+};
+reader.readAsArrayBuffer(fisier);</div>
+          <a class="lib-link" href="https://github.com/mattiasw/ExifReader" target="_blank">→ github.com/mattiasw/ExifReader</a>
+        </div>
+
+        <!-- CAMAN -->
+        <div class="lib-page" id="lp-caman">
+          <div class="lib-badge-row"><span class="lbig">🎨</span><div><h4 class="lib-title">CamanJS — Filtere foto (vintage, lomo etc.)</h4><span class="lib-status">✓ activ în pagina ta</span></div></div>
+          <p class="lib-desc">Aplică filtere foto pe un canvas: luminozitate, contrast, saturație, și preseturi gata-făcute ca <b>vintage</b>, <b>lomo</b>, <b>sunrise</b>, <b>clarity</b> și altele. Deja inclus în pagina ta, îl poți folosi oricând.</p>
+
+          <div class="lib-step-title">Este deja în fișierul tău:</div>
+          <div class="cb2">&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"&gt;&lt;/script&gt;</div>
+
+          <div class="lib-step-title">Cum îl folosești pe un canvas cu imagine:</div>
+          <div class="lib-step"><div class="step-num">1</div><div>Ai un canvas cu o imagine desenată pe el (id = "myCanvas")</div></div>
+          <div class="lib-step"><div class="step-num">2</div><div>Apelezi Caman cu ajustările dorite:</div></div>
+          <div class="cb2">Caman('#myCanvas', function() {
+  this.brightness(10)   // -100 la +100
+     .contrast(5)
+     .saturation(15)
+     .exposure(5)
+     .render();
+});</div>
+          <div class="lib-step"><div class="step-num">3</div><div>Sau aplici un preset gata-făcut:</div></div>
+          <div class="cb2">Caman('#myCanvas', function() {
+  this.sunrise().render();
+});</div>
+          <div class="lib-tip">💡 <b>Preseturi disponibile:</b> sunrise · vintage · lomo · clarity · sinCity · crossProcess · pinhole · oldBoots · glowingSun · hazyDays · herMajesty · nostalgia · hemingway · concentrate</div>
+          <div class="lib-tip" style="margin-top:8px">⚠ <b>Atenție:</b> CamanJS modifică canvas-ul async. Dacă vrei să descarci rezultatul, fă-o în callback-ul după <code class="ic">render()</code>:<br><br>
+          <code class="ic">this.render(function() { /* descarcă canvas-ul aici */ });</code></div>
+          <a class="lib-link" href="https://github.com/meltingice/CamanJS" target="_blank">→ github.com/meltingice/CamanJS</a>
+        </div>
+
+        <!-- CROPPER -->
+        <div class="lib-page" id="lp-cropper">
+          <div class="lib-badge-row"><span class="lbig">✂</span><div><h4 class="lib-title">Cropper.js — Crop, Rotire, Flip</h4><span class="lib-status">✓ activ în pagina ta</span></div></div>
+          <p class="lib-desc">Crop interactiv cu mouse-ul, rotire cu orice unghi, flip orizontal/vertical, și rapoarte fixe (1:1, 16:9 etc.). Rezultatul este la rezoluția originală. Deja integrat în secțiunea <b>Crop / Rotate</b>.</p>
+
+          <div class="lib-step-title">Cum funcționează Cropper.js — pași simpli:</div>
+          <div class="lib-step"><div class="step-num">1</div><div>Ai nevoie de DOUĂ lucruri: fișierul CSS și fișierul JS, ambele deja în pagina ta:</div></div>
+          <div class="cb2">&lt;!-- în head --&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css"&gt;
+&lt;!-- înainte de /body --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"&gt;&lt;/script&gt;</div>
+          <div class="lib-step"><div class="step-num">2</div><div>Pui o imagine în HTML:</div></div>
+          <div class="cb2">&lt;img id="poza" src="foto.jpg" style="max-width:100%"&gt;</div>
+          <div class="lib-step"><div class="step-num">3</div><div>Activezi cropper-ul în JS:</div></div>
+          <div class="cb2">const cropper = new Cropper(document.getElementById('poza'), {
+  aspectRatio: 16 / 9,  // sau NaN pentru liber
+  viewMode: 1
+});</div>
+          <div class="lib-step"><div class="step-num">4</div><div>Descarci zona selectată la rezoluție originală:</div></div>
+          <div class="cb2">const canvas = cropper.getCroppedCanvas();
+canvas.toBlob(blob => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'crop.jpg';
+  a.click();
+}, 'image/jpeg', 1.0);</div>
+          <div class="lib-tip">💡 <code class="ic">getCroppedCanvas()</code> fără argumente returnează imaginea la rezoluția ORIGINALĂ, nu la cea afișată pe ecran.</div>
+          <a class="lib-link" href="https://github.com/fengyuanchen/cropperjs" target="_blank">→ github.com/fengyuanchen/cropperjs</a>
+        </div>
+
+        <!-- COMPRESSOR -->
+        <div class="lib-page" id="lp-compressor">
+          <div class="lib-badge-row"><span class="lbig">📦</span><div><h4 class="lib-title">Compressor.js — Micșorare fișier imagine</h4><span class="lib-status">✓ activ în pagina ta</span></div></div>
+          <p class="lib-desc">Reduce dimensiunea unui fișier JPG/PNG/WebP înainte de a-l urca pe un site. De exemplu, un fișier de 8MB devine 800KB cu calitate vizuală identică. Totul se face în browser, fără server. Deja integrat în secțiunea <b>Compresie</b>.</p>
+
+          <div class="lib-step-title">Adaugă în &lt;head&gt; dacă vrei în altă pagină:</div>
+          <div class="cb2">&lt;script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"&gt;&lt;/script&gt;</div>
+
+          <div class="lib-step-title">Cum îl folosești — extrem de simplu:</div>
+          <div class="lib-step"><div class="step-num">1</div><div>Utilizatorul selectează un fișier din <code class="ic">input[type=file]</code></div></div>
+          <div class="lib-step"><div class="step-num">2</div><div>Apelezi Compressor cu fișierul:</div></div>
+          <div class="cb2">new Compressor(fisier, {
+  quality: 0.8,           // 0.1 (mic) → 1.0 (original)
+  maxWidth: 3000,         // redimensionează dacă e mai lat
+  mimeType: 'image/jpeg',
+  success(rezultat) {
+    // rezultat = fișier comprimat
+    console.log('Înainte:', fisier.size, 'bytes');
+    console.log('După:', rezultat.size, 'bytes');
+    // descarcă:
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(rezultat);
+    a.download = 'foto-mic.jpg';
+    a.click();
+  },
+  error(e) { alert(e.message); }
+});</div>
+          <div class="lib-tip">💡 <b>Calitate recomandată</b> pentru imobiliare: <code class="ic">0.82</code> (82%) — reduce fișierul cu ~75% fără pierdere vizibilă.</div>
+          <a class="lib-link" href="https://github.com/fengyuanchen/compressorjs" target="_blank">→ github.com/fengyuanchen/compressorjs</a>
+        </div>
+
+        <!-- GITHUB -->
+        <div class="lib-page" id="lp-github">
+          <div class="lib-badge-row"><span class="lbig">🚀</span><div><h4 class="lib-title">Cum pui fișierul pe GitHub Pages</h4><span class="lib-status">ghid pas cu pas</span></div></div>
+          <p class="lib-desc">GitHub Pages este un serviciu <b>gratuit</b> care transformă un fișier HTML în site accesibil de oriunde cu un link. Nu ai nevoie de hosting, nu plătești nimic.</p>
+
+          <div class="lib-step-title">Prima dată — creare repository:</div>
+          <div class="lib-step"><div class="step-num">1</div><div>Mergi la <a class="lib-link" href="https://github.com" target="_blank" style="display:inline">github.com</a> și fă cont dacă nu ai</div></div>
+          <div class="lib-step"><div class="step-num">2</div><div>Apasă butonul verde <b>New</b> (sau <b>+</b> din colțul dreapta sus → New repository)</div></div>
+          <div class="lib-step"><div class="step-num">3</div><div>Denumește repository-ul, ex: <code class="ic">re-photo-editor</code> — bifează <b>Public</b> → apasă <b>Create repository</b></div></div>
+
+          <div class="lib-step-title" style="margin-top:14px">Upload fișier index.html:</div>
+          <div class="lib-step"><div class="step-num">4</div><div>În repository-ul nou, apasă <b>Add file → Upload files</b></div></div>
+          <div class="lib-step"><div class="step-num">5</div><div>Trage fișierul <code class="ic">index.html</code> în zona de upload</div></div>
+          <div class="lib-step"><div class="step-num">6</div><div>Apasă <b>Commit changes</b> (butonul verde jos)</div></div>
+
+          <div class="lib-step-title" style="margin-top:14px">Activare GitHub Pages:</div>
+          <div class="lib-step"><div class="step-num">7</div><div>Mergi la <b>Settings</b> (tab-ul din meniul repository-ului)</div></div>
+          <div class="lib-step"><div class="step-num">8</div><div>În meniul din stânga apasă <b>Pages</b></div></div>
+          <div class="lib-step"><div class="step-num">9</div><div>La <b>Source</b> selectează <b>Deploy from a branch</b>, branch = <b>main</b>, folder = <b>/ (root)</b> → apasă <b>Save</b></div></div>
+          <div class="lib-step"><div class="step-num">10</div><div>Aștepți ~1 minut, refresh la pagina Settings/Pages și vei vedea link-ul tău:</div></div>
+          <div class="cb2">https://NUMELE-TAU.github.io/re-photo-editor/</div>
+
+          <div class="lib-tip">💡 <b>Actualizare după modificări:</b> Mergi la repository → <b>Add file → Upload files</b> → urci noul <code class="ic">index.html</code> care înlocuiește vechiul → Commit. Site-ul se actualizează automat în ~30 secunde.</div>
+          <div class="lib-tip" style="margin-top:8px">✅ <b>Librăriile CDN funcționează pe GitHub Pages</b> fără nicio problemă — se încarcă de pe internet direct în browser-ul vizitatorului.</div>
+        </div>
+
+      </div><!-- right content -->
+    </div><!-- inner flex -->
+  </div><!-- card -->
+</div><!-- panel-libs -->
+
+  </div><!-- ws -->
+</div><!-- main -->
 </div><!-- app -->
 
 <script>
-// ============================================================
-//  STATE
-// ============================================================
-var originals = {};
-var hdrImgs   = [null, null, null];
-var wbGains   = null;
-var selectedSky = null;
-var skyDefs   = [];
-var uFactor   = 2;
-var picaInst  = null;
+// ================================================================
+// STATE
+// ================================================================
+var ORIG       = {};
+var HDR        = [null,null,null];
+var WB_GAINS   = null;
+var UF         = 2;
+var PICA_I     = null;
+var cropperInst= null;
+var compBlob   = null;
+var compOrigSize = 0;
 
-// ============================================================
-//  NAVIGATION
-// ============================================================
-var panelMeta = {
-  enhance: ['Enhance', 'Ajustări de bază · Preseturi Real Estate'],
-  hdr:     ['HDR Merge', 'Exposure Fusion — Mertens Algorithm'],
-  window:  ['Window Fix', 'Recuperare ferestre arse'],
-  wb:      ['White Balance AI', 'Detectare automată temperatură culoare'],
-  sky:     ['Sky Replace', 'Înlocuire cer detectat automat'],
-  deblur:  ['Deblur / Sharpen', 'Unsharp Mask + Edge Clarity'],
-  upscale: ['Upscaler 4x', 'pica.js Lanczos3'],
-  raw:     ['RAW & EXIF', 'Citire metadate fișiere RAW/JPEG'],
-  tools:   ['Open Source Tools', 'Resurse și integrări recomandate']
+// ================================================================
+// NAVIGATION
+// ================================================================
+var PM = {
+  enhance:  ['Enhance','Ajustări · Preseturi Real Estate'],
+  hdr:      ['HDR Merge','Exposure Fusion Mertens'],
+  window:   ['Window Fix','Ferestre arse'],
+  wb:       ['White Balance AI','Detecție automată temperatură culoare'],
+  upscale:  ['Upscaler','pica.js Lanczos3'],
+  crop:     ['Crop / Rotate','Cropper.js'],
+  compress: ['Compresie','Compressor.js'],
+  raw:      ['RAW & EXIF','ExifReader.js'],
+  libs:     ['Librării JS','Instalare și integrare detaliată']
 };
-
-function goPanel(id, btn) {
-  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
-  var p = document.getElementById('panel-' + id);
-  if (p) p.classList.add('active');
-  if (btn) btn.classList.add('active');
-  var m = panelMeta[id] || [id, ''];
-  document.getElementById('panel-title').textContent = m[0];
-  document.getElementById('panel-sub').textContent = m[1];
+function goP(id, btn) {
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('on'); });
+  var p = document.getElementById('panel-'+id);
+  if (p) p.classList.add('on');
+  if (btn) btn.classList.add('on');
+  var m = PM[id] || [id,''];
+  document.getElementById('ptitle').textContent = m[0];
+  document.getElementById('psub').textContent   = m[1];
 }
 
-// ============================================================
-//  DRAG & DROP
-// ============================================================
+// ================================================================
+// DRAG & DROP
+// ================================================================
 function dzDrop(ev, mode) {
   ev.preventDefault();
-  var el = ev.currentTarget;
-  if (el) el.classList.remove('drag');
+  ev.currentTarget.classList.remove('drag');
   var f = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
-  if (f) loadFromFile(f, mode);
+  if (f) loadFileObj(f, mode);
+}
+function dzDropRaw(ev) {
+  ev.preventDefault();
+  ev.currentTarget.classList.remove('drag');
+  var f = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
+  if (f) readExifFile(f);
 }
 
-// ============================================================
-//  FILE LOADING
-// ============================================================
-function loadImageFile(inp, mode) {
-  if (inp.files && inp.files[0]) loadFromFile(inp.files[0], mode);
+// ================================================================
+// FILE LOADING — rezoluție originală
+// ================================================================
+function loadF(inp, mode) {
+  if (inp.files && inp.files[0]) loadFileObj(inp.files[0], mode);
+}
+function loadFileObj(file, mode) {
+  var url = URL.createObjectURL(file);
+  var img = new Image();
+  img.onload = function() { ORIG[mode]=img; afterLoad(mode, img, file, url); };
+  img.onerror = function() { alert('Nu s-a putut deschide fișierul. RAW: browserul afișează preview JPEG embedded.'); };
+  img.src = url;
 }
 
-function loadFromFile(file, mode) {
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var img = new Image();
-    img.onload = function() {
-      originals[mode] = img;
-      afterLoad(mode, img, file);
-    };
-    img.onerror = function() {
-      alert('Nu se poate deschide acest fișier în browser. Pentru RAW, exportă un JPEG sau DNG mai întâi.');
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
+function afterLoad(mode, img, file, url) {
+  var W = img.naturalWidth, H = img.naturalHeight;
 
-function afterLoad(mode, img, file) {
-  if (mode === 'enhance') {
-    var dz = document.getElementById('dz-enhance');
-    if (dz) dz.style.display = 'none';
-    var ph = document.getElementById('ph-enhance');
-    if (ph) ph.style.display = 'none';
-    var inf = document.getElementById('info-enhance');
-    if (inf) inf.textContent = file.name + ' · ' + img.naturalWidth + '×' + img.naturalHeight;
-    var cv = document.getElementById('cv-enhance');
-    cv.style.display = 'block';
-    fitDraw(img, cv);
-    doEnhance();
-  } else if (mode === 'window') {
-    var dz2 = document.getElementById('dz-window');
-    if (dz2) dz2.style.display = 'none';
-    var cvB = document.getElementById('cv-win-b');
-    var cvA = document.getElementById('cv-window');
-    cvB.style.display = cvA.style.display = 'block';
-    fitDraw(img, cvB);
-    fitDraw(img, cvA);
-    doWindow();
-  } else if (mode === 'wb') {
-    var dz3 = document.getElementById('dz-wb');
-    if (dz3) dz3.style.display = 'none';
-    var cvB2 = document.getElementById('cv-wb-b');
-    var cvA2 = document.getElementById('cv-wb');
-    cvB2.style.display = cvA2.style.display = 'block';
-    fitDraw(img, cvB2);
-    fitDraw(img, cvA2);
+  if (mode === 'enh') {
+    document.getElementById('dz-enh').style.display = 'none';
+    document.getElementById('ph-enh').style.display = 'none';
+    document.getElementById('enh-info').textContent = file.name+' · '+W+'×'+H;
+    var cv = document.getElementById('cv-enh');
+    cv.width=W; cv.height=H; cv.style.display='block';
+    cv.getContext('2d').drawImage(img,0,0);
+    renderEnh();
+  }
+  else if (mode === 'win') {
+    document.getElementById('dz-win').style.display='none';
+    document.getElementById('win-cmp').style.display='block';
+    var cvB=document.getElementById('cv-winb'), cvA=document.getElementById('cv-win');
+    cvB.width=cvA.width=W; cvB.height=cvA.height=H;
+    cvB.getContext('2d').drawImage(img,0,0);
+    cvA.getContext('2d').drawImage(img,0,0);
+    renderWin();
+  }
+  else if (mode === 'wb') {
+    document.getElementById('dz-wb').style.display='none';
+    document.getElementById('wb-box').style.display='flex';
+    var cvB2=document.getElementById('cv-wbb'), cvA2=document.getElementById('cv-wb');
+    cvB2.width=cvA2.width=W; cvB2.height=cvA2.height=H;
+    cvB2.getContext('2d').drawImage(img,0,0);
+    cvA2.getContext('2d').drawImage(img,0,0);
     analyzeWB(img);
-  } else if (mode === 'sky') {
-    var dz4 = document.getElementById('dz-sky');
-    if (dz4) dz4.style.display = 'none';
-    var cvB3 = document.getElementById('cv-sky-b');
-    var cvA3 = document.getElementById('cv-sky');
-    cvB3.style.display = cvA3.style.display = 'block';
-    fitDraw(img, cvB3);
-    fitDraw(img, cvA3);
-    var sc = document.getElementById('sky-controls');
-    if (sc) sc.style.display = 'flex';
-    buildSkyGallery();
-  } else if (mode === 'deblur') {
-    var dz5 = document.getElementById('dz-deblur');
-    if (dz5) dz5.style.display = 'none';
-    var cvB4 = document.getElementById('cv-deb-b');
-    var cvA4 = document.getElementById('cv-deblur');
-    cvB4.style.display = cvA4.style.display = 'block';
-    fitDraw(img, cvB4);
-    fitDraw(img, cvA4);
-    doDeblur();
-  } else if (mode === 'upscale') {
-    var dz6 = document.getElementById('dz-upscale');
-    if (dz6) dz6.style.display = 'none';
-    var prev = document.getElementById('cv-us-prev');
-    prev.style.display = 'block';
-    fitDraw(img, prev);
-    document.getElementById('us-info').style.display = 'flex';
-    document.getElementById('us-orig').textContent = img.naturalWidth + ' × ' + img.naturalHeight + ' px';
+  }
+  else if (mode === 'us') {
+    document.getElementById('dz-us').style.display='none';
+    document.getElementById('us-dims').style.display='block';
+    document.getElementById('us-orig').textContent=W+'×'+H+' px';
+    // Preview la max 800px lățime
+    var prev=document.getElementById('cv-us-prev');
+    var sc=Math.min(1, 800/W, 600/H);
+    prev.width=Math.round(W*sc); prev.height=Math.round(H*sc);
+    prev.getContext('2d').drawImage(img,0,0,prev.width,prev.height);
+    document.getElementById('pvw-us').style.display='flex';
     updateUSDim();
-    document.getElementById('btn-us-go').disabled = false;
+    document.getElementById('btn-us-go').disabled=false;
   }
-}
-
-// ============================================================
-//  CANVAS UTILITIES
-// ============================================================
-function fitDraw(img, cv, maxH) {
-  maxH = maxH || 460;
-  var pw = cv.parentElement ? cv.parentElement.offsetWidth : 600;
-  var maxW = Math.max(pw - 4, 200);
-  var w = img.naturalWidth || img.width;
-  var h = img.naturalHeight || img.height;
-  var sc = Math.min(maxW / w, maxH / h, 1);
-  cv.width  = Math.round(w * sc);
-  cv.height = Math.round(h * sc);
-  var ctx = cv.getContext('2d');
-  ctx.drawImage(img, 0, 0, cv.width, cv.height);
-  return ctx;
-}
-
-function clamp(v) { return Math.max(0, Math.min(255, Math.round(v))); }
-
-function getCtxData(cv, img) {
-  var ctx = fitDraw(img, cv);
-  var id  = ctx.getImageData(0, 0, cv.width, cv.height);
-  return { ctx: ctx, id: id, d: id.data };
-}
-
-// ============================================================
-//  SLIDER HELPERS
-// ============================================================
-function sv(k) {
-  var el = document.getElementById('v-' + k);
-  var sl = document.getElementById('s-' + k);
-  if (el && sl) el.textContent = sl.value;
-}
-function sv2(sid, vid) {
-  var s = document.getElementById(sid);
-  var v = document.getElementById(vid);
-  if (s && v) v.textContent = s.value;
-}
-function gv(k) { return parseFloat(document.getElementById('s-' + k).value); }
-function gv2(sid) { return parseFloat(document.getElementById(sid).value); }
-
-// ============================================================
-//  ENHANCE
-// ============================================================
-var PRESETS = {
-  'bright-airy': {exp:20,con:-10,hl:-40,sh:50,wb:15,bk:5,cl:15,sat:10,vib:15,tmp:12,tnt:0,dhz:0,vig:0,shp:10},
-  'natural':     {exp:5,con:5,hl:-10,sh:20,wb:5,bk:0,cl:5,sat:5,vib:10,tmp:5,tnt:0,dhz:0,vig:0,shp:5},
-  'luxury':      {exp:-10,con:30,hl:-25,sh:-10,wb:-5,bk:-20,cl:25,sat:-10,vib:0,tmp:-12,tnt:5,dhz:15,vig:-30,shp:15},
-  'vivid':       {exp:10,con:20,hl:-5,sh:20,wb:0,bk:0,cl:30,sat:30,vib:25,tmp:5,tnt:0,dhz:20,vig:0,shp:20},
-  'editorial':   {exp:0,con:15,hl:-20,sh:10,wb:0,bk:-10,cl:20,sat:-5,vib:5,tmp:0,tnt:0,dhz:10,vig:-20,shp:10},
-  'twilight':    {exp:15,con:25,hl:-30,sh:40,wb:-5,bk:5,cl:10,sat:20,vib:20,tmp:-20,tnt:10,dhz:5,vig:-15,shp:5},
-  'reset':       {exp:0,con:0,hl:0,sh:0,wb:0,bk:0,cl:0,sat:0,vib:0,tmp:0,tnt:0,dhz:0,vig:0,shp:0}
-};
-
-function applyPreset(name, btn) {
-  var p = PRESETS[name];
-  if (!p) return;
-  var keys = ['exp','con','hl','sh','wb','bk','cl','sat','vib','tmp','tnt','dhz','vig','shp'];
-  keys.forEach(function(k) {
-    var sl = document.getElementById('s-' + k);
-    var vl = document.getElementById('v-' + k);
-    if (sl && p[k] !== undefined) { sl.value = p[k]; if (vl) vl.textContent = p[k]; }
-  });
-  document.querySelectorAll('.pbtn').forEach(function(b){ b.classList.remove('sel'); });
-  if (btn) btn.classList.add('sel');
-  doEnhance();
-}
-
-function resetSliders() { applyPreset('reset', null); }
-
-function doEnhance() {
-  var img = originals['enhance'];
-  if (!img) return;
-  var cv  = document.getElementById('cv-enhance');
-  var ctx = fitDraw(img, cv);
-  var id  = ctx.getImageData(0, 0, cv.width, cv.height);
-  var d   = id.data;
-
-  var exp = gv('exp'), con = gv('con'), hl  = gv('hl'),  sh  = gv('sh');
-  var wb  = gv('wb'),  bk  = gv('bk'), cl  = gv('cl'),  sat = gv('sat');
-  var vib = gv('vib'), tmp = gv('tmp'), tnt = gv('tnt'), dhz = gv('dhz');
-  var vig = gv('vig'), shp = gv('shp');
-
-  for (var i = 0; i < d.length; i += 4) {
-    var r = d[i], g = d[i+1], b = d[i+2];
-    // temperature + tint
-    r = clamp(r + tmp * 0.55);
-    b = clamp(b - tmp * 0.45);
-    g = clamp(g + tnt * 0.3);
-    // exposure
-    var ef = Math.pow(2, exp / 65);
-    r = clamp(r * ef); g = clamp(g * ef); b = clamp(b * ef);
-    // contrast
-    var cf = (259 * (con + 127)) / (127 * (259 - con));
-    r = clamp(cf*(r-128)+128); g = clamp(cf*(g-128)+128); b = clamp(cf*(b-128)+128);
-    var lum = 0.299*r + 0.587*g + 0.114*b;
-    // highlights
-    if (lum > 165) {
-      var hf = 1 + (hl/100) * (lum-165)/90;
-      r = clamp(r*hf); g = clamp(g*hf); b = clamp(b*hf);
-    }
-    // shadows
-    if (lum < 85 && sh !== 0) {
-      var sf = sh * 0.85 * (85-lum)/85;
-      r = clamp(r+sf); g = clamp(g+sf); b = clamp(b+sf);
-    }
-    // whites / blacks
-    if (lum > 200) { r = clamp(r+wb*0.3); g = clamp(g+wb*0.3); b = clamp(b+wb*0.3); }
-    if (lum < 45)  { r = clamp(r+bk*0.3); g = clamp(g+bk*0.3); b = clamp(b+bk*0.3); }
-    // saturation
-    if (sat !== 0) {
-      var gr = 0.299*r + 0.587*g + 0.114*b;
-      var sf2 = 1 + sat/100;
-      r = clamp(gr + sf2*(r-gr)); g = clamp(gr + sf2*(g-gr)); b = clamp(gr + sf2*(b-gr));
-    }
-    // vibrance (protect already-saturated)
-    if (vib !== 0) {
-      var gr2 = 0.299*r + 0.587*g + 0.114*b;
-      var cs = (Math.max(r,g,b) - Math.min(r,g,b)) / 255;
-      var vf = 1 + (vib/100) * (1-cs);
-      r = clamp(gr2 + vf*(r-gr2)); g = clamp(gr2 + vf*(g-gr2)); b = clamp(gr2 + vf*(b-gr2));
-    }
-    // dehaze
-    if (dhz > 0) {
-      var df = 1 + dhz/130;
-      r = clamp(128+(r-128)*df); g = clamp(128+(g-128)*df); b = clamp(128+(b-128)*df);
-    }
-    d[i]=r; d[i+1]=g; d[i+2]=b;
-  }
-
-  // sharpen (simple unsharp)
-  if (shp > 0) {
-    var W = cv.width, H = cv.height;
-    var orig2 = new Uint8ClampedArray(d);
-    for (var py = 1; py < H-1; py++) {
-      for (var px = 1; px < W-1; px++) {
-        var ii = (py*W+px)*4;
-        for (var c = 0; c < 3; c++) {
-          var center = orig2[ii+c];
-          var blur = (orig2[((py-1)*W+px)*4+c] + orig2[((py+1)*W+px)*4+c] +
-                      orig2[(py*W+px-1)*4+c]   + orig2[(py*W+px+1)*4+c]) / 4;
-          d[ii+c] = clamp(center + (shp/100) * 1.5 * (center - blur));
-        }
-      }
-    }
-  }
-
-  ctx.putImageData(id, 0, 0);
-
-  // vignette
-  if (vig < 0) {
-    var cx = cv.width/2, cy = cv.height/2;
-    var grad = ctx.createRadialGradient(cx,cy,Math.min(cv.width,cv.height)*0.28,cx,cy,Math.max(cv.width,cv.height)*0.72);
-    grad.addColorStop(0,'rgba(0,0,0,0)');
-    grad.addColorStop(1,'rgba(0,0,0,'+Math.abs(vig/100)+')');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0,0,cv.width,cv.height);
-  }
-}
-
-// ============================================================
-//  HDR MERGE
-// ============================================================
-function loadHDRImg(inp, idx) {
-  if (!inp.files || !inp.files[0]) return;
-  var file = inp.files[0];
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var img = new Image();
-    img.onload = function() {
-      hdrImgs[idx] = img;
-      var slot = document.getElementById('hs' + idx);
-      slot.innerHTML = '';
-      var im = document.createElement('img');
-      im.src = e.target.result;
-      var ov = document.createElement('div');
-      ov.className = 'sov';
-      var labels = ['-2 EV', '0 EV', '+2 EV'];
-      ov.innerHTML = '<span>' + labels[idx] + ' ✓</span><span>' + file.name.substring(0,16) + '</span>';
-      slot.appendChild(im);
-      slot.appendChild(ov);
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function setProg(pbId, stId, pct, msg, cls) {
-  var pb = document.getElementById(pbId);
-  var st = document.getElementById(stId);
-  if (pb) pb.style.width = pct + '%';
-  if (st) { st.textContent = msg; st.className = 'st ' + (cls||'info'); }
-}
-
-function doHDR() {
-  var loaded = hdrImgs.filter(function(x){ return x !== null; });
-  if (loaded.length < 2) { alert('Încarcă cel puțin 2 poze pentru HDR merge!'); return; }
-
-  var pw = document.getElementById('hdr-prog-wrap');
-  pw.style.display = 'block';
-  setProg('hdr-pb','hdr-st',15,'Redimensionez imaginile...','info');
-
-  setTimeout(function() {
-    var cv  = document.getElementById('cv-hdr');
-    var ph  = document.getElementById('ph-hdr');
-    ph.style.display = 'none';
-    cv.style.display = 'block';
-    var ref = hdrImgs[1] || hdrImgs[0];
-    fitDraw(ref, cv);
-    var W = cv.width, H = cv.height;
-    var ctx = cv.getContext('2d');
-    var tm = gv2('s-hdrtm') / 100;
-
-    setProg('hdr-pb','hdr-st',40,'Calculez ponderi Mertens...','info');
-
-    setTimeout(function() {
-      var tmpCv = document.createElement('canvas');
-      tmpCv.width = W; tmpCv.height = H;
-      var tmpCtx = tmpCv.getContext('2d');
-
-      var frames = hdrImgs.map(function(img) {
-        if (!img) return null;
-        tmpCtx.clearRect(0,0,W,H);
-        tmpCtx.drawImage(img,0,0,W,H);
-        return tmpCtx.getImageData(0,0,W,H).data.slice();
+  else if (mode === 'crop') {
+    document.getElementById('dz-crop').style.display='none';
+    // Distruge instanța anterioară
+    if (cropperInst) { cropperInst.destroy(); cropperInst=null; }
+    var ci=document.getElementById('crop-container');
+    var cimg=document.getElementById('crop-img');
+    cimg.src=url;
+    ci.style.display='block';
+    document.getElementById('crop-controls').style.display='flex';
+    // Init Cropper după ce imaginea se încarcă în DOM
+    cimg.onload=function(){
+      cropperInst=new Cropper(cimg,{
+        viewMode:1, dragMode:'move',
+        autoCropArea:0.85, responsive:true,
+        background:false, guides:true, center:true
       });
-
-      setProg('hdr-pb','hdr-st',65,'Fusion Mertens în progres...','info');
-
-      setTimeout(function() {
-        var res = ctx.getImageData(0,0,W,H);
-        var rd  = res.data;
-        for (var i = 0; i < rd.length; i += 4) {
-          var rS=0,gS=0,bS=0,wS=0;
-          for (var fi = 0; fi < frames.length; fi++) {
-            var f = frames[fi];
-            if (!f) continue;
-            var lum = (0.299*f[i] + 0.587*f[i+1] + 0.114*f[i+2]) / 255;
-            var w = Math.exp(-12*(lum-0.5)*(lum-0.5)) + 0.01;
-            rS += f[i]*w; gS += f[i+1]*w; bS += f[i+2]*w; wS += w;
-          }
-          if (wS > 0) { rd[i]=clamp(rS/wS); rd[i+1]=clamp(gS/wS); rd[i+2]=clamp(bS/wS); }
-          // Reinhard tone map
-          for (var c = 0; c < 3; c++) {
-            var v = rd[i+c] / 255;
-            v = v / (v + (1-v)*tm*0.82 + 0.008);
-            rd[i+c] = clamp(v*255);
-          }
-        }
-        ctx.putImageData(res,0,0);
-        setProg('hdr-pb','hdr-st',100,'✓ HDR merge complet!','ok');
-      }, 30);
-    }, 20);
-  }, 20);
-}
-
-// ============================================================
-//  WINDOW FIX
-// ============================================================
-function doWindow() {
-  var img = originals['window'];
-  if (!img) return;
-  var cv  = document.getElementById('cv-window');
-  var ctx = fitDraw(img, cv);
-  var id  = ctx.getImageData(0,0,cv.width,cv.height);
-  var d   = id.data;
-  var hlR = gv2('s-whl') / 100;
-  var thr = gv2('s-wthr');
-  var ip  = gv2('s-wint') / 100;
-  var eb  = gv2('s-wext');
-
-  for (var i = 0; i < d.length; i += 4) {
-    var r=d[i], g=d[i+1], b=d[i+2];
-    var lum = 0.299*r + 0.587*g + 0.114*b;
-    if (lum > thr) {
-      var pull = hlR * (lum-thr) / (255-thr);
-      var fac  = 1 - pull * 0.72;
-      r = clamp(r*fac + eb*0.22); g = clamp(g*fac + eb*0.18); b = clamp(b*fac + eb*0.22);
-    } else {
-      var adj = (1-ip) * eb * 0.04;
-      r = clamp(r+adj); g = clamp(g+adj); b = clamp(b+adj);
-    }
-    d[i]=r; d[i+1]=g; d[i+2]=b;
-  }
-  ctx.putImageData(id,0,0);
-}
-
-// ============================================================
-//  WHITE BALANCE AI
-// ============================================================
-function analyzeWB(img) {
-  var cv = document.getElementById('cv-wb');
-  var ctx = fitDraw(img, cv);
-  var id  = ctx.getImageData(0,0,cv.width,cv.height);
-  var d   = id.data;
-  var rS=0,gS=0,bS=0,n=0;
-  for (var i = 0; i < d.length; i += 4) {
-    var lum = 0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
-    if (lum > 20 && lum < 238) { rS+=d[i]; gS+=d[i+1]; bS+=d[i+2]; n++; }
-  }
-  if (!n) return;
-  var rA=rS/n, gA=gS/n, bA=bS/n;
-  var rGain = gA/rA, bGain = gA/bA;
-  wbGains = { rGain:rGain, bGain:bGain };
-
-  var rb = rA/bA;
-  var temp = rb < 0.72 ? 3200 : rb < 0.86 ? 4000 : rb < 0.96 ? 4500 : rb < 1.05 ? 5500 : rb < 1.22 ? 6500 : rb < 1.4 ? 7500 : 9000;
-  var tint = Math.round((gA - (rA+bA)/2) / 2.55);
-  var src  = temp < 3500 ? 'tungsten / incandescent' : temp < 4500 ? 'fluorescent' : temp < 5200 ? 'lumina zilei' : temp < 6500 ? 'nori / umbră' : 'cer deschis';
-
-  document.getElementById('wb-temp').textContent = temp + 'K';
-  document.getElementById('wb-tint').textContent = 'Tint: ' + (tint>0?'+':'') + tint + (Math.abs(tint)>5 ? (tint>0?' (verde)'  :' (magenta)') : ' (neutru)');
-  document.getElementById('wb-source').textContent = 'Sursă estimată: ' + src;
-  document.getElementById('wb-swatch').style.background = 'rgb('+Math.round(rA)+','+Math.round(gA)+','+Math.round(bA)+')';
-
-  document.getElementById('wbr-f').style.width = (rA/255*100)+'%';
-  document.getElementById('wbg-f').style.width = (gA/255*100)+'%';
-  document.getElementById('wbb-f').style.width = (bA/255*100)+'%';
-  document.getElementById('wbr-v').textContent = Math.round(rA);
-  document.getElementById('wbg-v').textContent = Math.round(gA);
-  document.getElementById('wbb-v').textContent = Math.round(bA);
-
-  document.getElementById('wb-result-box').style.display = 'flex';
-  document.getElementById('cv-wb-b').style.display = 'block';
-}
-
-function applyWB() {
-  var img = originals['wb'];
-  if (!img || !wbGains) { alert('Încarcă mai întâi o imagine!'); return; }
-  var cv  = document.getElementById('cv-wb');
-  var ctx = fitDraw(img, cv);
-  var id  = ctx.getImageData(0,0,cv.width,cv.height);
-  var d   = id.data;
-  var rG = wbGains.rGain, bG = wbGains.bGain;
-  for (var i = 0; i < d.length; i += 4) {
-    d[i]   = clamp(d[i]   * rG);
-    d[i+2] = clamp(d[i+2] * bG);
-  }
-  ctx.putImageData(id,0,0);
-}
-
-// ============================================================
-//  SKY REPLACEMENT
-// ============================================================
-var SKY_DEFS = [
-  {name:'Blue Clear',   fn:function(ctx,w,h){ var g=ctx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#1565c0'); g.addColorStop(1,'#64b5f6'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h); }},
-  {name:'Sunset',       fn:function(ctx,w,h){ var g=ctx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#b71c1c'); g.addColorStop(0.4,'#f57c00'); g.addColorStop(1,'#fff9c4'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h); }},
-  {name:'Cloudy',       fn:function(ctx,w,h){ var g=ctx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#607d8b'); g.addColorStop(1,'#cfd8dc'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h); for(var i=0;i<6;i++){ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.beginPath(); ctx.ellipse(w*(0.1+i*0.16),h*(0.25+(i%2)*0.12),w*0.1,h*0.06,0,0,Math.PI*2); ctx.fill();} }},
-  {name:'Dramatic',     fn:function(ctx,w,h){ var g=ctx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#0d1b2a'); g.addColorStop(0.5,'#1b3a5c'); g.addColorStop(1,'#5b8db8'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h); }},
-  {name:'Golden Hour',  fn:function(ctx,w,h){ var g=ctx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#1a1a2e'); g.addColorStop(0.4,'#c0392b'); g.addColorStop(0.7,'#e67e22'); g.addColorStop(1,'#f9ca24'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h); }},
-  {name:'Blue Hour',    fn:function(ctx,w,h){ var g=ctx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#0a0a1a'); g.addColorStop(0.5,'#15305a'); g.addColorStop(1,'#3a6ea8'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h); }},
-  {name:'Overcast',     fn:function(ctx,w,h){ ctx.fillStyle='#90a4ae'; ctx.fillRect(0,0,w,h); for(var i=0;i<10;i++){ctx.fillStyle='rgba(255,255,255,'+(0.04+Math.random()*0.06)+')'; ctx.fillRect(0,h*i/10,w,h/10);} }},
-  {name:'Stormy',       fn:function(ctx,w,h){ var g=ctx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#1c1c1c'); g.addColorStop(0.6,'#455a64'); g.addColorStop(1,'#78909c'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h); }}
-];
-
-function buildSkyGallery() {
-  skyDefs = SKY_DEFS.slice();
-  renderSkyGallery();
-}
-
-function addCustomSky(inp) {
-  if (!inp.files || !inp.files[0]) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var img = new Image();
-    img.onload = function() {
-      skyDefs.push({ name: 'Custom', img: img });
-      renderSkyGallery();
     };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(inp.files[0]);
+  }
+  else if (mode === 'comp') {
+    document.getElementById('dz-comp').style.display='none';
+    compOrigSize = file.size;
+    document.getElementById('btn-comp').disabled=false;
+    // Salvăm referința fișierului
+    ORIG['_comp_file'] = file;
+    var cr=document.getElementById('comp-result');
+    cr.style.display='block';
+    cr.innerHTML='<div class="st info">Fișier încărcat: <b>'+file.name+'</b> · '+fmtSize(file.size)+' · '+W+'×'+H+' px. Apasă Compresează.</div>';
+  }
 }
 
-function renderSkyGallery() {
-  var gal = document.getElementById('sky-gallery');
-  gal.innerHTML = '';
-  skyDefs.forEach(function(sky, idx) {
-    var wrap = document.createElement('div');
-    wrap.className = 'sky-th';
-    var cv = document.createElement('canvas');
-    cv.width = 110; cv.height = 62;
-    var ctx = cv.getContext('2d');
-    if (sky.img) { ctx.drawImage(sky.img,0,0,110,62); }
-    else { sky.fn(ctx,110,62); }
-    sky._cv = cv;
-    var nm = document.createElement('div');
-    nm.className = 'sn';
-    nm.textContent = sky.name;
-    wrap.appendChild(cv);
-    wrap.appendChild(nm);
-    wrap.addEventListener('click', (function(s, w) {
-      return function() {
-        document.querySelectorAll('.sky-th').forEach(function(t){ t.classList.remove('sel'); });
-        w.classList.add('sel');
-        selectedSky = s;
-      };
-    })(sky, wrap));
-    gal.appendChild(wrap);
+// ================================================================
+// UTILS
+// ================================================================
+function clamp(v){ return v<0?0:v>255?255:(v+.5)|0; }
+function fmtSize(b){
+  if(b>1048576) return (b/1048576).toFixed(2)+' MB';
+  return (b/1024).toFixed(0)+' KB';
+}
+function sv(k){ document.getElementById('vl-'+k).textContent=document.getElementById('sl-'+k).value; }
+function sv2(sid,vid){ document.getElementById(vid).textContent=document.getElementById(sid).value; }
+function gv(k){ return +document.getElementById('sl-'+k).value; }
+function gv2(id){ return +document.getElementById(id).value; }
+
+// ================================================================
+// ENHANCE
+// ================================================================
+var PRESETS={
+  bright:   {exp:22,con:-8,hl:-42,sh:48,wb:12,bk:5,cl:14,sat:10,vib:14,tmp:12,tnt:0,dhz:0,shp:8,vig:0},
+  natural:  {exp:5,con:5,hl:-10,sh:18,wb:4,bk:0,cl:5,sat:4,vib:9,tmp:5,tnt:0,dhz:0,shp:4,vig:0},
+  luxury:   {exp:-8,con:28,hl:-22,sh:-8,wb:-4,bk:-18,cl:22,sat:-8,vib:0,tmp:-10,tnt:4,dhz:14,shp:12,vig:-28},
+  vivid:    {exp:10,con:18,hl:-5,sh:18,wb:0,bk:0,cl:28,sat:28,vib:24,tmp:5,tnt:0,dhz:18,shp:18,vig:0},
+  editorial:{exp:0,con:14,hl:-18,sh:9,wb:0,bk:-8,cl:18,sat:-4,vib:5,tmp:0,tnt:0,dhz:9,shp:9,vig:-18},
+  twilight: {exp:14,con:22,hl:-28,sh:38,wb:-4,bk:4,cl:9,sat:18,vib:18,tmp:-18,tnt:9,dhz:5,shp:4,vig:-12},
+  reset:    {exp:0,con:0,hl:0,sh:0,wb:0,bk:0,cl:0,sat:0,vib:0,tmp:0,tnt:0,dhz:0,shp:0,vig:0}
+};
+function preset(name,btn){
+  var p=PRESETS[name]; if(!p)return;
+  ['exp','con','hl','sh','wb','bk','cl','sat','vib','tmp','tnt','dhz','shp','vig'].forEach(function(k){
+    var sl=document.getElementById('sl-'+k),vl=document.getElementById('vl-'+k);
+    if(sl&&p[k]!==undefined){sl.value=p[k];if(vl)vl.textContent=p[k];}
   });
+  document.querySelectorAll('.pb').forEach(function(b){b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  renderEnh();
+}
+function resetAll(){ preset('reset',null); }
+
+function renderEnh(){
+  var img=ORIG['enh']; if(!img)return;
+  var cv=document.getElementById('cv-enh');
+  if(cv.width!==img.naturalWidth){cv.width=img.naturalWidth;cv.height=img.naturalHeight;}
+  var ctx=cv.getContext('2d');
+  ctx.drawImage(img,0,0);
+  var id=ctx.getImageData(0,0,cv.width,cv.height),d=id.data;
+  var exp=gv('exp'),con=gv('con'),hl=gv('hl'),sh=gv('sh'),
+      wb=gv('wb'),bk=gv('bk'),cl=gv('cl'),sat=gv('sat'),
+      vib=gv('vib'),tmp=gv('tmp'),tnt=gv('tnt'),dhz=gv('dhz'),
+      shp=gv('shp'),vig=gv('vig');
+  var n=d.length;
+  for(var i=0;i<n;i+=4){
+    var r=d[i],g=d[i+1],b=d[i+2];
+    r=clamp(r+tmp*.55); b=clamp(b-tmp*.45); g=clamp(g+tnt*.3);
+    var ef=Math.pow(2,exp/65);
+    r=clamp(r*ef);g=clamp(g*ef);b=clamp(b*ef);
+    var cf=(259*(con+127))/(127*(259-con));
+    r=clamp(cf*(r-128)+128);g=clamp(cf*(g-128)+128);b=clamp(cf*(b-128)+128);
+    var lum=.299*r+.587*g+.114*b;
+    if(hl&&lum>160){var hf=1+(hl/100)*(lum-160)/95;r=clamp(r*hf);g=clamp(g*hf);b=clamp(b*hf);}
+    if(sh&&lum<90){var sf=sh*.85*(90-lum)/90;r=clamp(r+sf);g=clamp(g+sf);b=clamp(b+sf);}
+    if(lum>200){r=clamp(r+wb*.28);g=clamp(g+wb*.28);b=clamp(b+wb*.28);}
+    if(lum<40) {r=clamp(r+bk*.28);g=clamp(g+bk*.28);b=clamp(b+bk*.28);}
+    if(sat){var g2=.299*r+.587*g+.114*b,sf2=1+sat/100;r=clamp(g2+sf2*(r-g2));g=clamp(g2+sf2*(g-g2));b=clamp(g2+sf2*(b-g2));}
+    if(vib){var g3=.299*r+.587*g+.114*b,cs=(Math.max(r,g,b)-Math.min(r,g,b))/255,vf=1+(vib/100)*(1-cs);r=clamp(g3+vf*(r-g3));g=clamp(g3+vf*(g-g3));b=clamp(g3+vf*(b-g3));}
+    if(dhz){var df=1+dhz/130;r=clamp(128+(r-128)*df);g=clamp(128+(g-128)*df);b=clamp(128+(b-128)*df);}
+    d[i]=r;d[i+1]=g;d[i+2]=b;
+  }
+  if(shp>0){
+    var W=cv.width,H=cv.height,cp=new Uint8ClampedArray(d);
+    for(var py=1;py<H-1;py++){for(var px=1;px<W-1;px++){
+      var ii=(py*W+px)*4;
+      for(var c=0;c<3;c++){
+        var ctr=cp[ii+c],bl=(cp[((py-1)*W+px)*4+c]+cp[((py+1)*W+px)*4+c]+cp[(py*W+px-1)*4+c]+cp[(py*W+px+1)*4+c])/4;
+        d[ii+c]=clamp(ctr+(shp/100)*1.6*(ctr-bl));
+      }
+    }}
+  }
+  ctx.putImageData(id,0,0);
+  if(vig<0){
+    var cx=cv.width/2,cy=cv.height/2;
+    var gr=ctx.createRadialGradient(cx,cy,Math.min(cv.width,cv.height)*.25,cx,cy,Math.max(cv.width,cv.height)*.75);
+    gr.addColorStop(0,'rgba(0,0,0,0)');
+    gr.addColorStop(1,'rgba(0,0,0,'+Math.abs(vig/100)+')');
+    ctx.fillStyle=gr;ctx.fillRect(0,0,cv.width,cv.height);
+  }
 }
 
-function doSkyReplace() {
-  var img = originals['sky'];
-  if (!img) { alert('Încarcă mai întâi o fotografie exterioară!'); return; }
-  if (!selectedSky) { alert('Alege un cer din galerie!'); return; }
-
-  var cv  = document.getElementById('cv-sky');
-  var ctx = fitDraw(img, cv);
-  var W   = cv.width, H = cv.height;
-  var id  = ctx.getImageData(0,0,W,H);
-  var d   = id.data;
-  var thr = gv2('s-skythr');
-  var fea = Math.max(1, Math.round(gv2('s-skyblend')));
-  var br  = gv2('s-skybr');
-  var sat = gv2('s-skysat');
-
-  // Generate sky texture
-  var skyCv = document.createElement('canvas');
-  skyCv.width = W; skyCv.height = H;
-  var skyCtx = skyCv.getContext('2d');
-  if (selectedSky.img) { skyCtx.drawImage(selectedSky.img,0,0,W,H); }
-  else { selectedSky.fn(skyCtx,W,H); }
-  var skyD = skyCtx.getImageData(0,0,W,H).data;
-
-  // Build mask
-  var mask = new Float32Array(W*H);
-  for (var py = 0; py < H; py++) {
-    for (var px = 0; px < W; px++) {
-      var i = (py*W+px)*4;
-      var r=d[i], g=d[i+1], b=d[i+2];
-      var lum = (r+g+b)/3;
-      var isSky = (b >= r - 12) && lum > thr * 2.2;
-      mask[py*W+px] = isSky ? 1 : 0;
-    }
-  }
-
-  // Feather
-  var blur = new Float32Array(W*H);
-  for (var py2 = 0; py2 < H; py2++) {
-    for (var px2 = 0; px2 < W; px2++) {
-      var sum=0, cnt=0;
-      for (var dy = -fea; dy <= fea; dy++) {
-        for (var dx = -fea; dx <= fea; dx++) {
-          var ny=py2+dy, nx=px2+dx;
-          if (ny>=0&&ny<H&&nx>=0&&nx<W) { sum+=mask[ny*W+nx]; cnt++; }
+// ================================================================
+// HDR MERGE
+// ================================================================
+function hdrLoad(inp,idx){
+  if(!inp.files||!inp.files[0])return;
+  var file=inp.files[0];
+  var url=URL.createObjectURL(file);
+  var img=new Image();
+  img.onload=function(){
+    HDR[idx]=img;
+    var slot=document.getElementById('hs'+idx);
+    slot.innerHTML='';
+    var im=document.createElement('img'); im.src=url;
+    var ov=document.createElement('div'); ov.className='eov';
+    ov.innerHTML='<span style="color:#2ecc8e;font-weight:700">✓ '+['-2 EV','0 EV','+2 EV'][idx]+'</span><span>'+file.name.substring(0,18)+'</span>';
+    slot.appendChild(im); slot.appendChild(ov);
+  };
+  img.onerror=function(){alert('Nu s-a putut deschide fișierul HDR '+idx);};
+  img.src=url;
+}
+function setPG(pbid,stid,pct,msg,cls){
+  var pb=document.getElementById(pbid),st=document.getElementById(stid);
+  if(pb)pb.style.width=pct+'%';
+  if(st){st.textContent=msg;st.className='st '+(cls||'info');}
+}
+function doHDR(){
+  var loaded=HDR.filter(function(x){return x!==null;});
+  if(loaded.length<2){alert('Încarcă cel puțin 2 poze!');return;}
+  var pg=document.getElementById('hdr-pg'); pg.style.display='flex';
+  setPG('hdr-pb','hdr-st',10,'Pregătesc imaginile...','info');
+  var ref=HDR[1]||HDR[0];
+  var W=ref.naturalWidth,H=ref.naturalHeight;
+  var cv=document.getElementById('cv-hdr');
+  cv.width=W;cv.height=H;cv.style.display='block';
+  document.querySelector('#pvw-hdr .pvph').style.display='none';
+  var tm=gv2('sl-tm')/100;
+  setPG('hdr-pb','hdr-st',30,'Calculez ponderi Mertens...','info');
+  setTimeout(function(){
+    var tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;
+    var tctx=tmp.getContext('2d');
+    var frames=HDR.map(function(img){
+      if(!img)return null;
+      tctx.clearRect(0,0,W,H);tctx.drawImage(img,0,0,W,H);
+      return tctx.getImageData(0,0,W,H).data.slice();
+    });
+    setPG('hdr-pb','hdr-st',55,'Exposure Fusion...','info');
+    setTimeout(function(){
+      var ctx=cv.getContext('2d');
+      var res=ctx.getImageData(0,0,W,H);
+      var rd=res.data;
+      for(var i=0;i<rd.length;i+=4){
+        var rS=0,gS=0,bS=0,wS=0;
+        for(var fi=0;fi<3;fi++){
+          var f=frames[fi];if(!f)continue;
+          var lum=(0.299*f[i]+0.587*f[i+1]+0.114*f[i+2])/255;
+          var w=Math.exp(-12*(lum-.5)*(lum-.5))+0.01;
+          rS+=f[i]*w;gS+=f[i+1]*w;bS+=f[i+2]*w;wS+=w;
         }
+        if(wS>0){rd[i]=clamp(rS/wS);rd[i+1]=clamp(gS/wS);rd[i+2]=clamp(bS/wS);}
+        for(var c=0;c<3;c++){var v=rd[i+c]/255;v=v/(v+(1-v)*tm*.82+.008);rd[i+c]=clamp(v*255);}
       }
-      blur[py2*W+px2] = sum/cnt;
-    }
-  }
+      ctx.putImageData(res,0,0);
+      setPG('hdr-pb','hdr-st',100,'✓ HDR complet: '+W+'×'+H+' px','ok');
+    },30);
+  },20);
+}
 
-  // Composite
-  for (var i2 = 0; i2 < d.length; i2 += 4) {
-    var alpha = blur[i2/4];
-    if (alpha > 0.01) {
-      var sr=skyD[i2], sg=skyD[i2+1], sb=skyD[i2+2];
-      sr=clamp(sr+br); sg=clamp(sg+br); sb=clamp(sb+br);
-      if (sat !== 0) {
-        var gr = 0.299*sr+0.587*sg+0.114*sb;
-        var sf = 1+sat/100;
-        sr=clamp(gr+sf*(sr-gr)); sg=clamp(gr+sf*(sg-gr)); sb=clamp(gr+sf*(sb-gr));
-      }
-      d[i2]   = clamp(d[i2]  *(1-alpha) + sr*alpha);
-      d[i2+1] = clamp(d[i2+1]*(1-alpha) + sg*alpha);
-      d[i2+2] = clamp(d[i2+2]*(1-alpha) + sb*alpha);
+// ================================================================
+// WINDOW FIX
+// ================================================================
+function renderWin(){
+  var img=ORIG['win'];if(!img)return;
+  var cv=document.getElementById('cv-win');
+  if(cv.width!==img.naturalWidth){cv.width=img.naturalWidth;cv.height=img.naturalHeight;}
+  var ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
+  var id=ctx.getImageData(0,0,cv.width,cv.height),d=id.data;
+  var hlR=gv2('sl-whl')/100,thr=gv2('sl-wthr'),ext=gv2('sl-wext'),
+      int2=gv2('sl-wint'),con=gv2('sl-wcon'),sat=gv2('sl-wsat');
+  for(var i=0;i<d.length;i+=4){
+    var r=d[i],g=d[i+1],b=d[i+2];
+    var lum=.299*r+.587*g+.114*b;
+    if(lum>thr){
+      var pull=hlR*(lum-thr)/(255-thr),fac=1-pull*.7;
+      r=clamp(r*fac+ext*.2);g=clamp(g*fac+ext*.15);b=clamp(b*fac+ext*.2);
+      if(con){var cf=(259*(con+127))/(127*(259-con));r=clamp(cf*(r-128)+128);g=clamp(cf*(g-128)+128);b=clamp(cf*(b-128)+128);}
+      if(sat){var gw=.299*r+.587*g+.114*b,sf=1+sat/100;r=clamp(gw+sf*(r-gw));g=clamp(gw+sf*(g-gw));b=clamp(gw+sf*(b-gw));}
+    } else {
+      r=clamp(r+int2*.4);g=clamp(g+int2*.4);b=clamp(b+int2*.4);
     }
+    d[i]=r;d[i+1]=g;d[i+2]=b;
   }
   ctx.putImageData(id,0,0);
 }
 
-// ============================================================
-//  DEBLUR / SHARPEN
-// ============================================================
-function doDeblur() {
-  var img = originals['deblur'];
-  if (!img) return;
-  var cv  = document.getElementById('cv-deblur');
-  var ctx = fitDraw(img, cv);
-  var W   = cv.width, H = cv.height;
-  var id  = ctx.getImageData(0,0,W,H);
-  var d   = id.data;
-  var amt = gv2('s-sham') / 100;
-  var rad = Math.max(1, Math.round(gv2('s-shr')));
-  var thr = gv2('s-shthr');
-  var den = gv2('s-den') / 100;
-  var edg = gv2('s-edg') / 100;
-
-  // Box blur
-  var blr = new Uint8ClampedArray(d.length);
-  for (var py = 0; py < H; py++) {
-    for (var px = 0; px < W; px++) {
-      var rs=0,gs=0,bs=0,cnt=0;
-      for (var dy = -rad; dy <= rad; dy++) {
-        for (var dx = -rad; dx <= rad; dx++) {
-          var ny=Math.max(0,Math.min(H-1,py+dy));
-          var nx=Math.max(0,Math.min(W-1,px+dx));
-          var ni=(ny*W+nx)*4;
-          rs+=d[ni]; gs+=d[ni+1]; bs+=d[ni+2]; cnt++;
-        }
-      }
-      var bi=(py*W+px)*4;
-      blr[bi]=rs/cnt; blr[bi+1]=gs/cnt; blr[bi+2]=bs/cnt; blr[bi+3]=255;
-    }
+// ================================================================
+// WHITE BALANCE AI
+// ================================================================
+function analyzeWB(img){
+  var tc=document.createElement('canvas');
+  var sc=Math.min(1,600/Math.max(img.naturalWidth,img.naturalHeight));
+  tc.width=Math.round(img.naturalWidth*sc);tc.height=Math.round(img.naturalHeight*sc);
+  tc.getContext('2d').drawImage(img,0,0,tc.width,tc.height);
+  var d=tc.getContext('2d').getImageData(0,0,tc.width,tc.height).data;
+  var rS=0,gS=0,bS=0,n=0;
+  for(var i=0;i<d.length;i+=4){var lum=.299*d[i]+.587*d[i+1]+.114*d[i+2];if(lum>15&&lum<240){rS+=d[i];gS+=d[i+1];bS+=d[i+2];n++;}}
+  if(!n)return;
+  var rA=rS/n,gA=gS/n,bA=bS/n;
+  WB_GAINS={rG:gA/rA,bG:gA/bA};
+  var rb=rA/bA;
+  var temp=rb<.72?3200:rb<.86?4000:rb<.96?4500:rb<1.06?5500:rb<1.22?6500:rb<1.4?7500:9000;
+  var tint=Math.round((gA-(rA+bA)/2)/2.55);
+  var src=temp<3500?'tungsten/incandescent':temp<4500?'fluorescent':temp<5200?'lumina zilei':temp<6800?'nori/umbră':'cer deschis';
+  document.getElementById('wb-kv').textContent=temp+'K';
+  document.getElementById('wb-tv').textContent='Tint: '+(tint>0?'+':'')+tint+(Math.abs(tint)>5?(tint>0?' (verde)'  :' (magenta)'):' (neutru)');
+  document.getElementById('wb-sv').textContent='Sursă estimată: '+src;
+  document.getElementById('wb-sw').style.background='rgb('+Math.round(rA)+','+Math.round(gA)+','+Math.round(bA)+')';
+  document.getElementById('wbrf').style.width=(rA/255*100)+'%';
+  document.getElementById('wbgf').style.width=(gA/255*100)+'%';
+  document.getElementById('wbbf').style.width=(bA/255*100)+'%';
+  document.getElementById('wbrv').textContent=Math.round(rA);
+  document.getElementById('wbgv').textContent=Math.round(gA);
+  document.getElementById('wbbv').textContent=Math.round(bA);
+  renderWB();
+}
+function renderWB(){
+  var img=ORIG['wb'];if(!img||!WB_GAINS)return;
+  var cv=document.getElementById('cv-wb');
+  if(cv.width!==img.naturalWidth){cv.width=img.naturalWidth;cv.height=img.naturalHeight;}
+  var ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
+  var id=ctx.getImageData(0,0,cv.width,cv.height),d=id.data;
+  var rG=WB_GAINS.rG,bG=WB_GAINS.bG;
+  var man=gv2('sl-wbm'),tnt=gv2('sl-wbt');
+  for(var i=0;i<d.length;i+=4){
+    d[i]  =clamp(d[i]  *rG+man*.55);
+    d[i+2]=clamp(d[i+2]*bG-man*.45);
+    d[i+1]=clamp(d[i+1]   +tnt*.3);
   }
-
-  var res = ctx.createImageData(W,H);
-  var rd  = res.data;
-  for (var i = 0; i < d.length; i += 4) {
-    for (var c = 0; c < 3; c++) {
-      var diff = d[i+c] - blr[i+c];
-      if (Math.abs(diff) > thr) {
-        var v = d[i+c] + amt * (1 + edg*0.5) * diff;
-        if (Math.abs(diff) < 10) v = d[i+c]*(1-den) + v*den;
-        rd[i+c] = clamp(v);
-      } else {
-        rd[i+c] = d[i+c];
-      }
-    }
-    rd[i+3] = 255;
-  }
-  ctx.putImageData(res,0,0);
+  ctx.putImageData(id,0,0);
 }
 
-// ============================================================
-//  UPSCALER
-// ============================================================
-function setUF(f, btn) {
-  uFactor = f;
-  document.querySelectorAll('[id^="usf-"]').forEach(function(b){ b.classList.remove('sel'); });
-  if (btn) btn.classList.add('sel');
+// ================================================================
+// UPSCALER — pica.js, preview de calitate, export HD complet
+// ================================================================
+function setUF(f,btn){
+  UF=f;
+  document.querySelectorAll('.pb').forEach(function(b){ if(b.textContent===f+'x'||b.textContent===f.toString()+'x')b.classList.add('on'); else if(['1.5x','2x','3x','4x'].indexOf(b.textContent)>-1)b.classList.remove('on'); });
   updateUSDim();
 }
-
-function updateUSDim() {
-  var img = originals['upscale'];
-  if (!img) return;
-  var nw = Math.round(img.naturalWidth * uFactor);
-  var nh = Math.round(img.naturalHeight * uFactor);
-  document.getElementById('us-new').textContent = nw + ' × ' + nh + ' px';
+function updateUSDim(){
+  var img=ORIG['us'];if(!img)return;
+  document.getElementById('us-new').textContent=Math.round(img.naturalWidth*UF)+'×'+Math.round(img.naturalHeight*UF)+' px';
 }
+function doUpscale(){
+  var img=ORIG['us'];if(!img)return;
+  var pg=document.getElementById('us-pg');pg.style.display='flex';
+  setPG('us-pb','us-st',10,'Inițializez pica.js Lanczos3...','info');
+  var W=img.naturalWidth,H=img.naturalHeight;
+  var dW=Math.round(W*UF),dH=Math.round(H*UF);
 
-function doUpscale() {
-  var img = originals['upscale'];
-  if (!img) return;
-  var pw = document.getElementById('us-prog-wrap');
-  pw.style.display = 'block';
-  setProg('us-pb','us-st',20,'Inițializez Lanczos3...','info');
-
-  var srcCv = document.createElement('canvas');
-  srcCv.width  = img.naturalWidth;
-  srcCv.height = img.naturalHeight;
+  var srcCv=document.createElement('canvas');
+  srcCv.width=W;srcCv.height=H;
   srcCv.getContext('2d').drawImage(img,0,0);
 
-  var dstW = Math.round(img.naturalWidth  * uFactor);
-  var dstH = Math.round(img.naturalHeight * uFactor);
-  var dstCv = document.getElementById('cv-us-result');
-  dstCv.width = dstW; dstCv.height = dstH;
+  var fullCv=document.getElementById('cv-us-full');
+  fullCv.width=dW;fullCv.height=dH;
 
-  setProg('us-pb','us-st',45,'Upscaling Lanczos3...','info');
+  setPG('us-pb','us-st',30,'Upscaling '+dW+'×'+dH+' px...','info');
 
-  var sharpenAmt = gv2('s-uss') / 100;
+  var sharpen=gv2('sl-uss')/100;
 
-  function finishUpscale() {
-    if (sharpenAmt > 0) {
-      var ctx2 = dstCv.getContext('2d');
-      var id2  = ctx2.getImageData(0,0,dstW,dstH);
-      var d2   = id2.data;
-      var orig3 = new Uint8ClampedArray(d2);
-      for (var py=1; py<dstH-1; py++) {
-        for (var px=1; px<dstW-1; px++) {
-          var ii=(py*dstW+px)*4;
-          for (var c=0;c<3;c++) {
-            var center=orig3[ii+c];
-            var blurV=(orig3[((py-1)*dstW+px)*4+c]+orig3[((py+1)*dstW+px)*4+c]+orig3[(py*dstW+px-1)*4+c]+orig3[(py*dstW+px+1)*4+c])/4;
-            d2[ii+c]=clamp(center + sharpenAmt*1.2*(center-blurV));
-          }
+  function finalize(){
+    // Sharpen pe canvas-ul full
+    if(sharpen>0){
+      var ctx2=fullCv.getContext('2d');
+      var id2=ctx2.getImageData(0,0,dW,dH);
+      var d2=id2.data,cp=new Uint8ClampedArray(d2);
+      for(var py=1;py<dH-1;py++){for(var px=1;px<dW-1;px++){
+        var ii=(py*dW+px)*4;
+        for(var c=0;c<3;c++){
+          var ctr=cp[ii+c],bl=(cp[((py-1)*dW+px)*4+c]+cp[((py+1)*dW+px)*4+c]+cp[(py*dW+px-1)*4+c]+cp[(py*dW+px+1)*4+c])/4;
+          d2[ii+c]=clamp(ctr+sharpen*1.2*(ctr-bl));
         }
-      }
+      }}
       ctx2.putImageData(id2,0,0);
     }
-    // show preview
-    var prev = document.getElementById('cv-us-prev');
-    fitDraw({naturalWidth:dstW,naturalHeight:dstH,width:dstW,height:dstH}, prev);
-    prev.getContext('2d').drawImage(dstCv,0,0,prev.width,prev.height);
 
-    setProg('us-pb','us-st',100,'✓ Upscale complet: '+dstW+'×'+dstH+' px','ok');
-    document.getElementById('btn-us-dl').disabled = false;
-  }
-
-  if (typeof pica !== 'undefined') {
-    if (!picaInst) picaInst = pica();
-    picaInst.resize(srcCv, dstCv, {quality:3}).then(function() {
-      setProg('us-pb','us-st',80,'Post-processing...','info');
-      setTimeout(finishUpscale, 20);
-    }).catch(function(err) {
-      setProg('us-pb','us-st','Eroare pica: '+err.message,'err');
-    });
-  } else {
-    // fallback
-    var ctx3 = dstCv.getContext('2d');
-    ctx3.imageSmoothingEnabled = true;
-    ctx3.imageSmoothingQuality = 'high';
-    ctx3.drawImage(srcCv,0,0,dstW,dstH);
-    setProg('us-pb','us-st',80,'Post-processing (fallback)...','info');
-    setTimeout(finishUpscale, 20);
-  }
-}
-
-// ============================================================
-//  EXIF READER
-// ============================================================
-function readExif(inp) {
-  if (!inp.files || !inp.files[0]) return;
-  var file = inp.files[0];
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var box = document.getElementById('exif-box');
-    box.style.display = 'block';
-    try {
-      var tags = ExifReader.load(e.target.result, {expanded:true});
-      var flat = {};
-      for (var group in tags) {
-        if (typeof tags[group] === 'object' && tags[group] !== null) {
-          for (var key in tags[group]) {
-            var v = tags[group][key];
-            if (v && v.description !== undefined) flat[key] = v.description;
-            else if (typeof v === 'string' || typeof v === 'number') flat[key] = v;
-          }
-        }
-      }
-      var fields = [
-        ['Make','Producător'],['Model','Model cameră'],['LensModel','Obiectiv'],
-        ['DateTimeOriginal','Data/ora'],['ExposureTime','Timp expunere'],['FNumber','Apertură'],
-        ['ISOSpeedRatings','ISO'],['FocalLength','Distanță focală'],
-        ['WhiteBalance','White Balance'],['Flash','Bliț'],['MeteringMode','Metering'],
-        ['ExposureMode','Mod expunere'],['ExposureBiasValue','EV Compensation'],
-        ['Software','Software'],['ImageWidth','Lățime'],['ImageLength','Înălțime'],
-        ['GPSLatitude','GPS Latitudine'],['GPSLongitude','GPS Longitudine']
-      ];
-      var html = '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;overflow:hidden">';
-      html += '<div style="padding:8px 13px;background:var(--bg4);border-bottom:1px solid var(--border);font-size:10px;font-family:monospace;color:var(--text2)">📷 '+file.name+' · '+(file.size/1048576).toFixed(2)+' MB</div>';
-      html += '<table style="width:100%;border-collapse:collapse">';
-      var found = 0;
-      fields.forEach(function(f) {
-        if (flat[f[0]] !== undefined) {
-          html += '<tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 13px;font-size:11px;color:var(--text3);font-family:monospace;width:42%">'+f[1]+'</td><td style="padding:6px 13px;font-size:12px;color:var(--text)">'+flat[f[0]]+'</td></tr>';
-          found++;
-        }
+    // Preview: scalăm fullCv să încapă pe ecran — calitate bună
+    var prev=document.getElementById('cv-us-prev');
+    var pvw=document.getElementById('pvw-us');
+    var maxW=pvw.offsetWidth||700;
+    var sc2=Math.min(1,maxW/dW,560/dH);
+    prev.width=Math.round(dW*sc2);prev.height=Math.round(dH*sc2);
+    if(typeof pica!=='undefined'&&PICA_I){
+      PICA_I.resize(fullCv,prev,{quality:3}).then(function(){
+        setPG('us-pb','us-st',100,'✓ Upscale complet: '+dW+'×'+dH+' px — apasă Descarcă HD','ok');
+        document.getElementById('btn-us-dl').disabled=false;
       });
-      if (!found) html += '<tr><td colspan="2" style="padding:12px 13px;font-size:12px;color:var(--text3)">EXIF limitat. Preview RAW disponibil, dar metadate reduse.</td></tr>';
-      html += '</table></div>';
-      box.innerHTML = html;
-    } catch(err) {
-      box.innerHTML = '<div class="st err">Nu s-au putut citi datele EXIF: '+err.message+'</div>';
+    } else {
+      var pctx=prev.getContext('2d');
+      pctx.imageSmoothingEnabled=true;pctx.imageSmoothingQuality='high';
+      pctx.drawImage(fullCv,0,0,prev.width,prev.height);
+      setPG('us-pb','us-st',100,'✓ Upscale complet: '+dW+'×'+dH+' px — apasă Descarcă HD','ok');
+      document.getElementById('btn-us-dl').disabled=false;
     }
-  };
-  reader.readAsArrayBuffer(file);
+  }
+
+  if(typeof pica!=='undefined'){
+    if(!PICA_I)PICA_I=pica();
+    PICA_I.resize(srcCv,fullCv,{quality:3}).then(function(){
+      setPG('us-pb','us-st',80,'Post-processing...','info');
+      setTimeout(finalize,10);
+    }).catch(function(e){setPG('us-pb','us-st','Eroare pica: '+e.message,'err');});
+  } else {
+    var ctx3=fullCv.getContext('2d');
+    ctx3.imageSmoothingEnabled=true;ctx3.imageSmoothingQuality='high';
+    ctx3.drawImage(srcCv,0,0,dW,dH);
+    setPG('us-pb','us-st',80,'Post-processing (fallback)...','info');
+    setTimeout(finalize,10);
+  }
 }
 
-// ============================================================
-//  EXPORT / DOWNLOAD
-// ============================================================
-function dlCanvas(cvId, name) {
-  var cv = document.getElementById(cvId);
-  if (!cv || cv.style.display === 'none' || cv.width === 0) {
-    alert('Nu există imagine de descărcat! Procesează mai întâi imaginea.'); return;
-  }
-  var a = document.createElement('a');
-  a.download = 'RE-' + name + '-' + Date.now() + '.jpg';
-  a.href = cv.toDataURL('image/jpeg', 0.95);
+// ================================================================
+// CROP — Cropper.js
+// ================================================================
+function setCropAR(r){
+  if(!cropperInst)return;
+  cropperInst.setAspectRatio(r);
+  document.querySelectorAll('#panel-crop .pb').forEach(function(b){b.classList.remove('on');});
+  event.target.classList.add('on');
+}
+function exportCrop(){
+  if(!cropperInst){alert('Încarcă mai întâi o imagine!');return;}
+  // getCroppedCanvas fără argumente = rezoluție originală
+  var canvas=cropperInst.getCroppedCanvas();
+  canvas.toBlob(function(blob){
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='RE-crop-'+Date.now()+'.jpg';
+    a.click();
+  },'image/jpeg',1.0);
+}
+
+// ================================================================
+// COMPRESIE — Compressor.js
+// ================================================================
+function doCompress(){
+  var file=ORIG['_comp_file'];if(!file){alert('Încarcă mai întâi o imagine!');return;}
+  var q=gv2('sl-cq')/100;
+  var fmt=document.getElementById('sel-cfmt').value;
+  var mw=gv2('sl-cmw')||undefined;
+  var mh=gv2('sl-cmh')||undefined;
+  var cr=document.getElementById('comp-result');
+  cr.innerHTML='<div class="st info">Compresare în progres...</div>';
+  new Compressor(file,{
+    quality:q,mimeType:fmt,maxWidth:mw,maxHeight:mh,
+    success:function(result){
+      compBlob=result;
+      var ratio=((1-result.size/file.size)*100).toFixed(1);
+      cr.innerHTML='<div class="comp-result"><div class="comp-stat"><div class="cs-label">Original</div><div class="cs-val">'+fmtSize(file.size)+'</div></div><div style="font-size:20px;color:var(--accent)">→</div><div class="comp-stat"><div class="cs-label">Comprimat</div><div class="cs-val" style="color:var(--green)">'+fmtSize(result.size)+'</div></div><div class="comp-stat"><div class="cs-label">Economie</div><div class="cs-val" style="color:var(--yellow)">'+ratio+'%</div></div></div>';
+      document.getElementById('btn-comp-dl').style.display='inline-flex';
+    },
+    error:function(e){cr.innerHTML='<div class="st err">Eroare: '+e.message+'</div>';}
+  });
+}
+function dlCompResult(){
+  if(!compBlob)return;
+  var ext=compBlob.type==='image/webp'?'.webp':compBlob.type==='image/png'?'.png':'.jpg';
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(compBlob);
+  a.download='RE-compressed-'+Date.now()+ext;
   a.click();
 }
 
-function exportCurrent() {
-  var active = document.querySelector('.panel.active');
-  if (!active) return;
-  var id = active.id.replace('panel-','');
-  var map = {
-    enhance:'cv-enhance', hdr:'cv-hdr', window:'cv-window',
-    wb:'cv-wb', sky:'cv-sky', deblur:'cv-deblur', upscale:'cv-us-result'
+// ================================================================
+// EXIF
+// ================================================================
+function readExif(inp){if(inp.files&&inp.files[0])readExifFile(inp.files[0]);}
+function readExifFile(file){
+  var r=new FileReader();
+  r.onload=function(e){
+    var box=document.getElementById('exif-box');
+    try{
+      var tags=ExifReader.load(e.target.result,{expanded:true});
+      var flat={};
+      for(var g in tags){if(typeof tags[g]==='object'&&tags[g]!==null){for(var k in tags[g]){var v=tags[g][k];if(v&&v.description!==undefined)flat[k]=v.description;else if(typeof v==='string'||typeof v==='number')flat[k]=v;}}}
+      var FIELDS=[
+        ['Make','Producător'],['Model','Model cameră'],['LensModel','Obiectiv'],['LensInfo','Info obiectiv'],
+        ['DateTimeOriginal','Data/ora originală'],['DateTime','Data modificare'],
+        ['ExposureTime','Timp expunere'],['ShutterSpeedValue','Viteză obturator'],
+        ['FNumber','Apertură'],['ApertureValue','Apertură APEX'],
+        ['ISOSpeedRatings','ISO'],['FocalLength','Distanță focală'],
+        ['FocalLengthIn35mmFilm','Focal 35mm eq.'],
+        ['WhiteBalance','WB setare cameră'],['ColorTemperature','Temperatură K'],
+        ['LightSource','Sursă lumină'],['Flash','Bliț'],['MeteringMode','Metering'],
+        ['ExposureMode','Mod expunere'],['ExposureBiasValue','EV Comp.'],
+        ['ExposureProgram','Program expunere'],['SceneCaptureType','Tip scenă'],
+        ['Contrast','Contrast cameră'],['Saturation','Saturație cameră'],['Sharpness','Claritate cameră'],
+        ['Software','Software'],['Artist','Fotograf'],['Copyright','Copyright'],
+        ['ImageDescription','Descriere'],
+        ['PixelXDimension','Lățime px'],['PixelYDimension','Înălțime px'],
+        ['XResolution','Rez. X'],['YResolution','Rez. Y'],['ResolutionUnit','Unitate rez.'],
+        ['ColorSpace','Spațiu culoare'],['Orientation','Orientare'],
+        ['BitsPerSample','Biți/canal'],
+        ['GPSLatitude','GPS Latitudine'],['GPSLongitude','GPS Longitudine'],
+        ['GPSAltitude','GPS Altitudine'],['GPSDateStamp','GPS Data']
+      ];
+      var html='<div class="exifwrap"><div class="exifhead">📷 '+file.name+' &nbsp;·&nbsp; '+fmtSize(file.size)+' &nbsp;·&nbsp; '+file.type+'</div><table>';
+      var found=0;
+      FIELDS.forEach(function(f){
+        if(flat[f[0]]!==undefined){
+          html+='<tr><td>'+f[1]+'</td><td>'+flat[f[0]]+'</td></tr>';
+          found++;
+        }
+      });
+      if(!found)html+='<tr><td colspan="2" style="color:var(--text3);padding:12px">EXIF absent sau foarte limitat pentru acest format.</td></tr>';
+      html+='</table></div>';
+      box.innerHTML=html;
+    }catch(e2){box.innerHTML='<div class="st err">Nu s-au putut citi datele EXIF: '+e2.message+'</div>';}
   };
-  if (map[id]) dlCanvas(map[id], id+'-result');
+  r.readAsArrayBuffer(file);
 }
 
-// ============================================================
-//  INIT
-// ============================================================
-window.addEventListener('load', function() {
-  if (typeof pica !== 'undefined') { picaInst = pica(); }
+// ================================================================
+// EXPORT — calitate originală
+// ================================================================
+function exportCv(cvId, name){
+  var cv=document.getElementById(cvId);
+  if(!cv||!cv.width||cv.style.display==='none'){
+    alert('Procesează mai întâi imaginea!');return;
+  }
+  var ext='.jpg';
+  var a=document.createElement('a');
+  a.download='RE-'+name+'-'+cv.width+'x'+cv.height+'-'+Date.now()+ext;
+  a.href=cv.toDataURL('image/jpeg',1.0);
+  a.click();
+}
+// ================================================================
+// LIBS NAV
+// ================================================================
+function showLib(id, btn) {
+  document.querySelectorAll('.lib-page').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.lib-nb').forEach(function(b){ b.classList.remove('on'); });
+  var p = document.getElementById('lp-'+id);
+  if (p) p.classList.add('on');
+  if (btn) btn.classList.add('on');
+}
+
+function exportNow(){
+  var active=document.querySelector('.panel.on');
+  if(!active)return;
+  var id=active.id.replace('panel-','');
+  var map={enhance:'cv-enh',hdr:'cv-hdr',window:'cv-win',wb:'cv-wb',upscale:'cv-us-full'};
+  if(map[id])exportCv(map[id],id);
+  else if(id==='crop')exportCrop();
+  else if(id==='compress')dlCompResult();
+  else alert('Nicio imagine procesată în această secțiune.');
+}
+
+// ================================================================
+// INIT
+// ================================================================
+window.addEventListener('load',function(){
+  if(typeof pica!=='undefined')PICA_I=pica();
 });
 </script>
 </body>
