@@ -209,8 +209,18 @@ select:focus,input:focus{outline:1px solid var(--accent)}
   <button class="nb" onclick="goP('palette',this)"><span class="ni">🎨</span>Paletă culori</button>
   <button class="nb" onclick="goP('quality',this)"><span class="ni">✓</span>Quality Check</button>
   <button class="nb" onclick="goP('raw',this)"><span class="ni">📷</span>RAW &amp; EXIF+GPS<span class="bdg o">NEW</span></button>
+  <button class="nb" onclick="goP('tiff',this)"><span class="ni">💾</span>TIFF / Lossless<span class="bdg g">NEW</span></button>
+  <button class="nb" onclick="goP('comparison',this)"><span class="ni">◫</span>Before/After Slider<span class="bdg g">NEW</span></button>
+  <button class="nb" onclick="goP('colorpicker',this)"><span class="ni">🎯</span>Color Picker Live<span class="bdg g">NEW</span></button>
+  <button class="nb" onclick="goP('flipmirror',this)"><span class="ni">↔</span>Flip / Mirror<span class="bdg g">NEW</span></button>
+  <button class="nb" onclick="goP('virtualtour',this)"><span class="ni">🏠</span>Virtual Tour Helper<span class="bdg g">NEW</span></button>
+  <button class="nb" onclick="goP('webpconvert',this)"><span class="ni">⚡</span>WebP Converter<span class="bdg g">NEW</span></button>
+  <button class="nb" onclick="goP('printlayout',this)"><span class="ni">🖨</span>Print Layout<span class="bdg g">NEW</span></button>
   <button class="nb" onclick="goP('tonemapping',this)"><span class="ni">🌅</span>Tone Mapping HDR<span class="bdg g">NEW</span></button>
   <button class="nb" onclick="goP('focusstack',this)"><span class="ni">🔭</span>Focus Stacking<span class="bdg g">NEW</span></button>
+  <button class="nb" onclick="goP('haze',this)"><span class="ni">🌫</span>Remove Haze<span class="bdg g">NEW</span></button>
+  <button class="nb" onclick="goP('lensflare',this)"><span class="ni">✨</span>Lens Flare Fix<span class="bdg g">NEW</span></button>
+  <button class="nb" onclick="goP('staging',this)"><span class="ni">🛋</span>Virtual Staging<span class="bdg g">NEW</span></button>
   <button class="nb" onclick="goP('meta',this)"><span class="ni">✏</span>Metadata Editor<span class="bdg o">NEW</span></button>
   <button class="nb" onclick="goP('rename',this)"><span class="ni">🔤</span>Batch Rename<span class="bdg o">NEW</span></button>
 </nav>
@@ -936,6 +946,378 @@ select:focus,input:focus{outline:1px solid var(--accent)}
 </div>
 
 <!-- ══════════════════════════════════════════════════
+     TIFF EXPORT
+══════════════════════════════════════════════════ -->
+
+<!-- ══ COLOR PICKER LIVE ══ -->
+<div class="panel" id="panel-colorpicker">
+  <div class="card"><div class="ch"><h3>Color Picker Live</h3><span class="chsub">pipetă · HEX RGB HSL</span></div>
+  <div class="cb">
+    <div class="st info">Hover pe imagine pentru a vedea culoarea în timp real. Click = salvează culoarea. Valorile HEX/RGB/HSL se copiază cu un click.</div>
+    <div class="dz" id="dz-cpick" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'cpick')" onclick="Q('#fi-cpick').click()">
+      <div class="dz-ico">🎯</div><h4>Click sau trage imaginea</h4>
+    </div>
+    <input type="file" id="fi-cpick" style="display:none" accept="image/*" onchange="loadF(this,'cpick')">
+    <div id="cpick-ui" style="display:none;flex-direction:column;gap:9px">
+      <div style="position:relative;background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;cursor:crosshair">
+        <canvas id="cv-cpick" style="display:block;width:100%;height:auto"></canvas>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <div id="cpick-swatch" style="width:48px;height:48px;border-radius:var(--r);border:2px solid var(--border);flex-shrink:0;background:#fff"></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;flex:1">
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:5px 8px;cursor:pointer" onclick="cpickCopy('hex')">
+            <div style="font-size:9px;color:var(--text3);font-family:monospace">HEX (click=copia)</div>
+            <div id="cpick-hex" style="font-size:12px;font-family:monospace;color:var(--text)">#ffffff</div>
+          </div>
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:5px 8px;cursor:pointer" onclick="cpickCopy('rgb')">
+            <div style="font-size:9px;color:var(--text3);font-family:monospace">RGB</div>
+            <div id="cpick-rgb" style="font-size:10px;font-family:monospace;color:var(--text)">255,255,255</div>
+          </div>
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:5px 8px;cursor:pointer" onclick="cpickCopy('hsl')">
+            <div style="font-size:9px;color:var(--text3);font-family:monospace">HSL</div>
+            <div id="cpick-hsl" style="font-size:10px;font-family:monospace;color:var(--text)">0°,0%,100%</div>
+          </div>
+        </div>
+      </div>
+      <div id="cpick-copied" style="font-size:9px;color:var(--green);font-family:monospace;display:none">✓ Copiat în clipboard</div>
+      <div style="font-size:9px;color:var(--text3);font-family:monospace">CULORI SALVATE (click pe imagine = adaugă):</div>
+      <div id="cpick-history" style="display:flex;gap:5px;flex-wrap:wrap;min-height:28px"></div>
+      <div class="brow"><button class="btn" onclick="Q('#cpick-history').innerHTML=''">✕ Șterge istoric</button></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══ FLIP / MIRROR ══ -->
+<div class="panel" id="panel-flipmirror">
+  <div class="card"><div class="ch"><h3>Flip / Mirror</h3><span class="chsub">orizontal · vertical · rotire</span></div>
+  <div class="cb">
+    <div class="dz" id="dz-flip" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'flip')" onclick="Q('#fi-flip').click()">
+      <div class="dz-ico">↔</div><h4>Click sau trage imaginea</h4>
+    </div>
+    <input type="file" id="fi-flip" style="display:none" accept="image/*" onchange="loadF(this,'flip')">
+    <div id="flip-ui" style="display:none;flex-direction:column;gap:9px">
+      <div style="background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:hidden">
+        <canvas id="cv-flip" style="display:block;width:100%;height:auto"></canvas>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+        <button class="btn p" onclick="doFlip('h')">↔ Mirror H</button>
+        <button class="btn p" onclick="doFlip('v')">↕ Mirror V</button>
+        <button class="btn p" onclick="doFlip('hv')">↔↕ Ambele</button>
+        <button class="btn" onclick="doFlip('90')">↻ +90°</button>
+        <button class="btn" onclick="doFlip('-90')">↺ -90°</button>
+        <button class="btn" onclick="doFlip('180')">⟳ 180°</button>
+      </div>
+      <div class="brow">
+        <button class="btn" onclick="doFlip('reset')">↺ Reset</button>
+        <button class="btn g" onclick="exportCv('cv-flip','flip-mirror')">⬇ Descarcă original</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══ VIRTUAL TOUR HELPER ══ -->
+<div class="panel" id="panel-virtualtour">
+  <div class="card"><div class="ch"><h3>Virtual Tour Helper</h3><span class="chsub">Matterport · Zillow 3D · iGuide · CloudPano</span></div>
+  <div class="cb">
+    <div class="st info">Redimensionează și optimizează pozele pentru platforme de virtual tour. Fiecare platformă are cerințe specifice de rezoluție.</div>
+    <div class="dz" id="dz-vt" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDropMulti(event,'vt')" onclick="Q('#fi-vt').click()">
+      <div class="dz-ico">🏠</div><h4>Click sau trage imaginile</h4>
+    </div>
+    <input type="file" id="fi-vt" style="display:none" accept="image/*" multiple onchange="loadVTFiles(this)">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px">
+      <label class="rt-item"><input type="checkbox" id="vt-matterport" checked><div><div class="rt-label">Matterport</div><div class="rt-dim">4096×2048 · 90%</div></div></label>
+      <label class="rt-item"><input type="checkbox" id="vt-zillow" checked><div><div class="rt-label">Zillow 3D</div><div class="rt-dim">max 6000px · 85%</div></div></label>
+      <label class="rt-item"><input type="checkbox" id="vt-iguide"><div><div class="rt-label">iGuide</div><div class="rt-dim">3840×2160 · 92%</div></div></label>
+      <label class="rt-item"><input type="checkbox" id="vt-cloudpano"><div><div class="rt-label">CloudPano</div><div class="rt-dim">8192×4096 · 88%</div></div></label>
+      <label class="rt-item"><input type="checkbox" id="vt-web"><div><div class="rt-label">Web generic</div><div class="rt-dim">2048px · 85%</div></div></label>
+      <label class="rt-item"><input type="checkbox" id="vt-thumb"><div><div class="rt-label">Thumbnail</div><div class="rt-dim">640×480 · 80%</div></div></label>
+    </div>
+    <div id="vt-list" class="batch-list" style="margin-top:6px"></div>
+    <div id="vt-pg" style="display:none;flex-direction:column;gap:5px;margin-top:6px">
+      <div class="pgw"><div class="pgb" id="vt-pb" style="width:0%"></div></div>
+      <div class="st info" id="vt-st"></div>
+    </div>
+    <div class="brow" style="margin-top:6px">
+      <button class="btn p" id="btn-vt" onclick="doVirtualTour(false)" disabled>▶ Procesează &amp; Descarcă</button>
+      <button class="btn y" id="btn-vt-zip" onclick="doVirtualTour(true)" disabled>📦 ZIP toate</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══ WEBP / AVIF CONVERTER ══ -->
+<div class="panel" id="panel-webpconvert">
+  <div class="card"><div class="ch"><h3>WebP / AVIF Converter</h3><span class="chsub">formate moderne · compresie superioară</span></div>
+  <div class="cb">
+    <div class="st info"><b>WebP</b> = ~30% mai mic decât JPEG. Ideal pentru site-uri imobiliare rapide și SEO. Funcționează în toate browserele moderne.</div>
+    <div class="dz" id="dz-wconv" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDropMulti(event,'wconv')" onclick="Q('#fi-wconv').click()">
+      <div class="dz-ico">⚡</div><h4>Click sau trage imaginile</h4>
+    </div>
+    <input type="file" id="fi-wconv" style="display:none" accept="image/*" multiple onchange="loadWConvFiles(this)">
+    <div class="g2" style="margin-top:8px">
+      <div class="ctrl">
+        <div class="cl">Format output</div>
+        <select id="wconv-fmt" style="width:100%;margin-top:3px">
+          <option value="image/webp">WebP (recomandat)</option>
+          <option value="image/jpeg">JPEG optimizat</option>
+          <option value="image/png">PNG lossless</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <div class="cl">Calitate<span id="vl-wconvq">85</span></div>
+        <input type="range" class="pos-only" id="sl-wconvq" min="10" max="100" value="85" oninput="sv('wconvq')">
+        <div class="sl-ticks"><span class="sl-tick">10</span><span class="sl-tick">50</span><span class="sl-tick">85</span><span class="sl-tick">100</span></div>
+      </div>
+      <div class="ctrl">
+        <div class="cl">Max lățime px (0=original)<span id="vl-wconvmw">0</span></div>
+        <input type="range" class="pos-only" id="sl-wconvmw" min="0" max="6000" step="200" value="0" oninput="sv('wconvmw')">
+      </div>
+    </div>
+    <div id="wconv-list" class="batch-list" style="margin-top:6px"></div>
+    <div id="wconv-pg" style="display:none;flex-direction:column;gap:5px;margin-top:6px">
+      <div class="pgw"><div class="pgb" id="wconv-pb" style="width:0%"></div></div>
+      <div class="st info" id="wconv-st"></div>
+    </div>
+    <div class="brow" style="margin-top:6px">
+      <button class="btn p" id="btn-wconv" onclick="doWebPConvert(false)" disabled>▶ Convertește (individual)</button>
+      <button class="btn y" id="btn-wconv-zip" onclick="doWebPConvert(true)" disabled>📦 ZIP toate</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══ PRINT LAYOUT GENERATOR ══ -->
+<div class="panel" id="panel-printlayout">
+  <div class="card"><div class="ch"><h3>Print Layout Generator</h3><span class="chsub">A4 · A3 · tipografie</span></div>
+  <div class="cb">
+    <div class="st info">Aranjează mai multe poze pe o pagină A4 sau A3, gata pentru tipărit sau trimis la tipografie. Export ca imagine sau PDF.</div>
+    <div class="dz" id="dz-pl" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDropMulti(event,'pl')" onclick="Q('#fi-pl').click()">
+      <div class="dz-ico">🖨</div><h4>Click sau trage imaginile</h4>
+    </div>
+    <input type="file" id="fi-pl" style="display:none" accept="image/*" multiple onchange="loadPLFiles(this)">
+    <div class="g2" style="margin-top:8px">
+      <div class="ctrl">
+        <div class="cl">Format pagină</div>
+        <select id="pl-fmt" style="width:100%;margin-top:3px">
+          <option value="a4l">A4 Landscape</option>
+          <option value="a4p">A4 Portrait</option>
+          <option value="a3l">A3 Landscape</option>
+          <option value="a3p">A3 Portrait</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <div class="cl">Grid poze</div>
+        <select id="pl-grid" style="width:100%;margin-top:3px">
+          <option value="1x1">1 poză</option>
+          <option value="2x1">2 poze (1 rând)</option>
+          <option value="2x2" selected>4 poze (2×2)</option>
+          <option value="3x2">6 poze (3×2)</option>
+          <option value="3x3">9 poze (3×3)</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <div class="cl">Margine px<span id="vl-plmargin">20</span></div>
+        <input type="range" class="pos-only" id="sl-plmargin" min="0" max="80" value="20" oninput="sv('plmargin')">
+      </div>
+      <div class="ctrl">
+        <div class="cl">Fundal</div>
+        <input type="color" id="pl-bg" value="#ffffff" style="width:100%;height:28px;margin-top:3px">
+      </div>
+      <div class="ctrl" style="grid-column:1/-1">
+        <div class="cl">Titlu (opțional)</div>
+        <input type="text" id="pl-title" placeholder="Proprietate · Str. Exemplu · Cluj" style="width:100%;margin-top:3px">
+      </div>
+    </div>
+    <div id="pl-files-list" class="batch-list" style="margin-top:6px"></div>
+    <div id="pl-preview" style="display:none;background:var(--bg3);border-radius:var(--r);padding:8px;margin-top:6px;overflow:auto">
+      <canvas id="cv-pl" style="display:block;max-width:100%;height:auto;border:1px solid var(--border)"></canvas>
+    </div>
+    <div id="pl-pg" style="display:none;flex-direction:column;gap:5px;margin-top:6px">
+      <div class="pgw"><div class="pgb" id="pl-pb" style="width:0%"></div></div>
+      <div class="st info" id="pl-st"></div>
+    </div>
+    <div class="brow" style="margin-top:6px">
+      <button class="btn p" id="btn-pl" onclick="doPrintLayout()" disabled>▶ Generează layout</button>
+      <button class="btn g" id="btn-pl-dl" onclick="exportCv('cv-pl','print-layout')" disabled>⬇ Descarcă imagine</button>
+      <button class="btn y" id="btn-pl-pdf" onclick="doPrintLayoutPDF()" disabled>📄 Export PDF</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══ REMOVE HAZE / DEHAZE AVANSAT ══ -->
+<div class="panel" id="panel-haze">
+  <div class="card"><div class="ch"><h3>Remove Haze / Fog</h3><span class="chsub">Dark Channel Prior · contrast local</span></div>
+  <div class="cb">
+    <div class="st info">Elimină ceața și hazeul din pozele de exterior folosind algoritmul Dark Channel Prior — aceeași tehnică ca în Lightroom Dehaze. Funcționează optim pe pozele cu cer, exterior, peisaje.</div>
+    <div class="dz" id="dz-haze" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'haze')" onclick="Q('#fi-haze').click()">
+      <div class="dz-ico">🌫</div><h4>Click sau trage imaginea</h4>
+    </div>
+    <input type="file" id="fi-haze" style="display:none" accept="image/*" onchange="loadF(this,'haze')">
+    <div id="haze-ui" style="display:none;flex-direction:column;gap:9px">
+      <div id="haze-sliders" class="g2"></div>
+      <div class="cmp">
+        <div class="cmpw"><canvas id="cv-hazeb"></canvas><div class="clbl">Original</div></div>
+        <div class="cmpw"><canvas id="cv-haze"></canvas><div class="clbl">Dehazed</div></div>
+      </div>
+      <div class="brow">
+        <button class="btn p" onclick="renderHaze()">▶ Aplică Dehaze</button>
+        <button class="btn g" onclick="exportCv('cv-haze','dehaze')">⬇ Descarcă original</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══ LENS FLARE REMOVAL ══ -->
+<div class="panel" id="panel-lensflare">
+  <div class="card"><div class="ch"><h3>Lens Flare Removal</h3><span class="chsub">detectare și reducere flare</span></div>
+  <div class="cb">
+    <div class="st info">Detectează automat zonele de lens flare (pete luminoase, halouri, artefacte de reflexie) și le reduce. Funcționează cel mai bine pe flare-uri de tip ghosting și haze de la surse de lumină puternice.</div>
+    <div class="dz" id="dz-flare" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'flare')" onclick="Q('#fi-flare').click()">
+      <div class="dz-ico">✨</div><h4>Click sau trage imaginea</h4>
+    </div>
+    <input type="file" id="fi-flare" style="display:none" accept="image/*" onchange="loadF(this,'flare')">
+    <div id="flare-ui" style="display:none;flex-direction:column;gap:9px">
+      <div id="flare-detect-wrap" style="position:relative;background:#06070a;border-radius:var(--r);border:1px solid var(--border)">
+        <canvas id="cv-flareb" style="display:block;width:100%;height:auto"></canvas>
+        <canvas id="cv-flare-mask" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.6"></canvas>
+      </div>
+      <div id="flare-info" class="st info" style="display:none"></div>
+      <div id="flare-sliders" class="g2"></div>
+      <div class="cmp">
+        <div class="cmpw"><canvas id="cv-flareb2"></canvas><div class="clbl">Original</div></div>
+        <div class="cmpw"><canvas id="cv-flare"></canvas><div class="clbl">Flare Reduced</div></div>
+      </div>
+      <div class="brow">
+        <button class="btn p" id="btn-flare-detect" onclick="detectFlare()">🔍 Detectează flare</button>
+        <button class="btn p" id="btn-flare-fix" onclick="renderFlare()" disabled>▶ Aplică reducere</button>
+        <button class="btn g" onclick="exportCv('cv-flare','no-flare')">⬇ Descarcă original</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══ VIRTUAL STAGING OVERLAY ══ -->
+<div class="panel" id="panel-staging">
+  <div class="card"><div class="ch"><h3>Virtual Staging Overlay</h3><span class="chsub">mobilier PNG transparent pe interior</span></div>
+  <div class="cb">
+    <div class="st info">Adaugă mobilier și obiecte decorative PNG transparent pe pozele de interior — pentru un virtual staging rapid. Ajustează poziția, dimensiunea și opacitatea fiecărui element.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div>
+        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;font-family:monospace">FOTOGRAFIA DE BAZĂ</div>
+        <div class="dz" id="dz-staging-bg" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDropStagingBg(event)" onclick="Q('#fi-staging-bg').click()" style="padding:12px">
+          <div class="dz-ico" style="font-size:18px">🏠</div><p>Interior (JPG/PNG)</p>
+        </div>
+        <input type="file" id="fi-staging-bg" style="display:none" accept="image/*" onchange="loadStagingBg(this)">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;font-family:monospace">MOBILIER PNG (transparent)</div>
+        <div class="dz" id="dz-staging-item" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDropStagingItem(event)" onclick="Q('#fi-staging-item').click()" style="padding:12px">
+          <div class="dz-ico" style="font-size:18px">🛋</div><p>PNG cu fundal transparent</p>
+        </div>
+        <input type="file" id="fi-staging-item" style="display:none" accept="image/png" onchange="loadStagingItem(this)">
+      </div>
+    </div>
+    <div id="staging-ui" style="display:none;flex-direction:column;gap:9px">
+      <div style="position:relative;background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;cursor:move">
+        <canvas id="cv-staging" style="display:block;width:100%;height:auto"></canvas>
+        <div id="staging-handle" style="position:absolute;width:16px;height:16px;background:var(--accent);border-radius:50%;cursor:move;display:none;transform:translate(-50%,-50%)"></div>
+      </div>
+      <div id="staging-sliders" class="g2"></div>
+      <div class="brow">
+        <button class="btn p" onclick="renderStaging()">▶ Aplică</button>
+        <button class="btn" onclick="addStagingItem()">+ Adaugă alt element</button>
+        <button class="btn g" onclick="exportCv('cv-staging','virtual-staging')">⬇ Descarcă original</button>
+      </div>
+    </div>
+    <!-- Preset furniture items -->
+    <div style="font-size:9px;color:var(--text3);margin-top:8px;font-family:monospace">SAU GENEREAZĂ ELEMENT SIMPLU:</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:5px">
+      <button class="pb" onclick="genStagingShape('sofa','#8B7355')">🛋 Canapea</button>
+      <button class="pb" onclick="genStagingShape('table','#6B5B45')">🪑 Masă</button>
+      <button class="pb" onclick="genStagingShape('plant','#2D5A1B')">🌿 Plantă</button>
+      <button class="pb" onclick="genStagingShape('rug','#C4956A')">🟫 Covor</button>
+      <button class="pb" onclick="genStagingShape('lamp','#F5E642')">💡 Lampă</button>
+      <button class="pb" onclick="genStagingShape('picture','#4A90D9')">🖼 Tablou</button>
+    </div>
+  </div></div>
+</div>
+
+<div class="panel" id="panel-tiff">
+  <div class="card"><div class="ch"><h3>TIFF / Lossless Export</h3><span class="chsub">calitate maximă · fără compresie</span></div>
+  <div class="cb">
+    <div class="st info">Exportă imaginea în format PNG 100% (echivalent TIFF lossless) — fără nicio pierdere de calitate, ideal pentru arhivare și print profesional. Fișierul va fi mai mare dar perfect pentru orice prelucrare ulterioară.</div>
+    <div class="dz" id="dz-tiff" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDrop(event,'tiff')" onclick="Q('#fi-tiff').click()">
+      <div class="dz-ico">💾</div><h4>Click sau trage imaginea</h4>
+      <p>JPG · PNG · WEBP · TIFF · RAW preview</p>
+    </div>
+    <input type="file" id="fi-tiff" style="display:none" accept="image/*,.cr2,.nef,.arw,.dng" onchange="loadF(this,'tiff')">
+    <div id="tiff-ui" style="display:none;flex-direction:column;gap:9px">
+      <div style="background:#06070a;border-radius:var(--r);border:1px solid var(--border);overflow:hidden">
+        <canvas id="cv-tiff-prev" style="display:block;width:100%;height:auto"></canvas>
+      </div>
+      <div id="tiff-info" class="st info"></div>
+      <div class="g2">
+        <div class="ctrl">
+          <div class="cl">Format export</div>
+          <select id="tiff-fmt" style="margin-top:3px;width:100%">
+            <option value="png">PNG lossless (recomand)</option>
+            <option value="jpeg100">JPEG calitate 100%</option>
+            <option value="webp">WebP lossless</option>
+          </select>
+        </div>
+        <div class="ctrl" style="justify-content:flex-end;padding-top:18px">
+          <label style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2);cursor:pointer">
+            <input type="checkbox" id="tiff-fullres" checked> Rezoluție completă originală
+          </label>
+        </div>
+      </div>
+      <div class="brow">
+        <button class="btn g" onclick="doTIFFExport()">💾 Descarcă lossless</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     BEFORE / AFTER COMPARISON SLIDER
+══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-comparison">
+  <div class="card"><div class="ch"><h3>Before / After Slider</h3><span class="chsub">comparație interactivă drag</span></div>
+  <div class="cb">
+    <div class="st info">Încarcă 2 versiuni ale aceleiași poze și compară-le cu un slider drag. Trage linia pentru a vedea diferența.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div>
+        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;font-family:monospace">ÎNAINTE (original)</div>
+        <div class="dz" id="dz-cmpa" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDropCmp(event,'a')" onclick="Q('#fi-cmpa').click()" style="padding:14px">
+          <div class="dz-ico" style="font-size:18px">📷</div>
+          <p style="font-size:10px">Click sau trage</p>
+        </div>
+        <input type="file" id="fi-cmpa" style="display:none" accept="image/*" onchange="loadCmpFile(this,'a')">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--text3);margin-bottom:4px;font-family:monospace">DUPĂ (editat)</div>
+        <div class="dz" id="dz-cmpb" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dzDropCmp(event,'b')" onclick="Q('#fi-cmpb').click()" style="padding:14px">
+          <div class="dz-ico" style="font-size:18px">✦</div>
+          <p style="font-size:10px">Click sau trage</p>
+        </div>
+        <input type="file" id="fi-cmpb" style="display:none" accept="image/*" onchange="loadCmpFile(this,'b')">
+      </div>
+    </div>
+    <!-- Slider container -->
+    <div id="cmp-wrap" style="display:none;position:relative;overflow:hidden;border-radius:var(--r);border:1px solid var(--border);cursor:ew-resize;user-select:none;touch-action:pan-y">
+      <canvas id="cv-cmpa" style="display:block;width:100%;height:auto"></canvas>
+      <canvas id="cv-cmpb" style="position:absolute;top:0;left:0;width:100%;height:100%;clip-path:inset(0 50% 0 0)"></canvas>
+      <!-- Divider line -->
+      <div id="cmp-line" style="position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(255,255,255,.9);transform:translateX(-50%);pointer-events:none"></div>
+      <!-- Handle -->
+      <div id="cmp-handle" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;font-size:14px;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.4)">⇄</div>
+      <!-- Labels -->
+      <div style="position:absolute;top:8px;left:10px;font-size:9px;font-family:monospace;background:rgba(0,0,0,.6);color:#fff;padding:2px 7px;border-radius:3px;pointer-events:none">ÎNAINTE</div>
+      <div style="position:absolute;top:8px;right:10px;font-size:9px;font-family:monospace;background:rgba(0,0,0,.6);color:#fff;padding:2px 7px;border-radius:3px;pointer-events:none">DUPĂ</div>
+    </div>
+    <div id="cmp-hint" style="font-size:10px;color:var(--text3);text-align:center;margin-top:4px;display:none">← Trage sliderul pentru comparație →</div>
+  </div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
      RAW & EXIF + GPS
 ══════════════════════════════════════════════════ -->
 <div class="panel" id="panel-raw">
@@ -1146,7 +1528,30 @@ function buildSliders(){
     mkSL('tm-gamma','Gamma',50,250,100,1,'renderTM()',true),
     mkSL('tm-con','Contrast',-50,50,0,1,'renderTM()'),
     mkSL('tm-sat','Saturație',-50,50,0,1,'renderTM()'),
-    mkSL('tm-key','Key value (luminozitate)',1,100,18,1,'renderTM()',true)
+    mkSL('tm-key','Key value',1,100,18,1,'renderTM()',true)
+  ].join('');
+
+  // HAZE REMOVAL
+  Q('#haze-sliders').innerHTML=[
+    mkSL('haze-str','Intensitate dehaze',0,100,60,1,'',true),
+    mkSL('haze-radius','Raza dark channel',2,20,7,1,'',true),
+    mkSL('haze-sat','Saturație boost',-30,60,20,1,''),
+    mkSL('haze-con','Contrast boost',-20,50,15,1,'')
+  ].join('');
+
+  // LENS FLARE
+  Q('#flare-sliders').innerHTML=[
+    mkSL('flare-thr','Prag detectare',180,255,220,1,'',true),
+    mkSL('flare-str','Intensitate reducere',0,100,70,1,'',true),
+    mkSL('flare-blend','Blend cu context',0,100,60,1,'',true)
+  ].join('');
+
+  // VIRTUAL STAGING
+  Q('#staging-sliders').innerHTML=[
+    mkSL('staging-x','Poziție X',0,100,50,1,'renderStaging()',true),
+    mkSL('staging-y','Poziție Y',0,100,70,1,'renderStaging()',true),
+    mkSL('staging-scale','Dimensiune',10,200,60,1,'renderStaging()',true),
+    mkSL('staging-op','Opacitate',10,100,90,1,'renderStaging()',true)
   ].join('');
 
   // Build enhance presets
@@ -1172,7 +1577,17 @@ var PM={
   quality:['Quality Check','Print · Web · MLS'],raw:['RAW & EXIF + GPS','Leaflet map'],
   meta:['Metadata Editor','IPTC · SEO'],rename:['Batch Rename','Pattern automat + ZIP'],
   tonemapping:['Tone Mapping HDR','Reinhard · Filmic · ACES · Drago'],
-  focusstack:['Focus Stacking','Combini poze cu focus diferit']
+  focusstack:['Focus Stacking','Combini poze cu focus diferit'],
+  tiff:['TIFF / Lossless Export','PNG 100% · fără pierdere calitate'],
+  comparison:['Before/After Slider','Comparație interactivă drag'],
+  colorpicker:['Color Picker Live','Pipetă · HEX · RGB · HSL'],
+  flipmirror:['Flip / Mirror','Orizontal · Vertical · Rotire'],
+  virtualtour:['Virtual Tour Helper','Matterport · Zillow 3D · iGuide'],
+  webpconvert:['WebP Converter','Format modern · ~30% mai mic'],
+  printlayout:['Print Layout','A4 · A3 · tipografie · PDF'],
+  haze:['Remove Haze','Dark Channel Prior · dehaze avansat'],
+  lensflare:['Lens Flare Removal','Detectare și reducere flare'],
+  staging:['Virtual Staging','Mobilier PNG pe interior']
 };
 function goP(id,btn){
   QA('.panel').forEach(function(p){p.classList.remove('on');});
@@ -1201,6 +1616,9 @@ var HSL_L={red:'Roșu',orange:'Portocaliu',yellow:'Galben',green:'Verde',aqua:'A
 var HSL_R={red:[345,15],orange:[15,45],yellow:[45,75],green:[75,165],aqua:[165,195],blue:[195,255],purple:[255,315],magenta:[315,345]};
 var SEL_LUT=null,LUT_DEFS=[];
 var batchFiles=[],galFiles=[],pdfFiles=[],renFiles=[];
+var vtFiles=[],wconvFiles=[],plFiles=[];
+var FLIP_STATE={flipX:1,flipY:1,angle:0};
+var cpickData=null;
 var batchBlobs=[],galBlobs=[],wbgSelIdx=0;
 var leafMap=null;
 var SEL_WBG_CV=null;
@@ -1280,6 +1698,14 @@ function afterLoad(mode,img,file,url){
     renderFX();
   } else if(mode==='tm'){
     afterLoadTM(img);
+  } else if(mode==='tiff'){
+    Q('#dz-tiff').style.display='none';
+    Q('#tiff-ui').style.display='flex';
+    var cvt=Q('#cv-tiff-prev');
+    var sc=Math.min(1,800/img.naturalWidth,500/img.naturalHeight);
+    cvt.width=Math.round(img.naturalWidth*sc);cvt.height=Math.round(img.naturalHeight*sc);
+    cvt.getContext('2d').drawImage(img,0,0,cvt.width,cvt.height);
+    Q('#tiff-info').textContent='Imagine: '+img.naturalWidth+'×'+img.naturalHeight+' px · Original: '+fmtSz(file.size)+' · Export PNG lossless: ~'+fmtSz(img.naturalWidth*img.naturalHeight*3);
   } else if(mode==='wb'){
     hideDZ('wb');Q('#wb-box').style.display='block';
     setFullCV('cv-wbb',img);setFullCV('cv-wb',img);
@@ -1346,6 +1772,28 @@ function afterLoad(mode,img,file,url){
   } else if(mode==='meta'){
     hideDZ('meta');Q('#meta-form').style.display='block';
     setSmallCV('cv-meta-prev',img,600,200);
+  } else if(mode==='cpick'){
+    hideDZ('cpick');Q('#cpick-ui').style.display='flex';
+    var cpcv=Q('#cv-cpick');
+    var cpsc=Math.min(1,800/img.naturalWidth,600/img.naturalHeight);
+    cpcv.width=Math.round(img.naturalWidth*cpsc);
+    cpcv.height=Math.round(img.naturalHeight*cpsc);
+    cpcv.getContext('2d').drawImage(img,0,0,cpcv.width,cpcv.height);
+    initColorPicker(img);
+  } else if(mode==='flip'){
+    hideDZ('flip');Q('#flip-ui').style.display='flex';
+    FLIP_STATE={flipX:1,flipY:1,angle:0};
+    setFullCV('cv-flip',img);
+  } else if(mode==='haze'){
+    hideDZ('haze');Q('#haze-ui').style.display='flex';
+    setFullCV('cv-hazeb',img);setFullCV('cv-haze',img);
+  } else if(mode==='flare'){
+    hideDZ('flare');Q('#flare-ui').style.display='flex';
+    setFullCV('cv-flareb',img);setFullCV('cv-flareb2',img);setFullCV('cv-flare',img);
+    // Init flare mask canvas
+    var fb=Q('#cv-flareb');var fm=Q('#cv-flare-mask');
+    fm.width=fb.width;fm.height=fb.height;
+    Q('#btn-flare-fix').disabled=true;
   }
 }
 
@@ -1355,6 +1803,9 @@ function handleMulti(files,mode){
   else if(mode==='gal'){galFiles=arr;buildGallery();}
   else if(mode==='pdf'){pdfFiles=arr;buildPDFList();}
   else if(mode==='ren'){renFiles=arr;buildRenList();}
+  else if(mode==='vt'){vtFiles=arr;buildVTList();}
+  else if(mode==='wconv'){wconvFiles=arr;buildWConvList();}
+  else if(mode==='pl'){plFiles=arr;buildPLList();}
 }
 
 // ================================================================
@@ -1794,40 +2245,7 @@ function renderWB(){
 // ================================================================
 // WB PREVIEW GRID
 // ================================================================
-var WB_TEMPS=[3200,4000,5000,5500,6500,8000];
-function buildWBGrid(img){
-  var grid=Q('#wbg-grid');grid.style.display='grid';
-  grid.innerHTML='';
-  WB_TEMPS.forEach(function(temp,idx){
-    var wrap=document.createElement('div');wrap.className='wbg-item';
-    var cv=document.createElement('canvas');
-    var sc=Math.min(1,220/img.naturalWidth,180/img.naturalHeight);
-    cv.width=Math.round(img.naturalWidth*sc);cv.height=Math.round(img.naturalHeight*sc);
-    var ctx=cv.getContext('2d');ctx.drawImage(img,0,0,cv.width,cv.height);
-    var id=ctx.getImageData(0,0,cv.width,cv.height),d=id.data;
-    // Simulate temperature shift relative to 5500K neutral
-    var shift=(temp-5500)/50;
-    for(var i=0;i<d.length;i+=4){d[i]=clamp(d[i]+shift*.5);d[i+2]=clamp(d[i+2]-shift*.4);}
-    ctx.putImageData(id,0,0);
-    var lbl=document.createElement('div');lbl.className='wbg-label';lbl.textContent=temp+'K';
-    wrap.appendChild(cv);wrap.appendChild(lbl);
-    wrap.addEventListener('click',(function(c,w,t){return function(){
-      QA('.wbg-item').forEach(function(x){x.classList.remove('on');});
-      w.classList.add('on');SEL_WBG_CV=c;
-      Q('#wbg-sel-label').textContent='Selectat: '+t+'K';
-      Q('#btn-wbg-dl').disabled=false;
-    };})(cv,wrap,temp));
-    grid.appendChild(wrap);
-  });
-  Q('#wbg-brow').style.display='flex';
-}
-function exportWBGrid(){
-  if(!SEL_WBG_CV)return;
-  var a=document.createElement('a');
-  a.download='RE-wb-'+Date.now()+'.jpg';
-  a.href=SEL_WBG_CV.toDataURL('image/jpeg',1.0);
-  a.click();
-}
+var SEL_WBG_CV=null; // initialized in new buildWBGrid below
 
 // ================================================================
 // HISTOGRAM
@@ -1839,44 +2257,106 @@ function drawHistogram(img){
   var sc=Math.min(1,pw/img.naturalWidth);
   prev.width=Math.round(img.naturalWidth*sc);prev.height=Math.round(img.naturalHeight*sc);
   prev.getContext('2d').drawImage(img,0,0,prev.width,prev.height);
-  // Overlay
+  // Overlay — under/over exposed zones
   var ov=Q('#cv-hist-overlay');ov.width=prev.width;ov.height=prev.height;
   var octx=ov.getContext('2d');
   var pd=prev.getContext('2d').getImageData(0,0,prev.width,prev.height).data;
   var od=octx.createImageData(prev.width,prev.height);
-  for(var i2=0;i2<pd.length;i2+=4){var lum2=.299*pd[i2]+.587*pd[i2+1]+.114*pd[i2+2];if(lum2<10){od.data[i2]=30;od.data[i2+1]=60;od.data[i2+2]=220;od.data[i2+3]=140;}else if(lum2>248){od.data[i2]=220;od.data[i2+1]=50;od.data[i2+2]=30;od.data[i2+3]=140;}else od.data[i2+3]=0;}
+  for(var i2=0;i2<pd.length;i2+=4){
+    var lum2=.299*pd[i2]+.587*pd[i2+1]+.114*pd[i2+2];
+    if(lum2<8){od.data[i2]=20;od.data[i2+1]=40;od.data[i2+2]=255;od.data[i2+3]=160;}
+    else if(lum2>250){od.data[i2]=255;od.data[i2+1]=30;od.data[i2+2]=10;od.data[i2+3]=160;}
+    else od.data[i2+3]=0;
+  }
   octx.putImageData(od,0,0);
-  // Grid
+  // Grid lines on preview
   var gcv=Q('#cv-hist-grid');gcv.width=prev.width;gcv.height=prev.height;
-  var gctx=gcv.getContext('2d');gctx.strokeStyle='rgba(255,255,255,.13)';gctx.lineWidth=1;
+  var gctx=gcv.getContext('2d');gctx.strokeStyle='rgba(255,255,255,.12)';gctx.lineWidth=1;
   for(var gx=1;gx<4;gx++){gctx.beginPath();gctx.moveTo(prev.width*gx/4,0);gctx.lineTo(prev.width*gx/4,prev.height);gctx.stroke();}
   for(var gy=1;gy<3;gy++){gctx.beginPath();gctx.moveTo(0,prev.height*gy/3);gctx.lineTo(prev.width,prev.height*gy/3);gctx.stroke();}
-  // Analyze
-  var tc=document.createElement('canvas');var sc2=Math.min(1,500/Math.max(img.naturalWidth,img.naturalHeight));tc.width=Math.round(img.naturalWidth*sc2);tc.height=Math.round(img.naturalHeight*sc2);tc.getContext('2d').drawImage(img,0,0,tc.width,tc.height);
+  // Analyze full resolution
+  var tc=document.createElement('canvas');
+  var sc2=Math.min(1,600/Math.max(img.naturalWidth,img.naturalHeight));
+  tc.width=Math.round(img.naturalWidth*sc2);tc.height=Math.round(img.naturalHeight*sc2);
+  tc.getContext('2d').drawImage(img,0,0,tc.width,tc.height);
   var d=tc.getContext('2d').getImageData(0,0,tc.width,tc.height).data;
   var rH=new Array(256).fill(0),gH=new Array(256).fill(0),bH=new Array(256).fill(0),lH=new Array(256).fill(0);
-  for(var i=0;i<d.length;i+=4){rH[d[i]]++;gH[d[i+1]]++;bH[d[i+2]]++;lH[Math.round(.299*d[i]+.587*d[i+1]+.114*d[i+2])]++;}
-  // Draw histogram
+  for(var i=0;i<d.length;i+=4){
+    rH[d[i]]++;gH[d[i+1]]++;bH[d[i+2]]++;
+    lH[Math.round(.299*d[i]+.587*d[i+1]+.114*d[i+2])]++;
+  }
+  // Draw smooth histogram chart
   var cv=Q('#hist-canvas'),cW=cv.width,cH=cv.height;
-  var ctx=cv.getContext('2d');ctx.fillStyle='#06070a';ctx.fillRect(0,0,cW,cH);
-  ctx.strokeStyle='#151c24';ctx.lineWidth=1;
+  var ctx=cv.getContext('2d');
+  ctx.fillStyle='#06070a';ctx.fillRect(0,0,cW,cH);
+  // Grid
+  ctx.strokeStyle='#0e141a';ctx.lineWidth=1;
   for(var gi=0;gi<=4;gi++){ctx.beginPath();ctx.moveTo(gi*cW/4,0);ctx.lineTo(gi*cW/4,cH);ctx.stroke();}
   for(var gi2=1;gi2<4;gi2++){ctx.beginPath();ctx.moveTo(0,gi2*cH/4);ctx.lineTo(cW,gi2*cH/4);ctx.stroke();}
-  function smooth(h){var s=h.slice();for(var k=3;k<253;k++)s[k]=(h[k-3]+h[k-2]*2+h[k-1]*3+h[k]*4+h[k+1]*3+h[k+2]*2+h[k+3])/18;return s;}
+  // Zone lines: shadows/midtones/highlights
+  ctx.strokeStyle='rgba(255,255,255,.06)';
+  [85,170].forEach(function(v){ctx.beginPath();ctx.moveTo(v/255*cW,0);ctx.lineTo(v/255*cW,cH);ctx.stroke();});
+  ctx.fillStyle='rgba(255,255,255,.04)';ctx.fillRect(0,cH-8,cW,8); // axis area
+  // Smooth
+  function smooth(h){
+    var s=h.slice();
+    for(var k=3;k<253;k++) s[k]=(h[k-3]+h[k-2]*2+h[k-1]*3+h[k]*4+h[k+1]*3+h[k+2]*2+h[k+3])/18;
+    return s;
+  }
   var sR=smooth(rH),sG=smooth(gH),sB=smooth(bH),sL=smooth(lH);
-  var maxV=Math.max.apply(null,sL)*1.05;if(!maxV)maxV=1;
-  function drawArea(hist,color,alpha){ctx.beginPath();ctx.moveTo(0,cH);for(var xi=0;xi<=255;xi++){ctx.lineTo(xi/255*cW,cH-hist[xi]/maxV*(cH-4));}ctx.lineTo(cW,cH);ctx.closePath();ctx.fillStyle=color;ctx.globalAlpha=alpha;ctx.fill();ctx.globalAlpha=1;}
-  function drawLine(hist,color){ctx.beginPath();for(var xi=0;xi<=255;xi++){var xp=xi/255*cW,yp=cH-hist[xi]/maxV*(cH-4);if(xi===0)ctx.moveTo(xp,yp);else ctx.lineTo(xp,yp);}ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.globalAlpha=.8;ctx.stroke();ctx.globalAlpha=1;}
-  drawArea(sB,'#1a4a9a',.5);drawArea(sG,'#0a5a38',.5);drawArea(sR,'#8a1a1a',.5);
+  var maxV=Math.max.apply(null,sL)*1.08;if(!maxV)maxV=1;
+  function drawArea(hist,color,alpha){
+    ctx.beginPath();ctx.moveTo(0,cH-8);
+    for(var xi=0;xi<=255;xi++) ctx.lineTo(xi/255*cW, cH-8-Math.max(0,hist[xi]/maxV*(cH-12)));
+    ctx.lineTo(cW,cH-8);ctx.closePath();
+    ctx.fillStyle=color;ctx.globalAlpha=alpha;ctx.fill();ctx.globalAlpha=1;
+  }
+  function drawLine(hist,color){
+    ctx.beginPath();
+    for(var xi=0;xi<=255;xi++){
+      var xp=xi/255*cW,yp=cH-8-Math.max(0,hist[xi]/maxV*(cH-12));
+      if(xi===0)ctx.moveTo(xp,yp);else ctx.lineTo(xp,yp);
+    }
+    ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.globalAlpha=.85;ctx.stroke();ctx.globalAlpha=1;
+  }
+  drawArea(sB,'#0a2a6a',.7);drawArea(sG,'#043a1e',.7);drawArea(sR,'#5a0a0a',.7);
+  drawArea(sL,'rgba(50,60,80,.3)',1);
   drawLine(sB,'#3d7eff');drawLine(sG,'#28c87e');drawLine(sR,'#e84848');
+  // Peak luminance marker
+  var peakLum=lH.indexOf(Math.max.apply(null,lH));
+  ctx.strokeStyle='rgba(255,220,80,.5)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(peakLum/255*cW,0);ctx.lineTo(peakLum/255*cW,cH-8);ctx.stroke();
+  ctx.setLineDash([]);
+  // Axis labels
   ctx.fillStyle='#3e4858';ctx.font='8px monospace';ctx.textAlign='center';
-  [0,64,128,192,255].forEach(function(v){ctx.fillText(v,v/255*cW,cH-2);});ctx.textAlign='left';
+  [0,64,128,192,255].forEach(function(v){ctx.fillText(v,v/255*cW,cH-1);});
+  ctx.fillStyle='rgba(255,220,80,.7)';ctx.fillText('▲'+peakLum,peakLum/255*cW,10);
+  ctx.textAlign='left';
   // Stats
-  var total=tc.width*tc.height,under=0,over=0,rMean=0,gMean=0,bMean=0;
-  for(var x3=0;x3<256;x3++){if(x3<10)under+=lH[x3];if(x3>245)over+=lH[x3];rMean+=rH[x3]*x3;gMean+=gH[x3]*x3;bMean+=bH[x3]*x3;}
+  var total=tc.width*tc.height,under=0,over=0,rMean=0,gMean=0,bMean=0,contrast=0;
+  for(var x3=0;x3<256;x3++){
+    if(x3<8) under+=lH[x3];
+    if(x3>250) over+=lH[x3];
+    rMean+=rH[x3]*x3;gMean+=gH[x3]*x3;bMean+=bH[x3]*x3;
+  }
   rMean/=total;gMean/=total;bMean/=total;
+  var lumMean=(.299*rMean+.587*gMean+.114*bMean);
+  var underPct=(under/total)*100,overPct=(over/total)*100;
+  // Exposure advice
+  var advice='';
+  if(lumMean<60)advice='⚠ Subexpus — mărește expunerea cu +1 EV';
+  else if(lumMean>200)advice='⚠ Supraexpus — scade expunerea cu -1 EV';
+  else if(overPct>2)advice='⚠ Zone arse ('+overPct.toFixed(1)+'%) — scade Highlights';
+  else if(underPct>5)advice='⚠ Detalii pierdute în umbre ('+underPct.toFixed(1)+'%) — mărește Shadows';
+  else advice='✓ Expunere bună — histograma bine distribuită';
   function qci(l,v,c){return'<div class="qci"><div class="qcl">'+l+'</div><div class="qcv '+c+'">'+v+'</div></div>';}
-  Q('#hist-stats').innerHTML=qci('R mediu',''+Math.round(rMean),'ok')+qci('G mediu',''+Math.round(gMean),'ok')+qci('B mediu',''+Math.round(bMean),'ok')+qci('Subexpus',((under/total)*100).toFixed(1)+'%',under/total>.05?'warn':'ok')+qci('Supraexpus',((over/total)*100).toFixed(1)+'%',over/total>.05?'warn':'ok');
+  Q('#hist-stats').innerHTML=
+    qci('Luminanță medie',Math.round(lumMean),lumMean<60||lumMean>200?'warn':'ok')+
+    qci('Peak la',peakLum,'ok')+
+    qci('R/G/B mediu',Math.round(rMean)+'/'+Math.round(gMean)+'/'+Math.round(bMean),'ok')+
+    qci('Subexpus',underPct.toFixed(1)+'%',underPct>.05?'warn':'ok')+
+    qci('Supraexpus',overPct.toFixed(1)+'%',overPct>.05?'warn':'ok')+
+    '<div class="qci" style="grid-column:1/-1"><div class="qcl">Sfat</div><div style="font-size:10px;color:var(--text2);margin-top:2px">'+advice+'</div></div>';
 }
 
 // ================================================================
@@ -1886,44 +2366,75 @@ function analyzeNoise(img){
   var W=img.naturalWidth,H=img.naturalHeight;
   setSmallCV('cv-noise-prev',img,700,400);
   var prev=Q('#cv-noise-prev');
-  // Map canvas
-  var nm=Q('#cv-noise-map');nm.width=prev.width;nm.height=prev.height;
+  var pW=prev.width,pH=prev.height;
+  // Map canvas — same size as preview
+  var nm=Q('#cv-noise-map');nm.width=pW;nm.height=pH;
   var nctx=nm.getContext('2d');
-  // Sample grid 8x6
-  var tc=document.createElement('canvas');tc.width=prev.width;tc.height=prev.height;tc.getContext('2d').drawImage(img,0,0,prev.width,prev.height);
-  var d=tc.getContext('2d').getImageData(0,0,prev.width,prev.height).data;
-  var gs=8,rs=6;var cellW=Math.round(prev.width/gs),cellH=Math.round(prev.height/rs);
+  var tc=document.createElement('canvas');tc.width=pW;tc.height=pH;
+  tc.getContext('2d').drawImage(img,0,0,pW,pH);
+  var d=tc.getContext('2d').getImageData(0,0,pW,pH).data;
+  // Use Laplacian variance on 12×9 grid for better accuracy
+  var GS=12,RS=9;
+  var cellW=Math.floor(pW/GS),cellH=Math.floor(pH/RS);
   var maxNoise=0,zones=[];
-  for(var cy=0;cy<rs;cy++){for(var cx=0;cx<gs;cx++){
-    var sx=cx*cellW,sy=cy*cellH,noise=0,cnt=0;
-    for(var py=sy;py<Math.min(sy+cellH,prev.height);py++){for(var px=sx;px<Math.min(sx+cellW,prev.width);px++){
-      var i=(py*prev.width+px)*4,nx=Math.min(px+1,prev.width-1);
-      var diff=Math.abs(d[i]-d[(py*prev.width+nx)*4]);
-      noise+=diff;cnt++;
-    }}
-    var nLevel=cnt>0?noise/cnt:0;
-    zones.push({cx:cx,cy:cy,n:nLevel});
+  var totalRNoise=0,totalGNoise=0,totalBNoise=0,zoneCnt=0;
+  for(var cy=0;cy<RS;cy++){for(var cx=0;cx<GS;cx++){
+    var sx=cx*cellW,sy=cy*cellH;
+    var rVar=0,gVar=0,bVar=0,cnt=0;
+    // Laplacian: |4*center - top - bottom - left - right| per channel
+    for(var py=sy+1;py<Math.min(sy+cellH-1,pH-1);py++){
+      for(var px=sx+1;px<Math.min(sx+cellW-1,pW-1);px++){
+        var i=(py*pW+px)*4;
+        var it=(py-1)*pW*4+px*4, ib=(py+1)*pW*4+px*4;
+        var il=py*pW*4+(px-1)*4, ir=py*pW*4+(px+1)*4;
+        for(var ch=0;ch<3;ch++){
+          var lap=Math.abs(4*d[i+ch]-d[it+ch]-d[ib+ch]-d[il+ch]-d[ir+ch]);
+          if(ch===0)rVar+=lap; else if(ch===1)gVar+=lap; else bVar+=lap;
+        }
+        cnt++;
+      }
+    }
+    var r2=cnt?rVar/cnt:0,g2=cnt?gVar/cnt:0,b2=cnt?bVar/cnt:0;
+    var nLevel=(r2+g2+b2)/3;
+    zones.push({cx:cx,cy:cy,n:nLevel,r:r2,g:g2,b:b2});
     if(nLevel>maxNoise)maxNoise=nLevel;
+    totalRNoise+=r2;totalGNoise+=g2;totalBNoise+=b2;zoneCnt++;
   }}
-  // Draw noise map
+  // Draw heatmap
+  nctx.clearRect(0,0,pW,pH);
   zones.forEach(function(z){
     var ratio=maxNoise>0?z.n/maxNoise:0;
-    var r=Math.round(ratio*220),gb=Math.round((1-ratio)*180);
-    nctx.fillStyle='rgba('+r+','+gb+','+gb+',.45)';
+    // Green=clean, Yellow=medium, Red=noisy
+    var r2=Math.round(ratio>0.5?(ratio-0.5)*2*220:0);
+    var g2=Math.round(ratio<0.5?ratio*2*180:(1-ratio)*2*180);
+    nctx.fillStyle='rgba('+r2+','+g2+',20,.55)';
     nctx.fillRect(z.cx*cellW,z.cy*cellH,cellW,cellH);
-    // Label
-    nctx.fillStyle='rgba(255,255,255,.8)';nctx.font='bold 9px monospace';nctx.textAlign='center';
+    // Value label
+    nctx.fillStyle='rgba(255,255,255,.9)';
+    nctx.font='bold 8px monospace';nctx.textAlign='center';
     nctx.fillText(z.n.toFixed(1),z.cx*cellW+cellW/2,z.cy*cellH+cellH/2+3);
   });
   nctx.textAlign='left';
-  // Overall stats
   var avgNoise=zones.reduce(function(a,z){return a+z.n;},0)/zones.length;
-  var noiseLevel=avgNoise<3?'Foarte mic':avgNoise<8?'Mic':avgNoise<15?'Mediu':avgNoise<25?'Mare':'Foarte mare';
+  var avgR=totalRNoise/zoneCnt,avgG=totalGNoise/zoneCnt,avgB=totalBNoise/zoneCnt;
+  // ISO estimation (rough heuristic based on Laplacian noise level)
+  var estISO=avgNoise<2?100:avgNoise<5?200:avgNoise<10?400:avgNoise<18?800:avgNoise<30?1600:avgNoise<50?3200:6400;
+  var noiseLabel=avgNoise<3?'Foarte mic':avgNoise<8?'Mic — excelent':avgNoise<15?'Mediu — bun':avgNoise<30?'Mare — denoise recomandat':'Foarte mare — denoise necesar';
   var recDnR=avgNoise<3?0:avgNoise<8?1:avgNoise<15?2:3;
-  var recDnAmt=Math.round(Math.min(80,avgNoise*3));
+  var recDnAmt=Math.round(Math.min(85,avgNoise*2.8));
   function qci(l,v,c){return'<div class="qci"><div class="qcl">'+l+'</div><div class="qcv '+c+'">'+v+'</div></div>';}
-  Q('#noise-stats').innerHTML=qci('Zgomot mediu',avgNoise.toFixed(1),avgNoise<8?'ok':avgNoise<20?'warn':'bad')+qci('Nivel',noiseLevel,avgNoise<8?'ok':avgNoise<20?'warn':'bad')+qci('Max zonă',maxNoise.toFixed(1),maxNoise<15?'ok':maxNoise<30?'warn':'bad');
-  Q('#noise-reco').innerHTML='💡 <b>Recomandare Denoise:</b> Raza blur = '+recDnR+' · Amount = '+recDnAmt+'%. Apasă pentru a aplica automat:&nbsp;<button class="btn p" onclick="applyNoiseReco('+recDnR+','+recDnAmt+')">Aplică în Denoise</button>';
+  Q('#noise-stats').innerHTML=
+    qci('Zgomot Laplacian',avgNoise.toFixed(2),avgNoise<8?'ok':avgNoise<25?'warn':'bad')+
+    qci('Nivel',noiseLabel.split(' — ')[0],avgNoise<8?'ok':avgNoise<20?'warn':'bad')+
+    qci('ISO estimat','~'+estISO,estISO<=400?'ok':estISO<=1600?'warn':'bad')+
+    qci('Canal R',avgR.toFixed(1),avgR<10?'ok':avgR<25?'warn':'bad')+
+    qci('Canal G',avgG.toFixed(1),avgG<10?'ok':avgG<25?'warn':'bad')+
+    qci('Canal B',avgB.toFixed(1),avgB<10?'ok':avgB<25?'warn':'bad')+
+    qci('Zona max zgomot',maxNoise.toFixed(1),maxNoise<15?'ok':maxNoise<35?'warn':'bad');
+  Q('#noise-reco').innerHTML=
+    '<b>💡 Recomandare:</b> '+noiseLabel.split(' — ').slice(1).join('')+
+    ' Raza blur = '+recDnR+' · Amount = '+recDnAmt+'%.&nbsp;'+
+    '<button class="btn p" onclick="applyNoiseReco('+recDnR+','+recDnAmt+')">→ Aplică în Denoise</button>';
 }
 function applyNoiseReco(r,amt){
   var slR=Q('#sl-dnr'),slA=Q('#sl-dnamt');
@@ -2209,33 +2720,69 @@ function buildGallery(){
   galFiles.forEach(function(f,i){
     var item=document.createElement('div');item.className='gitem';item.setAttribute('data-idx',i);
     var url=URL.createObjectURL(f);
-    var img=document.createElement('img');img.src=url;img.alt=f.name;
+    var imgEl=document.createElement('img');imgEl.src=url;imgEl.alt=f.name;
     var nm=document.createElement('div');nm.className='gname';nm.textContent=f.name;
+    // Order badge
+    var badge=document.createElement('div');
+    badge.style.cssText='position:absolute;top:4px;left:4px;background:var(--accent);color:#fff;font-size:9px;font-family:monospace;font-weight:700;padding:1px 5px;border-radius:3px;pointer-events:none';
+    badge.textContent='#'+(i+1);
+    // Size info
+    var sizeEl=document.createElement('div');
+    sizeEl.style.cssText='position:absolute;bottom:18px;right:4px;background:rgba(0,0,0,.6);color:#fff;font-size:8px;font-family:monospace;padding:1px 4px;border-radius:2px;pointer-events:none';
+    sizeEl.textContent=fmtSize(f.size);
     var rm=document.createElement('button');rm.className='gremove';rm.textContent='✕';
     rm.onclick=function(e){e.stopPropagation();galFiles.splice(i,1);buildGallery();};
-    item.appendChild(rm);item.appendChild(img);item.appendChild(nm);
+    item.style.cssText='position:relative';
+    item.appendChild(rm);item.appendChild(imgEl);item.appendChild(nm);item.appendChild(badge);item.appendChild(sizeEl);
     grid.appendChild(item);
   });
-  // Enable Sortable
+  // Enable Sortable with better feedback
   if(typeof Sortable!=='undefined'){
-    Sortable.create(grid,{animation:150,onEnd:function(e){
-      var arr=Array.from(grid.children).map(function(el){return galFiles[+el.getAttribute('data-idx')];});
-      galFiles=arr;
-    }});
+    Sortable.create(grid,{
+      animation:200,
+      ghostClass:'gitem-ghost',
+      chosenClass:'gitem-chosen',
+      onEnd:function(e){
+        // Rebuild galFiles based on new DOM order
+        var arr=Array.from(grid.children).map(function(el){return galFiles[+el.getAttribute('data-idx')];});
+        galFiles=arr;
+        buildGallery();
+      }
+    });
   }
-  Q('#gal-info').style.display='block';
-  Q('#gal-info').textContent=galFiles.length+' imagini · drag pentru reordonare';
-  Q('#btn-gal-zip').disabled=false;
-  Q('#btn-gal-pdf').disabled=false;
+  var info=Q('#gal-info');
+  info.style.display='block';
+  var totalSize=galFiles.reduce(function(a,f){return a+f.size;},0);
+  info.textContent=galFiles.length+' imagini · '+fmtSize(totalSize)+' total · drag pentru reordonare';
+  Q('#btn-gal-zip').disabled=galFiles.length===0;
+  Q('#btn-gal-pdf').disabled=galFiles.length===0;
 }
 function doGalZIP(){
   if(!galFiles.length){alert('Adaugă imagini!');return;}
   var pg=Q('#gal-pg');pg.style.display='flex';
-  var blobs=[];var idx=0;
+  var zip=new JSZip();var idx=0;
   function next(){
-    if(idx>=galFiles.length){doZIPFromBlobs(blobs,'RE-gallery.zip');setPG('gal-pb','gal-st',100,'✓ ZIP gata!','ok');return;}
-    var f=galFiles[idx];setPG('gal-pb','gal-st',Math.round(idx/galFiles.length*100),'Adaug: '+f.name,'info');
-    blobs.push({name:f.name,blob:f});idx++;setTimeout(next,50);
+    if(idx>=galFiles.length){
+      setPG('gal-pb','gal-st',95,'Generez ZIP...','info');
+      zip.generateAsync({type:'blob'}).then(function(blob){
+        var a=document.createElement('a');a.download='RE-gallery-'+Date.now()+'.zip';
+        a.href=URL.createObjectURL(blob);a.click();
+        setPG('gal-pb','gal-st',100,'✓ ZIP descărcat cu '+galFiles.length+' imagini în ordinea afișată!','ok');
+      });
+      return;
+    }
+    var f=galFiles[idx];
+    var num=String(idx+1).padStart(3,'0');
+    setPG('gal-pb','gal-st',Math.round(idx/galFiles.length*90),'Adaug: '+f.name,'info');
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var b64=e.target.result.split(',')[1];
+      // Rename with order prefix: 001-filename.jpg
+      var newName=num+'-'+f.name;
+      zip.file(newName,b64,{base64:true});
+      idx++;setTimeout(next,20);
+    };
+    reader.readAsDataURL(f);
   }
   next();
 }
@@ -2405,25 +2952,71 @@ function readExifFile(file){
 // ================================================================
 function exportMeta(){
   var img=ORIG['meta'];if(!img){alert('Încarcă mai întâi o imagine!');return;}
-  // Build canvas with image
-  var cv=document.createElement('canvas');cv.width=img.naturalWidth;cv.height=img.naturalHeight;cv.getContext('2d').drawImage(img,0,0);
-  // Get JPEG data URL
-  var dataURL=cv.toDataURL('image/jpeg',1.0);
-  // Convert to binary
-  var binary=atob(dataURL.split(',')[1]);
-  var bytes=new Uint8Array(binary.length);
-  for(var i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
-  // Build IPTC-like comment with metadata
-  var title=Q('#meta-title').value,author=Q('#meta-author').value,desc=Q('#meta-desc').value;
-  var copy=Q('#meta-copy').value,kw=Q('#meta-kw').value,addr=Q('#meta-addr').value,web=Q('#meta-web').value;
-  var comment='Title: '+title+'\nAuthor: '+author+'\nDescription: '+desc+'\nCopyright: '+copy+'\nKeywords: '+kw+'\nLocation: '+addr+'\nWebsite: '+web;
-  // Embed as EXIF UserComment via simple approach: add to filename and create blob
-  // For actual EXIF writing, we use a simple canvas comment approach
-  var blob=new Blob([bytes],{type:'image/jpeg'});
-  var a=document.createElement('a');
-  a.download='RE-meta-'+Q('#meta-title').value.replace(/\s+/g,'-').toLowerCase()+'.jpg';
-  a.href=URL.createObjectURL(blob);a.click();
-  alert('Metadate salvate în fișier.\n\nDate incluse:\n'+comment);
+  var title   = Q('#meta-title').value;
+  var author  = Q('#meta-author').value;
+  var desc    = Q('#meta-desc').value;
+  var copy    = Q('#meta-copy').value;
+  var kw      = Q('#meta-kw').value;
+  var addr    = Q('#meta-addr').value;
+  var web     = Q('#meta-web').value;
+
+  // 1) Export JPEG (canvas quality 100%)
+  var cv=document.createElement('canvas');
+  cv.width=img.naturalWidth;cv.height=img.naturalHeight;
+  cv.getContext('2d').drawImage(img,0,0);
+  var jpegName=(title||'RE-photo').replace(/[^a-z0-9\-]/gi,'-').toLowerCase()+'.jpg';
+  cv.toBlob(function(blob){
+    var a=document.createElement('a');
+    a.download=jpegName;
+    a.href=URL.createObjectURL(blob);
+    a.click();
+  },'image/jpeg',1.0);
+
+  // 2) Export XMP sidecar file (.xmp) — standard metadata format readable by Lightroom, Photoshop, etc.
+  setTimeout(function(){
+    var xmp=[
+      '<?xpacket begin="" id="W5M0MpCehiHzreSzNTczkc9d"?>',
+      '<x:xmpmeta xmlns:x="adobe:ns:meta/">',
+      '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">',
+      '<rdf:Description rdf:about=""',
+      '  xmlns:dc="http://purl.org/dc/elements/1.1/"',
+      '  xmlns:xmp="http://ns.adobe.com/xap/1.0/"',
+      '  xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/"',
+      '  xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/">',
+      title  ?'  <dc:title><rdf:Alt><rdf:li xml:lang="x-default">'+title+'</rdf:li></rdf:Alt></dc:title>':'',
+      desc   ?'  <dc:description><rdf:Alt><rdf:li xml:lang="x-default">'+desc+'</rdf:li></rdf:Alt></dc:description>':'',
+      author ?'  <dc:creator><rdf:Seq><rdf:li>'+author+'</rdf:li></rdf:Seq></dc:creator>':'',
+      copy   ?'  <dc:rights><rdf:Alt><rdf:li xml:lang="x-default">'+copy+'</rdf:li></rdf:Alt></dc:rights>':'',
+      kw     ?'  <dc:subject><rdf:Bag>'+kw.split(',').map(function(k){return'<rdf:li>'+k.trim()+'</rdf:li>';}).join('')+'</rdf:Bag></dc:subject>':'',
+      addr   ?'  <Iptc4xmpCore:Location>'+addr+'</Iptc4xmpCore:Location>':'',
+      web    ?'  <xmp:BaseURL>'+web+'</xmp:BaseURL>':'',
+      '  <photoshop:Source>RE Photo Editor Pro</photoshop:Source>',
+      '</rdf:Description>',
+      '</rdf:RDF>',
+      '</x:xmpmeta>',
+      '<?xpacket end="w"?>'
+    ].filter(Boolean).join('\n');
+    var blob2=new Blob([xmp],{type:'application/rdf+xml'});
+    var a2=document.createElement('a');
+    a2.download=jpegName.replace('.jpg','.xmp');
+    a2.href=URL.createObjectURL(blob2);a2.click();
+  },400);
+
+  // 3) Export JSON sidecar (for indexing/database use)
+  setTimeout(function(){
+    var meta={
+      file:jpegName,title:title,author:author,description:desc,
+      copyright:copy,keywords:kw.split(',').map(function(k){return k.trim();}),
+      location:addr,website:web,
+      width:img.naturalWidth,height:img.naturalHeight,
+      exportedAt:new Date().toISOString(),
+      software:'RE Photo Editor Pro'
+    };
+    var blob3=new Blob([JSON.stringify(meta,null,2)],{type:'application/json'});
+    var a3=document.createElement('a');
+    a3.download=jpegName.replace('.jpg','-metadata.json');
+    a3.href=URL.createObjectURL(blob3);a3.click();
+  },800);
 }
 
 // ================================================================
@@ -2504,13 +3097,21 @@ function exportNow(){
   var a=document.querySelector('.panel.on');if(!a)return;var id=a.id.replace('panel-','');
   var map={enhance:'cv-enh',curves:'cv-curves',hsl:'cv-hsl',lut:'cv-lut',freqsep:'cv-freqsep',
     denoise:'cv-dn',window:'cv-win',effects:'cv-fx',wb:'cv-wb',upscale:'cv-us-full',
-    perspective:'cv-persp',watermark:'cv-wm',resize:null,compress:null,batch:null,
-    gallery:null,pdf:null,palette:null,quality:null,raw:null,meta:null,rename:null,
-    wbgrid:null,histogram:null,noise:null,bgremove:null};
+    perspective:'cv-persp',watermark:'cv-wm',tonemapping:'cv-tm',focusstack:'cv-fstack',
+    flip:'cv-flip',printlayout:'cv-pl',haze:'cv-haze',lensflare:'cv-flare',staging:'cv-staging',
+    resize:null,compress:null,batch:null,gallery:null,pdf:null,palette:null,
+    quality:null,raw:null,meta:null,rename:null,wbgrid:null,histogram:null,
+    noise:null,bgremove:null,tiff:null,comparison:null,colorpicker:null,
+    flipmirror:null,virtualtour:null,webpconvert:null};
   if(map[id])exportCv(map[id],id);
   else if(id==='crop')exportCrop();
   else if(id==='compress')dlComp();
   else if(id==='bgremove')exportPNG('cv-bgr','bg-removed');
+  else if(id==='tiff')doTIFFExport();
+  else if(id==='flipmirror'||id==='flip')exportCv('cv-flip','flip-mirror');
+  else if(id==='printlayout')exportCv('cv-pl','print-layout');
+  else if(id==='comparison'){ if(CMP.a&&CMP.b)exportCv('cv-cmpa','comparison-before'); }
+  else if(id==='focusstack')exportCv('cv-fstack','focus-stack');
   else alert('Exportul nu este disponibil din acest panel sau nu ai procesat imaginea.');
 }
 
@@ -2797,6 +3398,962 @@ function doFocusStack() {
       Q('#btn-fstack-dl').disabled = false;
     }, 30);
   }, 30);
+}
+
+// ================================================================
+// TIFF / LOSSLESS EXPORT
+// ================================================================
+function doTIFFExport() {
+  var img = ORIG['tiff'];
+  if (!img) { alert('Încarcă mai întâi o imagine!'); return; }
+  var fmt = Q('#tiff-fmt') ? Q('#tiff-fmt').value : 'png';
+  var fullRes = !Q('#tiff-fullres') || Q('#tiff-fullres').checked;
+
+  var cv = document.createElement('canvas');
+  cv.width  = img.naturalWidth;
+  cv.height = img.naturalHeight;
+  cv.getContext('2d').drawImage(img, 0, 0);
+
+  var mimeType, ext, quality;
+  if (fmt === 'png') {
+    mimeType = 'image/png'; ext = '.png'; quality = undefined;
+  } else if (fmt === 'jpeg100') {
+    mimeType = 'image/jpeg'; ext = '.jpg'; quality = 1.0;
+  } else {
+    mimeType = 'image/webp'; ext = '.webp'; quality = 1.0;
+  }
+
+  cv.toBlob(function(blob) {
+    var a = document.createElement('a');
+    a.download = 'RE-lossless-' + cv.width + 'x' + cv.height + '-' + Date.now() + ext;
+    a.href = URL.createObjectURL(blob);
+    a.click();
+  }, mimeType, quality);
+}
+
+// ================================================================
+// BEFORE / AFTER COMPARISON SLIDER
+// ================================================================
+var CMP = { a: null, b: null, dragging: false, pct: 50 };
+
+function dzDropCmp(ev, side) {
+  ev.preventDefault();
+  ev.currentTarget.classList.remove('drag');
+  var f = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
+  if (f) loadCmpFile({ files: [f] }, side);
+}
+
+function loadCmpFile(inp, side) {
+  var file = inp.files && inp.files[0];
+  if (!file) return;
+  var url = URL.createObjectURL(file);
+  var img = new Image();
+  img.onload = function() {
+    CMP[side] = img;
+    // Hide dropzone, show loaded indicator
+    var dz = Q('#dz-cmp' + side);
+    if (dz) {
+      dz.innerHTML = '<div style="font-size:11px;color:var(--green);padding:8px;text-align:center">✓ ' + file.name.substring(0, 22) + '</div>';
+    }
+    // If both loaded, init slider
+    if (CMP.a && CMP.b) initCmpSlider();
+  };
+  img.onerror = function() { alert('Nu s-a putut deschide fișierul.'); };
+  img.src = url;
+}
+
+function initCmpSlider() {
+  var wrap = Q('#cmp-wrap');
+  var hint = Q('#cmp-hint');
+  if (!wrap) return;
+
+  var imgA = CMP.a, imgB = CMP.b;
+  var W = imgA.naturalWidth, H = imgA.naturalHeight;
+
+  // Draw A at full resolution
+  var cvA = Q('#cv-cmpa');
+  cvA.width = W; cvA.height = H;
+  cvA.getContext('2d').drawImage(imgA, 0, 0);
+
+  // Draw B at same resolution
+  var cvB = Q('#cv-cmpb');
+  cvB.width = W; cvB.height = H;
+  cvB.getContext('2d').drawImage(imgB, 0, 0);
+  // Make B absolutely positioned to overlay A
+  cvB.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;clip-path:inset(0 50% 0 0)';
+
+  wrap.style.display = 'block';
+  if (hint) hint.style.display = 'block';
+  setCmpPos(50);
+
+  // Mouse events
+  wrap.addEventListener('mousedown',  function(e){ CMP.dragging=true;  moveCmp(e, wrap); });
+  wrap.addEventListener('mousemove',  function(e){ if(CMP.dragging) moveCmp(e, wrap); });
+  wrap.addEventListener('mouseup',    function(){ CMP.dragging=false; });
+  wrap.addEventListener('mouseleave', function(){ CMP.dragging=false; });
+
+  // Touch events
+  wrap.addEventListener('touchstart', function(e){ CMP.dragging=true;  moveCmpTouch(e, wrap); }, { passive: true });
+  wrap.addEventListener('touchmove',  function(e){ if(CMP.dragging) moveCmpTouch(e, wrap); }, { passive: true });
+  wrap.addEventListener('touchend',   function(){ CMP.dragging=false; });
+}
+
+function moveCmp(e, wrap) {
+  var r = wrap.getBoundingClientRect();
+  var pct = Math.max(0, Math.min(100, (e.clientX - r.left) / r.width * 100));
+  setCmpPos(pct);
+}
+function moveCmpTouch(e, wrap) {
+  var r = wrap.getBoundingClientRect();
+  var t = e.touches[0];
+  var pct = Math.max(0, Math.min(100, (t.clientX - r.left) / r.width * 100));
+  setCmpPos(pct);
+}
+function setCmpPos(pct) {
+  CMP.pct = pct;
+  var cvB  = Q('#cv-cmpb');
+  var line = Q('#cmp-line');
+  var hdl  = Q('#cmp-handle');
+  if (cvB)  cvB.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+  if (line) line.style.left = pct + '%';
+  if (hdl)  hdl.style.left  = pct + '%';
+}
+
+
+// ================================================================
+// COLOR PICKER LIVE
+// ================================================================
+var cpickData = null;
+
+function initColorPicker(img) {
+  var cv = Q('#cv-cpick');
+  cpickData = img;
+  cv.addEventListener('mousemove', cpickMove);
+  cv.addEventListener('click',     cpickClick);
+  cv.addEventListener('mouseleave', function() {
+    // reset to neutral on leave
+  });
+}
+
+function cpickMove(e) {
+  var cv = Q('#cv-cpick');
+  var r = cv.getBoundingClientRect();
+  var px = Math.round((e.clientX - r.left) / r.width  * cv.width);
+  var py = Math.round((e.clientY - r.top)  / r.height * cv.height);
+  px = Math.max(0, Math.min(cv.width  - 1, px));
+  py = Math.max(0, Math.min(cv.height - 1, py));
+  var d = cv.getContext('2d').getImageData(px, py, 1, 1).data;
+  cpickUpdate(d[0], d[1], d[2]);
+}
+
+function cpickClick(e) {
+  var cv = Q('#cv-cpick');
+  var r = cv.getBoundingClientRect();
+  var px = Math.round((e.clientX - r.left) / r.width  * cv.width);
+  var py = Math.round((e.clientY - r.top)  / r.height * cv.height);
+  px = Math.max(0, Math.min(cv.width  - 1, px));
+  py = Math.max(0, Math.min(cv.height - 1, py));
+  var d = cv.getContext('2d').getImageData(px, py, 1, 1).data;
+  var hex = '#' + [d[0],d[1],d[2]].map(function(v){ return v.toString(16).padStart(2,'0'); }).join('');
+  // Add to history
+  var hist = Q('#cpick-history');
+  var sw = document.createElement('div');
+  sw.title = hex;
+  sw.style.cssText = 'width:28px;height:28px;border-radius:4px;border:1px solid var(--border);background:'+hex+';cursor:pointer;flex-shrink:0';
+  sw.onclick = (function(h){ return function(){ if(navigator.clipboard)navigator.clipboard.writeText(h); this.style.borderColor='var(--green)'; }; })(hex);
+  hist.appendChild(sw);
+}
+
+function cpickUpdate(r, g, b) {
+  var hex = '#' + [r,g,b].map(function(v){ return v.toString(16).padStart(2,'0'); }).join('');
+  // RGB to HSL
+  var rn=r/255, gn=g/255, bn=b/255;
+  var max=Math.max(rn,gn,bn), min=Math.min(rn,gn,bn), h, s, l=(max+min)/2;
+  if(max===min){ h=s=0; }
+  else {
+    var d=max-min; s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){ case rn:h=((gn-bn)/d+(gn<bn?6:0))/6;break; case gn:h=((bn-rn)/d+2)/6;break; case bn:h=((rn-gn)/d+4)/6;break; }
+  }
+  var hslStr = Math.round(h*360)+'°,'+Math.round(s*100)+'%,'+Math.round(l*100)+'%';
+  Q('#cpick-swatch').style.background = hex;
+  Q('#cpick-hex').textContent  = hex;
+  Q('#cpick-rgb').textContent  = r+','+g+','+b;
+  Q('#cpick-hsl').textContent  = hslStr;
+}
+
+function cpickCopy(type) {
+  var val = type==='hex' ? Q('#cpick-hex').textContent
+          : type==='rgb' ? 'rgb('+Q('#cpick-rgb').textContent+')'
+          : 'hsl('+Q('#cpick-hsl').textContent+')';
+  if(navigator.clipboard) navigator.clipboard.writeText(val);
+  var el = Q('#cpick-copied');
+  el.style.display = 'block';
+  setTimeout(function(){ el.style.display = 'none'; }, 1800);
+}
+
+// ================================================================
+// FLIP / MIRROR
+// ================================================================
+var FLIP_STATE = { flipX: 1, flipY: 1, angle: 0 };
+
+function doFlip(type) {
+  var img = ORIG['flip']; if (!img) return;
+  if (type === 'reset') {
+    FLIP_STATE = { flipX: 1, flipY: 1, angle: 0 };
+  } else if (type === 'h')    { FLIP_STATE.flipX *= -1; }
+  else if (type === 'v')      { FLIP_STATE.flipY *= -1; }
+  else if (type === 'hv')     { FLIP_STATE.flipX *= -1; FLIP_STATE.flipY *= -1; }
+  else if (type === '90')     { FLIP_STATE.angle = (FLIP_STATE.angle + 90)  % 360; }
+  else if (type === '-90')    { FLIP_STATE.angle = (FLIP_STATE.angle - 90 + 360) % 360; }
+  else if (type === '180')    { FLIP_STATE.angle = (FLIP_STATE.angle + 180) % 360; }
+
+  var W = img.naturalWidth, H = img.naturalHeight;
+  var swap = (FLIP_STATE.angle === 90 || FLIP_STATE.angle === 270);
+  var cW = swap ? H : W, cH = swap ? W : H;
+
+  var cv = Q('#cv-flip');
+  cv.width = cW; cv.height = cH;
+  var ctx = cv.getContext('2d');
+  ctx.clearRect(0, 0, cW, cH);
+  ctx.save();
+  ctx.translate(cW / 2, cH / 2);
+  ctx.rotate(FLIP_STATE.angle * Math.PI / 180);
+  ctx.scale(FLIP_STATE.flipX, FLIP_STATE.flipY);
+  ctx.drawImage(img, -W / 2, -H / 2);
+  ctx.restore();
+}
+
+// ================================================================
+// VIRTUAL TOUR HELPER
+// ================================================================
+var vtFiles = [];
+
+function loadVTFiles(inp) { if(inp.files&&inp.files.length) handleMulti(inp.files,'vt'); }
+
+function buildVTList() {
+  var list = Q('#vt-list'); list.innerHTML = '';
+  vtFiles.forEach(function(f,i){
+    var d=document.createElement('div'); d.className='batch-item';
+    d.innerHTML='<span class="bi-name">'+f.name+'</span><span class="bi-st">aguteaptă</span>';
+    d.id='vt-item-'+i; list.appendChild(d);
+  });
+  Q('#btn-vt').disabled     = vtFiles.length === 0;
+  Q('#btn-vt-zip').disabled = vtFiles.length === 0;
+}
+
+var VT_PLATFORMS = [
+  { id:'matterport', label:'Matterport', w:4096, h:2048, q:0.9,  crop:true  },
+  { id:'zillow',     label:'Zillow 3D',  w:6000, h:0,    q:0.85, maxW:6000  },
+  { id:'iguide',     label:'iGuide',     w:3840, h:2160, q:0.92, crop:true  },
+  { id:'cloudpano',  label:'CloudPano',  w:8192, h:4096, q:0.88, crop:true  },
+  { id:'web',        label:'Web',        w:2048, h:0,    q:0.85, maxW:2048  },
+  { id:'thumb',      label:'Thumb',      w:640,  h:480,  q:0.80, crop:true  }
+];
+
+function doVirtualTour(makeZip) {
+  if (!vtFiles.length) { alert('Încarcă imagini!'); return; }
+  var pg = Q('#vt-pg'); pg.style.display = 'flex';
+  var platforms = VT_PLATFORMS.filter(function(p){ var cb=Q('#vt-'+p.id); return cb&&cb.checked; });
+  if (!platforms.length) { alert('Selectează cel puțin o platformă!'); return; }
+
+  var zip = makeZip ? new JSZip() : null;
+  var total = vtFiles.length * platforms.length;
+  var done  = 0;
+  var fileIdx = 0;
+
+  function nextFile() {
+    if (fileIdx >= vtFiles.length) {
+      setPG('vt-pb','vt-st',100,'✓ Gata! '+done+' fișiere procesate.','ok');
+      if (zip) zip.generateAsync({type:'blob'}).then(function(blob){
+        var a=document.createElement('a'); a.download='RE-virtual-tour-'+Date.now()+'.zip';
+        a.href=URL.createObjectURL(blob); a.click();
+      });
+      return;
+    }
+    var file = vtFiles[fileIdx];
+    var item = Q('#vt-item-'+fileIdx);
+    if (item) { item.classList.add('proc'); item.querySelector('.bi-st').textContent='procesare...'; }
+
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function() {
+      var platIdx = 0;
+      function nextPlat() {
+        if (platIdx >= platforms.length) {
+          URL.revokeObjectURL(url);
+          if (item) { item.classList.remove('proc'); item.classList.add('done'); item.querySelector('.bi-st').textContent='✓'; }
+          fileIdx++; nextFile(); return;
+        }
+        var p = platforms[platIdx];
+        setPG('vt-pb','vt-st', Math.round(done/total*100), p.label+': '+file.name,'info');
+
+        var cv = document.createElement('canvas');
+        var W = img.naturalWidth, H = img.naturalHeight;
+
+        if (p.crop && p.h > 0) {
+          // Smart center crop to exact dimensions
+          cv.width = p.w; cv.height = p.h;
+          var scale = Math.max(p.w/W, p.h/H);
+          var sw = Math.round(p.w/scale), sh = Math.round(p.h/scale);
+          cv.getContext('2d').drawImage(img,(W-sw)/2,(H-sh)/2,sw,sh,0,0,p.w,p.h);
+        } else {
+          // Scale to max width
+          var sc2 = Math.min(1, p.w / W);
+          cv.width  = Math.round(W * sc2);
+          cv.height = Math.round(H * sc2);
+          cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        }
+
+        var baseName = file.name.replace(/\.[^.]+$/,'');
+        var outName  = 'VT-'+p.label+'-'+baseName+'.jpg';
+        var dataURL  = cv.toDataURL('image/jpeg', p.q);
+
+        if (zip) {
+          zip.file(outName, dataURL.split(',')[1], {base64:true});
+        } else {
+          var a = document.createElement('a'); a.download = outName; a.href = dataURL; a.click();
+        }
+        done++; platIdx++;
+        setTimeout(nextPlat, makeZip ? 10 : 200);
+      }
+      nextPlat();
+    };
+    img.src = url;
+  }
+  nextFile();
+}
+
+// ================================================================
+// WEBP / AVIF CONVERTER
+// ================================================================
+var wconvFiles = [];
+
+function loadWConvFiles(inp) { if(inp.files&&inp.files.length) handleMulti(inp.files,'wconv'); }
+
+function buildWConvList() {
+  var list = Q('#wconv-list'); list.innerHTML = '';
+  wconvFiles.forEach(function(f,i){
+    var d=document.createElement('div'); d.className='batch-item';
+    d.innerHTML='<span class="bi-name">'+f.name+'</span><span class="bi-st">aguteaptă</span>';
+    d.id='wconv-item-'+i; list.appendChild(d);
+  });
+  Q('#btn-wconv').disabled     = wconvFiles.length === 0;
+  Q('#btn-wconv-zip').disabled = wconvFiles.length === 0;
+}
+
+function doWebPConvert(makeZip) {
+  if (!wconvFiles.length) { alert('Încarcă imagini!'); return; }
+  var pg = Q('#wconv-pg'); pg.style.display = 'flex';
+  var fmt  = Q('#wconv-fmt').value;
+  var q    = gv('wconvq') / 100;
+  var maxW = gv('wconvmw');
+  var ext  = fmt === 'image/webp' ? '.webp' : fmt === 'image/png' ? '.png' : '.jpg';
+  var zip  = makeZip ? new JSZip() : null;
+  var idx  = 0;
+
+  function next() {
+    if (idx >= wconvFiles.length) {
+      setPG('wconv-pb','wconv-st',100,'✓ Convertit '+wconvFiles.length+' imagini!','ok');
+      if (zip) zip.generateAsync({type:'blob'}).then(function(blob){
+        var a=document.createElement('a'); a.download='RE-webp-'+Date.now()+'.zip';
+        a.href=URL.createObjectURL(blob); a.click();
+      });
+      return;
+    }
+    var file = wconvFiles[idx];
+    var item = Q('#wconv-item-'+idx);
+    if(item){item.classList.add('proc');item.querySelector('.bi-st').textContent='conversie...';}
+    setPG('wconv-pb','wconv-st', Math.round(idx/wconvFiles.length*100), 'Convertesc: '+file.name,'info');
+
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function() {
+      var cv = document.createElement('canvas');
+      var W  = img.naturalWidth, H = img.naturalHeight;
+      if (maxW > 0 && W > maxW) {
+        var sc = maxW / W;
+        cv.width  = maxW;
+        cv.height = Math.round(H * sc);
+      } else {
+        cv.width = W; cv.height = H;
+      }
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+
+      var baseName = file.name.replace(/\.[^.]+$/,'');
+      var outName  = baseName + ext;
+      var dataURL  = cv.toDataURL(fmt, q);
+
+      // Show size comparison
+      var origKB = Math.round(file.size / 1024);
+      var newKB  = Math.round(dataURL.length * 0.75 / 1024); // approx
+      var saved  = Math.round((1 - newKB/origKB) * 100);
+      if(item){
+        item.classList.remove('proc'); item.classList.add('done');
+        item.querySelector('.bi-st').textContent = '✓ '+origKB+'KB→'+newKB+'KB (−'+saved+'%)';
+      }
+
+      if (zip) {
+        zip.file(outName, dataURL.split(',')[1], {base64:true});
+      } else {
+        var a = document.createElement('a'); a.download = outName; a.href = dataURL; a.click();
+      }
+      URL.revokeObjectURL(url);
+      idx++;
+      setTimeout(next, makeZip ? 10 : 250);
+    };
+    img.src = url;
+  }
+  next();
+}
+
+// ================================================================
+// PRINT LAYOUT GENERATOR
+// ================================================================
+var plFiles = [];
+
+function loadPLFiles(inp) { if(inp.files&&inp.files.length) handleMulti(inp.files,'pl'); }
+
+function buildPLList() {
+  var list = Q('#pl-files-list'); list.innerHTML = '';
+  plFiles.forEach(function(f){
+    var d=document.createElement('div'); d.className='batch-item';
+    d.innerHTML='<span class="bi-name">'+f.name+'</span><span class="bi-st">'+fmtSize(f.size)+'</span>';
+    list.appendChild(d);
+  });
+  Q('#btn-pl').disabled = plFiles.length === 0;
+}
+
+function doPrintLayout() {
+  if (!plFiles.length) { alert('Încarcă imagini!'); return; }
+  var pg = Q('#pl-pg'); pg.style.display = 'flex';
+
+  var fmtVal = Q('#pl-fmt').value;
+  var gridVal = Q('#pl-grid').value.split('x');
+  var cols   = parseInt(gridVal[0]);
+  var rows   = parseInt(gridVal[1]);
+  var margin = parseInt(Q('#sl-plmargin').value) || 20;
+  var bgCol  = Q('#pl-bg').value;
+  var title  = Q('#pl-title').value;
+
+  // Page dimensions at 150 dpi (pixels)
+  var SIZES = {
+    a4l:{w:1754,h:1240}, a4p:{w:1240,h:1754},
+    a3l:{w:2480,h:1754}, a3p:{w:1754,h:2480}
+  };
+  var sz = SIZES[fmtVal] || SIZES.a4l;
+
+  var cv  = Q('#cv-pl');
+  cv.width  = sz.w;
+  cv.height = sz.h;
+  var ctx   = cv.getContext('2d');
+  ctx.fillStyle = bgCol;
+  ctx.fillRect(0, 0, sz.w, sz.h);
+
+  // Title bar
+  var titleH = 0;
+  if (title) {
+    titleH = 40;
+    ctx.fillStyle = '#222';
+    ctx.fillRect(0, 0, sz.w, titleH);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 22px Arial,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(title, sz.w/2, titleH - 10);
+    ctx.textAlign = 'left';
+  }
+
+  var usableW = sz.w - margin * (cols + 1);
+  var usableH = sz.h - titleH - margin * (rows + 1);
+  var cellW   = Math.floor(usableW / cols);
+  var cellH   = Math.floor(usableH / rows);
+  var total   = cols * rows;
+  var idx     = 0;
+
+  function addNext() {
+    if (idx >= total || idx >= plFiles.length) {
+      Q('#pl-preview').style.display = 'block';
+      Q('#btn-pl-dl').disabled  = false;
+      Q('#btn-pl-pdf').disabled = false;
+      setPG('pl-pb','pl-st',100,'✓ Layout generat: '+Math.min(idx,plFiles.length)+' poze pe '+sz.w+'×'+sz.h+' px','ok');
+      return;
+    }
+    var col = idx % cols;
+    var row = Math.floor(idx / cols);
+    var x   = margin + col * (cellW + margin);
+    var y   = titleH + margin + row * (cellH + margin);
+
+    setPG('pl-pb','pl-st', Math.round(idx/Math.min(total,plFiles.length)*100), 'Adaug poza '+(idx+1)+'...','info');
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        // Smart crop to cell
+        var tc   = document.createElement('canvas');
+        tc.width  = cellW; tc.height = cellH;
+        var scale = Math.max(cellW/img.naturalWidth, cellH/img.naturalHeight);
+        var sw    = Math.round(cellW/scale), sh = Math.round(cellH/scale);
+        tc.getContext('2d').drawImage(
+          img,
+          (img.naturalWidth-sw)/2, (img.naturalHeight-sh)/2, sw, sh,
+          0, 0, cellW, cellH
+        );
+        ctx.drawImage(tc, x, y);
+        idx++; addNext();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(plFiles[idx]);
+  }
+  addNext();
+}
+
+function doPrintLayoutPDF() {
+  var cv = Q('#cv-pl');
+  if (!cv || !cv.width) { alert('Generează layout mai întâi!'); return; }
+  var jsPDF = window.jspdf && window.jspdf.jsPDF;
+  if (!jsPDF) { alert('jsPDF nu e disponibil. Verifică conexiunea.'); return; }
+  var fmt    = Q('#pl-fmt').value;
+  var isLand = fmt.endsWith('l');
+  var isA3   = fmt.startsWith('a3');
+  var doc    = new jsPDF({ orientation: isLand?'landscape':'portrait', unit:'mm', format: isA3?'a3':'a4' });
+  var pgW    = isLand ? (isA3?420:297) : (isA3?297:210);
+  var pgH    = isLand ? (isA3?297:210) : (isA3?420:297);
+  doc.addImage(cv.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pgW, pgH);
+  doc.save('RE-print-layout-'+Date.now()+'.pdf');
+}
+
+
+// ================================================================
+// REMOVE HAZE — Dark Channel Prior (simplified browser version)
+// ================================================================
+function renderHaze() {
+  var img = ORIG['haze']; if (!img) return;
+  var W = img.naturalWidth, H = img.naturalHeight;
+  var cv = Q('#cv-haze');
+  if (cv.width !== W) { cv.width = W; cv.height = H; }
+  var ctx = cv.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  var id = ctx.getImageData(0, 0, W, H), d = id.data;
+
+  var str    = gv('haze-str') / 100;
+  var radius = Math.max(2, Math.round(gv('haze-radius')));
+  var satBoost = gv('haze-sat');
+  var conBoost = gv('haze-con');
+
+  // Step 1: compute dark channel (min of R,G,B in local patch)
+  var dark = new Float32Array(W * H);
+  for (var py = 0; py < H; py++) {
+    for (var px = 0; px < W; px++) {
+      var minVal = 255;
+      for (var dy = -radius; dy <= radius; dy++) {
+        for (var dx = -radius; dx <= radius; dx++) {
+          var ny = Math.max(0, Math.min(H-1, py+dy));
+          var nx = Math.max(0, Math.min(W-1, px+dx));
+          var i = (ny*W+nx)*4;
+          var mn = Math.min(d[i], d[i+1], d[i+2]);
+          if (mn < minVal) minVal = mn;
+        }
+      }
+      dark[py*W+px] = minVal;
+    }
+  }
+
+  // Step 2: estimate atmospheric light A (top 0.1% brightest in dark channel)
+  var sorted = Array.from(dark).sort(function(a,b){return b-a;});
+  var A = sorted[Math.floor(sorted.length * 0.001)] || 200;
+  A = Math.max(A, 180); // at least 180 to avoid over-dehaze
+
+  // Step 3: estimate transmission and recover scene
+  for (var i = 0; i < d.length; i += 4) {
+    var dc = dark[Math.floor(i/4)];
+    var t = 1 - str * (dc / A); // transmission map
+    t = Math.max(0.1, t); // keep minimum transmission to avoid extreme artifacts
+
+    // Recover: J = (I - A) / t + A
+    d[i]   = clamp((d[i]   - A) / t + A);
+    d[i+1] = clamp((d[i+1] - A) / t + A);
+    d[i+2] = clamp((d[i+2] - A) / t + A);
+  }
+
+  // Step 4: optional saturation + contrast boost
+  if (satBoost !== 0 || conBoost !== 0) {
+    for (var i2 = 0; i2 < d.length; i2 += 4) {
+      var r = d[i2], g = d[i2+1], b = d[i2+2];
+      if (satBoost !== 0) {
+        var gray = 0.299*r + 0.587*g + 0.114*b;
+        var sf = 1 + satBoost/100;
+        r = clamp(gray + sf*(r-gray));
+        g = clamp(gray + sf*(g-gray));
+        b = clamp(gray + sf*(b-gray));
+      }
+      if (conBoost !== 0) {
+        var cf = (259*(conBoost+127))/(127*(259-conBoost));
+        r = clamp(cf*(r-128)+128);
+        g = clamp(cf*(g-128)+128);
+        b = clamp(cf*(b-128)+128);
+      }
+      d[i2]=r; d[i2+1]=g; d[i2+2]=b;
+    }
+  }
+
+  ctx.putImageData(id, 0, 0);
+}
+
+// ================================================================
+// LENS FLARE REMOVAL
+// ================================================================
+var FLARE_ZONES = [];
+
+function detectFlare() {
+  var img = ORIG['flare']; if (!img) return;
+  var W = img.naturalWidth, H = img.naturalHeight;
+  var thr = gv('flare-thr');
+  // Work on preview-size canvas for speed
+  var sc = Math.min(1, 600/Math.max(W,H));
+  var pW = Math.round(W*sc), pH = Math.round(H*sc);
+  var tc = document.createElement('canvas'); tc.width=pW; tc.height=pH;
+  tc.getContext('2d').drawImage(img, 0, 0, pW, pH);
+  var d = tc.getContext('2d').getImageData(0,0,pW,pH).data;
+
+  // Find flare pixels: very bright, low saturation (near-white or near-yellow)
+  FLARE_ZONES = [];
+  var maskData = new Uint8Array(pW * pH);
+  for (var i = 0; i < d.length; i += 4) {
+    var r=d[i], g=d[i+1], b=d[i+2];
+    var lum = 0.299*r + 0.587*g + 0.114*b;
+    var mn = Math.min(r,g,b), mx = Math.max(r,g,b);
+    var sat = mx > 0 ? (mx-mn)/mx : 0;
+    // Flare: bright AND low saturation
+    if (lum > thr && sat < 0.3) {
+      maskData[i/4] = 1;
+    }
+  }
+
+  // Dilate mask slightly to catch edges
+  var dilated = new Uint8Array(pW * pH);
+  for (var py2 = 1; py2 < pH-1; py2++) {
+    for (var px2 = 1; px2 < pW-1; px2++) {
+      var ii = py2*pW+px2;
+      if (maskData[ii] || maskData[ii-1] || maskData[ii+1] ||
+          maskData[(py2-1)*pW+px2] || maskData[(py2+1)*pW+px2]) {
+        dilated[ii] = 1;
+      }
+    }
+  }
+
+  // Draw mask overlay on preview
+  var fb = Q('#cv-flareb');
+  var fm = Q('#cv-flare-mask');
+  fm.width = fb.width; fm.height = fb.height;
+  var mctx = fm.getContext('2d');
+  var mId  = mctx.createImageData(pW, pH);
+  var flareCount = 0;
+  for (var j = 0; j < pW*pH; j++) {
+    if (dilated[j]) {
+      mId.data[j*4]   = 255;
+      mId.data[j*4+1] = 50;
+      mId.data[j*4+2] = 0;
+      mId.data[j*4+3] = 160;
+      flareCount++;
+    }
+  }
+  mctx.putImageData(mId, 0, 0);
+
+  // Store for use in renderFlare
+  FLARE_ZONES = dilated;
+  var pct = ((flareCount / (pW*pH)) * 100).toFixed(1);
+  var info = Q('#flare-info');
+  info.style.display = 'block';
+  info.className = flareCount > 0 ? 'st warn' : 'st ok';
+  info.textContent = flareCount > 0
+    ? '⚠ Detectate zone de flare: '+pct+'% din imagine ('+flareCount+' pixeli). Apasă ▶ Aplică reducere.'
+    : '✓ Nu s-au detectat zone semnificative de flare. Încearcă să scazi pragul de detectare.';
+
+  Q('#btn-flare-fix').disabled = flareCount === 0;
+  // Also draw on comparison canvases
+  setFullCV('cv-flareb2', img);
+  setFullCV('cv-flare', img);
+}
+
+function renderFlare() {
+  var img = ORIG['flare']; if (!img || !FLARE_ZONES.length) return;
+  var W = img.naturalWidth, H = img.naturalHeight;
+  var cv = Q('#cv-flare');
+  if (cv.width !== W) { cv.width=W; cv.height=H; }
+  var ctx = cv.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  var id = ctx.getImageData(0, 0, W, H), d = id.data;
+
+  var str   = gv('flare-str') / 100;
+  var blend = gv('flare-blend') / 100;
+  var thr   = gv('flare-thr');
+  var sc    = Math.min(1, 600/Math.max(W,H));
+  var pW    = Math.round(W*sc), pH = Math.round(H*sc);
+  var scX   = W/pW, scY = H/pH;
+
+  // For each flare pixel: blend with average of non-flare neighbors
+  var radius = 12;
+  for (var py = 0; py < H; py++) {
+    for (var px = 0; px < W; px++) {
+      // Check if this pixel maps to a flare zone in the scaled mask
+      var mx = Math.round(px/scX), my = Math.round(py/scY);
+      mx = Math.min(pW-1, Math.max(0, mx));
+      my = Math.min(pH-1, Math.max(0, my));
+      if (!FLARE_ZONES[my*pW+mx]) continue;
+
+      // Sample neighbor context (non-flare pixels)
+      var rS=0,gS=0,bS=0,cnt=0;
+      for (var dy=-radius; dy<=radius; dy++) {
+        for (var dx=-radius; dx<=radius; dx++) {
+          var ny=Math.max(0,Math.min(H-1,py+dy));
+          var nx=Math.max(0,Math.min(W-1,px+dx));
+          var mxN=Math.round(nx/scX), myN=Math.round(ny/scY);
+          mxN=Math.min(pW-1,Math.max(0,mxN));
+          myN=Math.min(pH-1,Math.max(0,myN));
+          if (!FLARE_ZONES[myN*pW+mxN]) {
+            var ni=(ny*W+nx)*4;
+            rS+=d[ni]; gS+=d[ni+1]; bS+=d[ni+2]; cnt++;
+          }
+        }
+      }
+      if (cnt > 0) {
+        var ii=(py*W+px)*4;
+        var targetR=rS/cnt, targetG=gS/cnt, targetB=bS/cnt;
+        var blendFactor = str * blend;
+        d[ii]   = clamp(d[ii]   *(1-blendFactor) + targetR*blendFactor);
+        d[ii+1] = clamp(d[ii+1] *(1-blendFactor) + targetG*blendFactor);
+        d[ii+2] = clamp(d[ii+2] *(1-blendFactor) + targetB*blendFactor);
+      }
+    }
+  }
+  ctx.putImageData(id, 0, 0);
+}
+
+// ================================================================
+// VIRTUAL STAGING OVERLAY
+// ================================================================
+var STAGING_BG   = null;
+var STAGING_ITEM = null;
+var STAGING_ITEMS = []; // multiple items
+
+function dzDropStagingBg(ev)  { ev.preventDefault(); ev.currentTarget.classList.remove('drag'); var f=ev.dataTransfer&&ev.dataTransfer.files[0]; if(f)loadStagingBgFile(f); }
+function dzDropStagingItem(ev){ ev.preventDefault(); ev.currentTarget.classList.remove('drag'); var f=ev.dataTransfer&&ev.dataTransfer.files[0]; if(f)loadStagingItemFile(f); }
+function loadStagingBg(inp)   { if(inp.files&&inp.files[0])loadStagingBgFile(inp.files[0]); }
+function loadStagingItem(inp) { if(inp.files&&inp.files[0])loadStagingItemFile(inp.files[0]); }
+
+function loadStagingBgFile(file) {
+  var url = URL.createObjectURL(file);
+  var img = new Image();
+  img.onload = function() {
+    STAGING_BG = img;
+    Q('#dz-staging-bg').innerHTML='<div style="font-size:11px;color:var(--green);padding:8px;text-align:center">✓ '+file.name.substring(0,20)+'</div>';
+    if (STAGING_BG && (STAGING_ITEM || STAGING_ITEMS.length)) renderStaging();
+    else if (STAGING_BG) {
+      // Draw background alone
+      var cv=Q('#cv-staging'); cv.width=img.naturalWidth; cv.height=img.naturalHeight;
+      cv.getContext('2d').drawImage(img,0,0);
+      Q('#staging-ui').style.display='flex';
+    }
+  };
+  img.src = url;
+}
+
+function loadStagingItemFile(file) {
+  var url = URL.createObjectURL(file);
+  var img = new Image();
+  img.onload = function() {
+    STAGING_ITEM = img;
+    STAGING_ITEMS = [{img:img, name:file.name}];
+    Q('#dz-staging-item').innerHTML='<div style="font-size:11px;color:var(--green);padding:8px;text-align:center">✓ '+file.name.substring(0,20)+'</div>';
+    if (STAGING_BG) { Q('#staging-ui').style.display='flex'; renderStaging(); }
+  };
+  img.src = url;
+}
+
+function addStagingItem() {
+  var inp = document.createElement('input');
+  inp.type='file'; inp.accept='image/png';
+  inp.onchange = function() {
+    if (!inp.files[0]) return;
+    var url = URL.createObjectURL(inp.files[0]);
+    var img = new Image();
+    img.onload = function() {
+      STAGING_ITEMS.push({img:img, name:inp.files[0].name});
+      renderStaging();
+    };
+    img.src = url;
+  };
+  inp.click();
+}
+
+function genStagingShape(type, color) {
+  // Generate a simple vector shape as staging item
+  var shapeCV = document.createElement('canvas');
+  shapeCV.width = 300; shapeCV.height = 200;
+  var ctx = shapeCV.getContext('2d');
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.85;
+  if (type === 'sofa') {
+    // Body
+    ctx.beginPath(); ctx.roundRect(20, 80, 260, 100, 10); ctx.fill();
+    // Cushions
+    ctx.fillStyle = lightenColor(color, 20);
+    ctx.beginPath(); ctx.roundRect(30, 70, 100, 90, 8); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(145, 70, 100, 90, 8); ctx.fill();
+    // Arms
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.roundRect(10, 70, 30, 110, 5); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(260, 70, 30, 110, 5); ctx.fill();
+    // Legs
+    ctx.beginPath(); ctx.roundRect(30,175,20,20,3); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(250,175,20,20,3); ctx.fill();
+  } else if (type === 'table') {
+    ctx.fillRect(30, 80, 240, 20); // top
+    ctx.fillRect(40, 100, 15, 80);  // leg
+    ctx.fillRect(245, 100, 15, 80);
+    ctx.fillRect(80, 100, 15, 80);
+    ctx.fillRect(205, 100, 15, 80);
+  } else if (type === 'plant') {
+    ctx.fillStyle = darkenColor(color, 30);
+    ctx.beginPath(); ctx.roundRect(130, 140, 40, 50, 4); ctx.fill();
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(150, 100, 55, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = lightenColor(color, 25);
+    ctx.beginPath(); ctx.arc(120, 85, 38, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(180, 85, 38, 0, Math.PI*2); ctx.fill();
+  } else if (type === 'rug') {
+    shapeCV.width=400; shapeCV.height=150;
+    ctx.beginPath(); ctx.roundRect(10, 10, 380, 130, 8); ctx.fill();
+    ctx.strokeStyle=lightenColor(color, 40); ctx.lineWidth=3;
+    ctx.beginPath(); ctx.roundRect(20,20,360,110,5); ctx.stroke();
+    ctx.strokeStyle=darkenColor(color,20); ctx.lineWidth=2;
+    for(var xi=50; xi<380; xi+=50){ ctx.beginPath(); ctx.moveTo(xi,15); ctx.lineTo(xi,135); ctx.stroke(); }
+  } else if (type === 'lamp') {
+    ctx.fillStyle=color;
+    ctx.beginPath(); ctx.moveTo(100,20); ctx.lineTo(200,20); ctx.lineTo(185,90); ctx.lineTo(115,90); ctx.closePath(); ctx.fill();
+    ctx.fillStyle=darkenColor(color,30);
+    ctx.fillRect(145, 90, 10, 80);
+    ctx.beginPath(); ctx.ellipse(150, 175, 35, 12, 0, 0, Math.PI*2); ctx.fill();
+    // glow
+    ctx.fillStyle='rgba(255,240,150,.15)';
+    ctx.beginPath(); ctx.ellipse(150, 80, 80, 60, 0, 0, Math.PI*2); ctx.fill();
+  } else if (type === 'picture') {
+    shapeCV.width=180; shapeCV.height=240;
+    ctx.fillStyle=darkenColor(color,20);
+    ctx.fillRect(0,0,180,240);
+    ctx.fillStyle=color;
+    ctx.fillRect(10,10,160,220);
+    ctx.fillStyle=lightenColor(color,30);
+    ctx.fillRect(20,20,140,200);
+  }
+  var img = new Image();
+  img.onload = function() {
+    STAGING_ITEM = img;
+    STAGING_ITEMS = [{img:img, name:type}];
+    if (STAGING_BG) { Q('#staging-ui').style.display='flex'; renderStaging(); }
+    else { alert('Încarcă mai întâi fotografia de bază (interiorul)!'); }
+  };
+  img.src = shapeCV.toDataURL('image/png');
+}
+
+function lightenColor(hex, amt) {
+  var r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return '#'+[Math.min(255,r+amt),Math.min(255,g+amt),Math.min(255,b+amt)].map(function(v){return v.toString(16).padStart(2,'0');}).join('');
+}
+function darkenColor(hex, amt) {
+  var r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return '#'+[Math.max(0,r-amt),Math.max(0,g-amt),Math.max(0,b-amt)].map(function(v){return v.toString(16).padStart(2,'0');}).join('');
+}
+
+function renderStaging() {
+  if (!STAGING_BG) return;
+  var W = STAGING_BG.naturalWidth, H = STAGING_BG.naturalHeight;
+  var cv = Q('#cv-staging');
+  cv.width = W; cv.height = H;
+  var ctx = cv.getContext('2d');
+  ctx.drawImage(STAGING_BG, 0, 0);
+  if (!STAGING_ITEMS.length) return;
+
+  var x    = gv('staging-x') / 100;
+  var y    = gv('staging-y') / 100;
+  var scl  = gv('staging-scale') / 100;
+  var op   = gv('staging-op') / 100;
+
+  STAGING_ITEMS.forEach(function(item, idx) {
+    var iW = Math.round(W * scl * 0.5);
+    var iH = Math.round(iW * item.img.naturalHeight / item.img.naturalWidth);
+    var ix = Math.round(W * x - iW / 2);
+    var iy = Math.round(H * y - iH / 2);
+    ctx.globalAlpha = op;
+    ctx.drawImage(item.img, ix, iy, iW, iH);
+  });
+  ctx.globalAlpha = 1;
+}
+
+// ================================================================
+// WB PREVIEW GRID — upgraded with 8 temperatures + tint variants
+// ================================================================
+var WB_TEMPS=[3000,3500,4000,4500,5000,5500,6500,8000];
+var WB_LABELS=['3000K incandescent','3500K tungsten','4000K fluorescent','4500K cool white','5000K neutral','5500K daylight','6500K cloudy','8000K shade'];
+var SEL_WBG_CV=null;
+
+function buildWBGrid(img){
+  var grid=Q('#wbg-grid');grid.style.display='grid';
+  grid.style.gridTemplateColumns='repeat(4,1fr)';
+  grid.style.gap='6px';
+  grid.innerHTML='';
+  WB_TEMPS.forEach(function(temp,idx){
+    var wrap=document.createElement('div');wrap.className='wbg-item';
+    var cv=document.createElement('canvas');
+    var sc=Math.min(1,180/img.naturalWidth,140/img.naturalHeight);
+    cv.width=Math.round(img.naturalWidth*sc);cv.height=Math.round(img.naturalHeight*sc);
+    var ctx=cv.getContext('2d');ctx.drawImage(img,0,0,cv.width,cv.height);
+    var id=ctx.getImageData(0,0,cv.width,cv.height),d=id.data;
+    // More accurate temperature simulation
+    var shift=(temp-5500)/80;
+    var tintShift=(temp<4000||temp>7000)?-(temp-5500)/400:0;
+    for(var i=0;i<d.length;i+=4){
+      d[i]  =clamp(d[i]  +shift*0.55);
+      d[i+2]=clamp(d[i+2]-shift*0.45);
+      d[i+1]=clamp(d[i+1]+tintShift);
+    }
+    ctx.putImageData(id,0,0);
+    var lbl=document.createElement('div');lbl.className='wbg-label';
+    lbl.textContent=WB_LABELS[idx].split(' ')[0]; // show just Kelvin
+    lbl.style.cssText='font-size:9px;text-align:center;padding:2px;background:var(--bg3);color:var(--text3);font-family:monospace';
+    wrap.appendChild(cv);wrap.appendChild(lbl);
+    wrap.style.cssText='border-radius:var(--r);overflow:hidden;cursor:pointer;border:2px solid transparent;transition:.15s';
+    wrap.addEventListener('click',(function(c,w,t,l){return function(){
+      QA('.wbg-item').forEach(function(x){x.style.borderColor='transparent';});
+      w.style.borderColor='var(--green)';
+      SEL_WBG_CV=c;
+      Q('#wbg-sel-label').textContent='✓ Selectat: '+l;
+      Q('#btn-wbg-dl').disabled=false;
+    };})(cv,wrap,temp,WB_LABELS[idx]));
+    grid.appendChild(wrap);
+  });
+  Q('#wbg-brow').style.display='flex';
+}
+function exportWBGrid(){
+  if(!SEL_WBG_CV)return;
+  // Export full resolution version
+  var img=ORIG['wbg'];if(!img)return;
+  var fullCv=document.createElement('canvas');
+  fullCv.width=img.naturalWidth;fullCv.height=img.naturalHeight;
+  var ctx=fullCv.getContext('2d');ctx.drawImage(img,0,0);
+  var id=ctx.getImageData(0,0,img.naturalWidth,img.naturalHeight),d=id.data;
+  // Find which temperature was selected by comparing to the preview canvas
+  var selLabel=Q('#wbg-sel-label').textContent;
+  var matchTemp=5500;
+  WB_LABELS.forEach(function(l,i){if(selLabel.indexOf(l.split(' ')[0])>-1)matchTemp=WB_TEMPS[i];});
+  var shift=(matchTemp-5500)/80;
+  var tintShift=(matchTemp<4000||matchTemp>7000)?-(matchTemp-5500)/400:0;
+  for(var i=0;i<d.length;i+=4){d[i]=clamp(d[i]+shift*0.55);d[i+2]=clamp(d[i+2]-shift*0.45);d[i+1]=clamp(d[i+1]+tintShift);}
+  ctx.putImageData(id,0,0);
+  var a=document.createElement('a');
+  a.download='RE-wb-'+matchTemp+'K-'+Date.now()+'.jpg';
+  a.href=fullCv.toDataURL('image/jpeg',1.0);a.click();
 }
 
 window.addEventListener('load',function(){
